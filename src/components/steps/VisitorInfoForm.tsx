@@ -100,27 +100,9 @@ const VisitorInfoForm = ({
         <h3 className="text-lg font-medium mb-4">
           Besökarinformation - {visitorType === "regular" ? "Vanlig besökare" : "Servicepersonal"}
         </h3>
-        
-        <div className="mb-6">
-          <Label htmlFor="visitor-count">Antal besökare</Label>
-          <Select 
-            value={visitorCount.toString()} 
-            onValueChange={(value) => onVisitorCountChange(parseInt(value))}
-          >
-            <SelectTrigger id="visitor-count" className="w-full">
-              <SelectValue placeholder="Välj antal" />
-            </SelectTrigger>
-            <SelectContent>
-              {countOptions.map((count) => (
-                <SelectItem key={count} value={count.toString()}>
-                  {count}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="mb-6">
+
+
+         <div className="mb-6">
           <Label htmlFor="company" className={errors.company ? "text-red-500" : ""}>
             Företag {errors.company && <span className="text-red-500">*</span>}
           </Label>
@@ -141,6 +123,27 @@ const VisitorInfoForm = ({
             <p className="text-red-500 text-xs mt-1">Ange ett företagsnamn</p>
           )}
         </div>
+        
+        <div className="mb-6">
+          <Label htmlFor="visitor-count">Antal besökare</Label>
+          <Select 
+            value={visitorCount.toString()} 
+            onValueChange={(value) => onVisitorCountChange(parseInt(value))}
+          >
+            <SelectTrigger id="visitor-count" className="w-full">
+              <SelectValue placeholder="Välj antal" />
+            </SelectTrigger>
+            <SelectContent>
+              {countOptions.map((count) => (
+                <SelectItem key={count} value={count.toString()}>
+                  {count}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        
+       
         
         {visitors.map((visitor, index) => (
           <div key={visitor.id} className="p-4 bg-gray-50 rounded-md mb-4">
