@@ -136,6 +136,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
             company={company}
             host={selectedHost?.name || ""}
             visitorType={visitorType || "regular"}
+            onClose={resetForm}
           />
         );
 
@@ -179,7 +180,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         {renderCurrentStep()}
       </motion.div>
       
-      {step !== "type-selection" && step !== "check-out" && (
+      {step !== "type-selection" && step !== "check-out" && step !== "confirmation" && (
         <div className="mt-6">
           <Button 
             variant="ghost" 
@@ -190,13 +191,11 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
                 setStep("visitor-info");
               } else if (step === "terms") {
                 setStep("host-selection");
-              } else if (step === "confirmation") {
-                resetForm();
               }
             }}
             className="text-gray-500"
           >
-            {step === "confirmation" ? "Stäng" : "Tillbaka"}
+            Tillbaka
           </Button>
         </div>
       )}

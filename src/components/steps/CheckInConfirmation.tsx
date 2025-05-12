@@ -2,20 +2,42 @@
 import { motion } from "framer-motion";
 import { Visitor, VisitorType } from "@/types/visitors";
 import { CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface CheckInConfirmationProps {
   visitors: Visitor[];
   company: string;
   host: string;
   visitorType: VisitorType;
+  onClose: () => void;
 }
 
 const CheckInConfirmation = ({ 
   visitors, 
   company, 
   host, 
-  visitorType 
+  visitorType,
+  onClose
 }: CheckInConfirmationProps) => {
+  const [countdown, setCountdown] = useState(5);
+
+  // Effect to handle countdown and automatic close
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          onClose();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [onClose]);
+
   return (
     <div className="text-center space-y-6">
       <motion.div
@@ -56,6 +78,16 @@ const CheckInConfirmation = ({
           ? "En av våra medarbetare kommer snart och möter dig. Vänligen ta plats i väntrummet."
           : "Vänligen vänta på att din kontaktperson kommer och möter dig. Ha din ID-handling redo."}
       </p>
+
+      <div className="mt-6">
+        <Button 
+          variant="ghost" 
+          onClick={onClose}
+          className="text-gray-500"
+        >
+          Stänger om {countdown} sekunder...
+        </Button>
+      </div>
     </div>
   );
 };
