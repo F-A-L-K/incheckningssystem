@@ -57,7 +57,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium">{formatPrivacyName(visitor.firstName, visitor.lastName)}</p>
-                  <p className="text-sm text-gray-500">{visitor.company}</p>
+                  <p className="text-sm text-gray-500">{visitor.hostName}</p>
                 </div>
                 <div className="text-sm text-gray-400">
                   {visitor.checkInTime && new Date(visitor.checkInTime).toLocaleTimeString('sv-SE', {
