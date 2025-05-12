@@ -26,7 +26,7 @@ const VisitorTypeSelection = ({ onSelectType }: VisitorTypeSelectionProps) => {
               <div className="bg-blue-100 p-3 rounded-full mb-3">
                 <User className="h-8 w-8 text-blue-500" />
               </div>
-              <h4 className="font-medium text-lg">Vanlig besökare</h4>
+              <h4 className="font-medium text-lg">Vanligt besök</h4>
               <p className="text-gray-500 text-sm mt-2">
                 Möten, intervjuer eller andra besök
               </p>
@@ -46,7 +46,7 @@ const VisitorTypeSelection = ({ onSelectType }: VisitorTypeSelectionProps) => {
               <div className="bg-blue-100 p-3 rounded-full mb-3">
                 <Wrench className="h-8 w-8 text-blue-500" />
               </div>
-              <h4 className="font-medium text-lg">Servicepersonal</h4>
+              <h4 className="font-medium text-lg">Service besök</h4>
               <p className="text-gray-500 text-sm mt-2">
                 Underhåll, bygg eller servicearbete
               </p>
