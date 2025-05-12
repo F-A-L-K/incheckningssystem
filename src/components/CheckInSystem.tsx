@@ -162,13 +162,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         </h2>
         
         {step !== "check-out" && checkedInVisitors.length > 0 && (
-          <Button 
-            variant="outline"
-            onClick={startCheckOut}
-            className="text-blue-500 border-blue-300 hover:bg-blue-50"
-          >
-            Checka ut
-          </Button>
+          null /* Button was commented out here */
         )}
       </div>
       
