@@ -20,7 +20,7 @@ const CheckInConfirmation = ({
   visitorType,
   onClose
 }: CheckInConfirmationProps) => {
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(10);
 
   // Effect to handle countdown and automatic close
   useEffect(() => {
