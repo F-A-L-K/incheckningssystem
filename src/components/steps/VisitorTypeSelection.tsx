@@ -11,7 +11,7 @@ interface VisitorTypeSelectionProps {
 const VisitorTypeSelection = ({ onSelectType }: VisitorTypeSelectionProps) => {
   return (
     <div className="text-center">
-      <h3 className="text-lg font-medium mb-6">Välj typ av besökare</h3>
+      <h3 className="text-lg font-medium mb-6">Välj typ av besök</h3>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <motion.div 
@@ -48,7 +48,7 @@ const VisitorTypeSelection = ({ onSelectType }: VisitorTypeSelectionProps) => {
               </div>
               <h4 className="font-medium text-lg">Servicepersonal</h4>
               <p className="text-gray-500 text-sm mt-2">
-                Underhåll, leverans eller servicearbete
+                Underhåll, bygg eller servicearbete
               </p>
             </CardContent>
           </Card>

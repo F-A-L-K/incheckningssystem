@@ -120,7 +120,7 @@ const VisitorInfoForm = ({
             placeholder="Företagsnamn"
           />
           {errors.company && (
-            <p className="text-red-500 text-xs mt-1">Ange ett företagsnamn</p>
+            <p className="text-red-500 text-xs mt-1">Ange namn på företag/organisation</p>
           )}
         </div>
         
