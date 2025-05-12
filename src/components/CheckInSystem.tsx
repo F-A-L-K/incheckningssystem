@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { VisitorType, Visitor, Host } from "@/types/visitors";
@@ -28,8 +27,13 @@ type Step =
   | "confirmation"
   | "check-out";
 
-const CheckInSystem = () => {
-  const [step, setStep] = useState<Step>("type-selection");
+interface CheckInSystemProps {
+  initialStep?: Step;
+  onCheckOutComplete?: () => void;
+}
+
+const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: CheckInSystemProps) => {
+  const [step, setStep] = useState<Step>(initialStep);
   const [visitorType, setVisitorType] = useState<VisitorType | null>(null);
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [visitorCount, setVisitorCount] = useState<number>(1);
@@ -37,6 +41,10 @@ const CheckInSystem = () => {
   const [selectedHost, setSelectedHost] = useState<Host | null>(null);
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
   const [checkedInVisitors, setCheckedInVisitors] = useState<Visitor[]>([]);
+
+  useEffect(() => {
+    setStep(initialStep);
+  }, [initialStep]);
 
   const resetForm = () => {
     setVisitorType(null);
@@ -46,6 +54,9 @@ const CheckInSystem = () => {
     setSelectedHost(null);
     setTermsAccepted(false);
     setStep("type-selection");
+    if (onCheckOutComplete) {
+      onCheckOutComplete();
+    }
   };
 
   const handleTypeSelection = (type: VisitorType) => {
