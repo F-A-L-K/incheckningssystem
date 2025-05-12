@@ -92,7 +92,7 @@ const VisitorInfoForm = ({
     }
   };
 
-  const countOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const countOptions = [1, 2, 3, 4, 5];
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
