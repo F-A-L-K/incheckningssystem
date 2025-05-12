@@ -15,8 +15,8 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white p-4">
       <header className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-900">Välkommen</h1>
-        <p className="text-gray-600">Incheckningssystem för besökare</p>
+        <h1 className="text-3xl font-bold text-gray-900">Välkommen till Falks Metall AB</h1>
+        <p className="text-gray-600">Vänligen checka in nedan</p>
       </header>
       
       {!showCheckOut && (

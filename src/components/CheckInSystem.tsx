@@ -12,11 +12,11 @@ import { Button } from "@/components/ui/button";
 
 // Mock data for hosts
 const HOSTS: Host[] = [
-  { id: 1, name: "Anna Andersson", department: "HR" },
-  { id: 2, name: "Erik Johansson", department: "IT" },
-  { id: 3, name: "Maria Nilsson", department: "Marketing" },
-  { id: 4, name: "Lars Pettersson", department: "Finance" },
-  { id: 5, name: "Sofia Berg", department: "Operations" },
+  { id: 1, name: "Per Falk", department: "VD" },
+  { id: 2, name: "Magnus Ericsson", department: "Produktionschef" },
+  { id: 3, name: "Anna Falk", department: "Försäljningschef" },
+  { id: 4, name: "Erika Falk", department: "Processutveckling" },
+  { id: 5, name: "Joel Hill Sveningsson", department: "Produktionstekniker" },
 ];
 
 type Step = 
