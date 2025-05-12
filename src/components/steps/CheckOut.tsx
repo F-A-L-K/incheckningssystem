@@ -42,10 +42,10 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium mb-2">Välj vem som checkar ut</h3>
-        <p className="text-gray-500 text-sm mb-4">
+        <h3 className="text-lg font-medium mb-2">Klicka på ditt namn i listan nedan för att checka ut</h3>
+        {/* <p className="text-gray-500 text-sm mb-4">
           Klicka på ditt namn i listan nedan för att checka ut
-        </p>
+        </p> */}
         
         <div className="space-y-2 max-h-[400px] overflow-y-auto">
           {checkedInVisitors.map((visitor) => (
