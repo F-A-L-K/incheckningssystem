@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { VisitorType } from "@/types/visitors";
-import { User, Tool } from "lucide-react";
+import { User, Wrench } from "lucide-react";
 
 interface VisitorTypeSelectionProps {
   onSelectType: (type: VisitorType) => void;
@@ -44,7 +44,7 @@ const VisitorTypeSelection = ({ onSelectType }: VisitorTypeSelectionProps) => {
           >
             <CardContent className="p-6 flex flex-col items-center">
               <div className="bg-blue-100 p-3 rounded-full mb-3">
-                <Tool className="h-8 w-8 text-blue-500" />
+                <Wrench className="h-8 w-8 text-blue-500" />
               </div>
               <h4 className="font-medium text-lg">Servicepersonal</h4>
               <p className="text-gray-500 text-sm mt-2">
