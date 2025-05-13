@@ -162,7 +162,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         </h2>
         
         {step !== "check-out" && checkedInVisitors.length > 0 && (
-          null /* Button was commented out here */
+          null
         )}
       </div>
       

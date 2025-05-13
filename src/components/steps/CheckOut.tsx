@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Visitor } from "@/types/visitors";
@@ -13,6 +13,16 @@ interface CheckOutProps {
 const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) => {
   const [selectedVisitor, setSelectedVisitor] = useState<Visitor | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  
+  // Auto-close after 1 minute
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onCancel();
+    }, 60000); // 60000ms = 1 minute
+    
+    // Cleanup on unmount
+    return () => clearTimeout(timer);
+  }, [onCancel]);
   
   const handleVisitorClick = (visitor: Visitor) => {
     setSelectedVisitor(visitor);
@@ -43,9 +53,6 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium mb-2">Klicka på ditt namn i listan nedan för att checka ut</h3>
-        {/* <p className="text-gray-500 text-sm mb-4">
-          Klicka på ditt namn i listan nedan för att checka ut
-        </p> */}
         
         <div className="space-y-2 max-h-[400px] overflow-y-auto">
           {checkedInVisitors.map((visitor) => (
