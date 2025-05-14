@@ -2,58 +2,101 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { VisitorType } from "@/types/visitors";
-import { User, Wrench } from "lucide-react";
+import { User, Wrench, ScanQrCode } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import QRScanner from "@/components/QRScanner";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface VisitorTypeSelectionProps {
   onSelectType: (type: VisitorType) => void;
+  onQrScanSuccess?: (visitorData: any) => void;
 }
 
-const VisitorTypeSelection = ({ onSelectType }: VisitorTypeSelectionProps) => {
+const VisitorTypeSelection = ({ onSelectType, onQrScanSuccess }: VisitorTypeSelectionProps) => {
+  const [showScanner, setShowScanner] = useState(false);
+  
+  const handleScanSuccess = (scannedData: any) => {
+    // Validate that the scanned data has the expected properties
+    if (scannedData && scannedData.firstName && scannedData.lastName) {
+      if (onQrScanSuccess) {
+        onQrScanSuccess(scannedData);
+      }
+      setShowScanner(false);
+    } else {
+      toast.error("Ogiltig QR-kod. Saknar nödvändig information.");
+    }
+  };
+  
   return (
     <div className="text-center">
       <h3 className="text-lg font-medium mb-6">Välj typ av besök</h3>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <motion.div 
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <Card 
-            className="cursor-pointer hover:border-blue-400 transition-all"
-            onClick={() => onSelectType("regular")}
+      {!showScanner ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <motion.div 
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Card 
+                className="cursor-pointer hover:border-blue-400 transition-all"
+                onClick={() => onSelectType("regular")}
+              >
+                <CardContent className="p-6 flex flex-col items-center">
+                  <div className="bg-blue-100 p-3 rounded-full mb-3">
+                    <User className="h-8 w-8 text-blue-500" />
+                  </div>
+                  <h4 className="font-medium text-lg">Vanligt besök</h4>
+                  <p className="text-gray-500 text-sm mt-2">
+                    Möten, intervjuer eller andra besök
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div 
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Card 
+                className="cursor-pointer hover:border-blue-400 transition-all"
+                onClick={() => onSelectType("service")}
+              >
+                <CardContent className="p-6 flex flex-col items-center">
+                  <div className="bg-blue-100 p-3 rounded-full mb-3">
+                    <Wrench className="h-8 w-8 text-blue-500" />
+                  </div>
+                  <h4 className="font-medium text-lg">Service besök</h4>
+                  <p className="text-gray-500 text-sm mt-2">
+                    Underhåll, bygg eller servicearbete
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+          
+          <Button 
+            variant="outline" 
+            className="w-full max-w-xs mx-auto flex items-center gap-2 border-dashed"
+            onClick={() => setShowScanner(true)}
           >
-            <CardContent className="p-6 flex flex-col items-center">
-              <div className="bg-blue-100 p-3 rounded-full mb-3">
-                <User className="h-8 w-8 text-blue-500" />
-              </div>
-              <h4 className="font-medium text-lg">Vanligt besök</h4>
-              <p className="text-gray-500 text-sm mt-2">
-                Möten, intervjuer eller andra besök
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-        
-        <motion.div 
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <Card 
-            className="cursor-pointer hover:border-blue-400 transition-all"
-            onClick={() => onSelectType("service")}
+            <ScanQrCode className="h-5 w-5" />
+            Skanna QR kod
+          </Button>
+        </>
+      ) : (
+        <div className="mb-6">
+          <QRScanner onScanSuccess={handleScanSuccess} />
+          <Button 
+            variant="ghost" 
+            className="mt-4"
+            onClick={() => setShowScanner(false)}
           >
-            <CardContent className="p-6 flex flex-col items-center">
-              <div className="bg-blue-100 p-3 rounded-full mb-3">
-                <Wrench className="h-8 w-8 text-blue-500" />
-              </div>
-              <h4 className="font-medium text-lg">Service besök</h4>
-              <p className="text-gray-500 text-sm mt-2">
-                Underhåll, bygg eller servicearbete
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+            Avbryt
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
