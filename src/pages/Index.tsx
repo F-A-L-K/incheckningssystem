@@ -1,9 +1,10 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import CheckInSystem from "@/components/CheckInSystem";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, QrCode } from "lucide-react";
 
 const Index = () => {
   const [showCheckOut, setShowCheckOut] = useState(false);
@@ -19,8 +20,8 @@ const Index = () => {
         <p className="text-gray-600">Vänligen checka in nedan</p>
       </header>
       
-      {!showCheckOut && (
-        <div className="w-full max-w-xl mb-6 flex justify-center">
+      <div className="w-full max-w-xl mb-6 flex justify-between">
+        {!showCheckOut && (
           <Button 
             onClick={handleCheckOut} 
             className="bg-purple-600 hover:bg-purple-700 text-white py-3 px-8 rounded-lg text-lg flex items-center gap-2 shadow-md"
@@ -29,8 +30,18 @@ const Index = () => {
             <LogOut className="h-5 w-5" />
             Checka ut
           </Button>
-        </div>
-      )}
+        )}
+        
+        <Link to="/qr-generator" className="ml-auto">
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg flex items-center gap-2 shadow-md"
+            size="lg"
+          >
+            <QrCode className="h-5 w-5" />
+            QR Förregistrering
+          </Button>
+        </Link>
+      </div>
       
       <div className="w-full max-w-xl">
         <CheckInSystem initialStep={showCheckOut ? "check-out" : "type-selection"} onCheckOutComplete={() => setShowCheckOut(false)} />
