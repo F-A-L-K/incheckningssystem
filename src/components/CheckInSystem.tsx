@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -10,7 +9,6 @@ import TermsAgreement from "@/components/steps/TermsAgreement";
 import CheckInConfirmation from "@/components/steps/CheckInConfirmation";
 import CheckOut from "@/components/steps/CheckOut";
 import { Button } from "@/components/ui/button";
-import { v4 as uuidv4 } from "uuid";
 
 // Mock data for hosts
 const HOSTS: Host[] = [
@@ -43,8 +41,6 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   const [selectedHost, setSelectedHost] = useState<Host | null>(null);
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
   const [checkedInVisitors, setCheckedInVisitors] = useState<Visitor[]>([]);
-  // New state to store QR scan data
-  const [qrScanData, setQrScanData] = useState<any>(null);
 
   useEffect(() => {
     setStep(initialStep);
@@ -57,7 +53,6 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setCompany("");
     setSelectedHost(null);
     setTermsAccepted(false);
-    setQrScanData(null);
     setStep("type-selection");
     if (onCheckOutComplete) {
       onCheckOutComplete();
@@ -108,35 +103,10 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     resetForm();
   };
 
-  const handleQrScanSuccess = (data: any) => {
-    setQrScanData(data);
-    
-    // Extract visitor type from QR data
-    const scannedType = data.type as VisitorType || "regular";
-    setVisitorType(scannedType);
-    
-    // Create a visitor object from QR data
-    const newVisitor: Visitor = {
-      id: uuidv4(),
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email || "",
-      phone: data.phone || ""
-    };
-    
-    setVisitors([newVisitor]);
-    setCompany(data.company || "");
-    
-    // Move directly to host selection since we have visitor info
-    setStep("host-selection");
-    
-    toast.success("Information från QR-kod hämtad!");
-  };
-
   const renderCurrentStep = () => {
     switch (step) {
       case "type-selection":
-        return <VisitorTypeSelection onSelectType={handleTypeSelection} onQrScanSuccess={handleQrScanSuccess} />;
+        return <VisitorTypeSelection onSelectType={handleTypeSelection} />;
       
       case "visitor-info":
         return (
@@ -145,12 +115,6 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
             onVisitorCountChange={setVisitorCount}
             onSubmit={handleVisitorInfoSubmit}
             visitorType={visitorType || "regular"}
-            prefilledData={qrScanData ? [{ 
-              firstName: qrScanData.firstName, 
-              lastName: qrScanData.lastName,
-              email: qrScanData.email || "",
-              phone: qrScanData.phone || ""
-            }] : undefined}
           />
         );
       
