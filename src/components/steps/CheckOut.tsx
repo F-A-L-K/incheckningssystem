@@ -44,7 +44,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
     return (
       <div className="text-center py-8">
         <p className="text-gray-500 mb-4">Det finns inga incheckade besökare för närvarande.</p>
-        <Button variant="outline" onClick={onCancel}>Tillbaka</Button>
+        {/* <Button variant="outline" onClick={onCancel}>Tillbaka</Button> */}
       </div>
     );
   }
