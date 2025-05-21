@@ -70,7 +70,7 @@ const Index = () => {
       )}
       
       <footer className="mt-12 text-center text-sm text-gray-400">
-        <p>© {new Date().getFullYear()} Incheckningssystem</p>
+        <p>{new Date().getFullYear()} Falks Incheckningssystem</p>
       </footer>
 
       <Toaster position="top-center" />
