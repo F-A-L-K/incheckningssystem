@@ -34,7 +34,7 @@ const Index = () => {
         <div className="w-full max-w-xl mb-6 flex flex-col sm:flex-row justify-center gap-4">
           <Button 
             onClick={handleCheckIn} 
-            className="bg-blue-600 hover:bg-blue-700 text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
+            className="bg-[#19647E] hover:bg-[#16576C] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
             size="lg"
           >
             <LogIn className="h-6 w-6" />
