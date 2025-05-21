@@ -43,7 +43,7 @@ const Index = () => {
           
           <Button 
             onClick={handleCheckOut} 
-            className="bg-[#19647E] hover:bg-red-700 text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
+            className="bg-[#19647E] hover:bg-[#16576C] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
             size="lg"
           >
             <LogOut className="h-6 w-6" />
