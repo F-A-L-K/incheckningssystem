@@ -43,7 +43,7 @@ const Index = () => {
           
           <Button 
             onClick={handleCheckOut} 
-            className="bg-[#ea384c] hover:bg-[#d62e41] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
+            className="bg-[#19647E] hover:bg-[#16576C] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
             size="lg"
           >
             <LogOut className="h-6 w-6" />
@@ -70,7 +70,7 @@ const Index = () => {
       )}
       
       <footer className="mt-auto pt-8 pb-4 text-center text-sm text-gray-400">
-        <p>Falks Incheckningssystem | {new Date().getFullYear()}</p>
+        <p>FMAB Incheckningssystem | {new Date().getFullYear()}</p>
       </footer>
 
       <Toaster position="top-center" />
