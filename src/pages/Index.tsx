@@ -4,6 +4,7 @@ import CheckInSystem from "@/components/CheckInSystem";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Index = () => {
   const [activeView, setActiveView] = useState<"menu" | "check-in" | "check-out">("menu");
@@ -32,18 +33,23 @@ const Index = () => {
       
       {activeView === "menu" ? (
         <div className="w-full max-w-xl mb-6 flex flex-col sm:flex-row justify-center gap-4">
-          <Button 
-            onClick={handleCheckIn} 
-            className="bg-[#19647E] hover:bg-[#16576C] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
-            size="lg"
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <LogIn className="h-6 w-6" />
-            Checka in
-          </Button>
+            <Button 
+              onClick={handleCheckIn} 
+              className="bg-[#19647E] hover:bg-[#16576C] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
+              size="lg"
+            >
+              <LogIn className="h-6 w-6" />
+              Checka in
+            </Button>
+          </motion.div>
           
           <Button 
             onClick={handleCheckOut} 
-            className="bg-[#19647E] hover:bg-[#16576C] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
+            className="bg-[#E63946] hover:bg-[#C92531] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
             size="lg"
           >
             <LogOut className="h-6 w-6" />
@@ -70,7 +76,7 @@ const Index = () => {
       )}
       
       <footer className="mt-auto pt-8 pb-4 text-center text-sm text-gray-400">
-        <p>FMAB Incheckningssystem | {new Date().getFullYear()}</p>
+        <p>Falks Incheckningssystem | {new Date().getFullYear()}</p>
       </footer>
 
       <Toaster position="top-center" />
