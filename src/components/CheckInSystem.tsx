@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -10,6 +9,7 @@ import TermsAgreement from "@/components/steps/TermsAgreement";
 import CheckInConfirmation from "@/components/steps/CheckInConfirmation";
 import CheckOut from "@/components/steps/CheckOut";
 import { Button } from "@/components/ui/button";
+import { saveVisitor, getCheckedInVisitors, checkOutVisitor, convertToVisitorFormat } from "@/services/visitorService";
 
 // Mock data for hosts
 const HOSTS: Host[] = [
@@ -41,11 +41,25 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   const [company, setCompany] = useState<string>("");
   const [selectedHost, setSelectedHost] = useState<Host | null>(null);
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
-  const [checkedInVisitors, setCheckedInVisitors] = useState<Visitor[]>([]);
+  const [checkedInVisitors, setCheckedInVisitors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setStep(initialStep);
+    if (initialStep === "check-out") {
+      loadCheckedInVisitors();
+    }
   }, [initialStep]);
+
+  const loadCheckedInVisitors = async () => {
+    try {
+      const visitors = await getCheckedInVisitors();
+      setCheckedInVisitors(visitors);
+    } catch (error) {
+      console.error('Failed to load checked-in visitors:', error);
+      toast.error("Kunde inte ladda incheckade besökare");
+    }
+  };
 
   const resetForm = () => {
     setVisitorType(null);
@@ -76,32 +90,48 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setStep("terms");
   };
 
-  const handleTermsAccepted = () => {
+  const handleTermsAccepted = async () => {
     setTermsAccepted(true);
-    setStep("confirmation");
+    setLoading(true);
     
-    // Add visitors to checked-in list
-    const timestamp = new Date().toISOString();
-    const checkedInVisitorsWithTimestamp = visitors.map(visitor => ({
-      ...visitor,
-      checkInTime: timestamp,
-      hostName: selectedHost?.name || "",
-      company,
-      type: visitorType || "regular"
-    }));
-    
-    setCheckedInVisitors(prev => [...prev, ...checkedInVisitorsWithTimestamp]);
-    toast.success("Incheckning genomförd!");
+    try {
+      // Save each visitor to the database
+      for (const visitor of visitors) {
+        const visitorData = {
+          name: `${visitor.firstName} ${visitor.lastName}`,
+          company,
+          visiting: selectedHost?.name || "",
+          is_service_personnel: visitorType === "service"
+        };
+        
+        await saveVisitor(visitorData);
+      }
+      
+      setStep("confirmation");
+      toast.success("Incheckning genomförd!");
+    } catch (error) {
+      console.error('Failed to save visitors:', error);
+      toast.error("Kunde inte genomföra incheckning");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const startCheckOut = () => {
     setStep("check-out");
+    loadCheckedInVisitors();
   };
 
-  const handleCheckOut = (visitorId: string) => {
-    setCheckedInVisitors(prev => prev.filter(v => v.id !== visitorId));
-    toast.success("Utcheckning genomförd!");
-    resetForm();
+  const handleCheckOut = async (visitorId: string) => {
+    try {
+      await checkOutVisitor(visitorId);
+      setCheckedInVisitors(prev => prev.filter(v => v.id !== visitorId));
+      toast.success("Utcheckning genomförd!");
+      resetForm();
+    } catch (error) {
+      console.error('Failed to check out visitor:', error);
+      toast.error("Kunde inte genomföra utcheckning");
+    }
   };
 
   const handleBackNavigation = () => {
@@ -138,7 +168,8 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         return (
           <TermsAgreement 
             visitorType={visitorType || "regular"} 
-            onAccept={handleTermsAccepted} 
+            onAccept={handleTermsAccepted}
+            loading={loading}
           />
         );
         

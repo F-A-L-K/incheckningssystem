@@ -1,17 +1,15 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Visitor } from "@/types/visitors";
 
 interface CheckOutProps {
-  checkedInVisitors: Visitor[];
+  checkedInVisitors: any[];
   onCheckOut: (visitorId: string) => void;
   onCancel: () => void;
 }
 
 const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) => {
-  const [selectedVisitor, setSelectedVisitor] = useState<Visitor | null>(null);
+  const [selectedVisitor, setSelectedVisitor] = useState<any | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   
   // Auto-close after 1 minute
@@ -24,7 +22,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
     return () => clearTimeout(timer);
   }, [onCancel]);
   
-  const handleVisitorClick = (visitor: Visitor) => {
+  const handleVisitorClick = (visitor: any) => {
     setSelectedVisitor(visitor);
     setConfirmDialogOpen(true);
   };
@@ -36,8 +34,12 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
     }
   };
   
-  const formatPrivacyName = (firstName: string, lastName: string) => {
-    return `${firstName} ${lastName.charAt(0)}.`;
+  const formatPrivacyName = (fullName: string) => {
+    const nameParts = fullName.split(' ');
+    if (nameParts.length === 1) return fullName;
+    const firstName = nameParts[0];
+    const lastInitial = nameParts[nameParts.length - 1].charAt(0);
+    return `${firstName} ${lastInitial}.`;
   };
   
   if (checkedInVisitors.length === 0) {
@@ -63,11 +65,11 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
             >
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">{formatPrivacyName(visitor.firstName, visitor.lastName)}</p>
-                  <p className="text-sm text-gray-500">Besöker {visitor.hostName}</p>
+                  <p className="font-medium">{formatPrivacyName(visitor.name)}</p>
+                  <p className="text-sm text-gray-500">Besöker {visitor.visiting}</p>
                 </div>
                 <div className="text-sm text-gray-400">
-                  {visitor.checkInTime && new Date(visitor.checkInTime).toLocaleTimeString('sv-SE', {
+                  {visitor.check_in_time && new Date(visitor.check_in_time).toLocaleTimeString('sv-SE', {
                     hour: '2-digit',
                     minute: '2-digit'
                   })}
@@ -90,7 +92,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
           <div className="py-4">
             {selectedVisitor && (
               <p>
-                Är du säker på att du vill checka ut {selectedVisitor.firstName} {selectedVisitor.lastName}?
+                Är du säker på att du vill checka ut {selectedVisitor.name}?
               </p>
             )}
           </div>
