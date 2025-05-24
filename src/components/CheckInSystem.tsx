@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -103,6 +104,16 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     resetForm();
   };
 
+  const handleBackNavigation = () => {
+    if (step === "visitor-info") {
+      setStep("type-selection");
+    } else if (step === "host-selection") {
+      setStep("visitor-info");
+    } else if (step === "terms") {
+      setStep("host-selection");
+    }
+  };
+
   const renderCurrentStep = () => {
     switch (step) {
       case "type-selection":
@@ -115,6 +126,8 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
             onVisitorCountChange={setVisitorCount}
             onSubmit={handleVisitorInfoSubmit}
             visitorType={visitorType || "regular"}
+            initialVisitors={visitors}
+            initialCompany={company}
           />
         );
       
@@ -178,15 +191,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         <div className="mt-6">
           <Button 
             variant="ghost" 
-            onClick={() => {
-              if (step === "visitor-info") {
-                resetForm();
-              } else if (step === "host-selection") {
-                setStep("visitor-info");
-              } else if (step === "terms") {
-                setStep("host-selection");
-              }
-            }}
+            onClick={handleBackNavigation}
             className="text-gray-500"
           >
             Tillbaka

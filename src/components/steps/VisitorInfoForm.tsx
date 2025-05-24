@@ -18,26 +18,34 @@ interface VisitorInfoFormProps {
   visitorType: VisitorType;
   onVisitorCountChange: (count: number) => void;
   onSubmit: (visitors: Visitor[], company: string) => void;
+  initialVisitors?: Visitor[];
+  initialCompany?: string;
 }
 
 const VisitorInfoForm = ({ 
   visitorCount, 
   visitorType, 
   onVisitorCountChange, 
-  onSubmit 
+  onSubmit,
+  initialVisitors = [],
+  initialCompany = ""
 }: VisitorInfoFormProps) => {
   const [visitors, setVisitors] = useState<Visitor[]>([]);
-  const [company, setCompany] = useState<string>("");
+  const [company, setCompany] = useState<string>(initialCompany);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    // Initialize or adjust visitors array based on count
+    // Initialize visitors array based on count and initial data
     const newVisitors = [...visitors];
     
     if (newVisitors.length < visitorCount) {
       // Add more visitor slots
       for (let i = newVisitors.length; i < visitorCount; i++) {
-        newVisitors.push({ id: uuidv4(), firstName: "", lastName: "" });
+        // Use initial data if available, otherwise create empty visitor
+        const initialVisitor = initialVisitors[i];
+        newVisitors.push(
+          initialVisitor || { id: uuidv4(), firstName: "", lastName: "" }
+        );
       }
     } else if (newVisitors.length > visitorCount) {
       // Remove excess visitor slots
@@ -46,6 +54,27 @@ const VisitorInfoForm = ({
     
     setVisitors(newVisitors);
   }, [visitorCount]);
+
+  // Initialize visitors with existing data on component mount
+  useEffect(() => {
+    if (initialVisitors.length > 0) {
+      const newVisitors = [...initialVisitors];
+      
+      // Ensure we have the right number of visitors
+      while (newVisitors.length < visitorCount) {
+        newVisitors.push({ id: uuidv4(), firstName: "", lastName: "" });
+      }
+      
+      setVisitors(newVisitors.slice(0, visitorCount));
+    } else {
+      // Create empty visitors if no initial data
+      const newVisitors = [];
+      for (let i = 0; i < visitorCount; i++) {
+        newVisitors.push({ id: uuidv4(), firstName: "", lastName: "" });
+      }
+      setVisitors(newVisitors);
+    }
+  }, []);
 
   const handleVisitorChange = (index: number, field: "firstName" | "lastName", value: string) => {
     const newVisitors = [...visitors];
@@ -101,8 +130,7 @@ const VisitorInfoForm = ({
           Besökarinformation - {visitorType === "regular" ? "Vanlig besökare" : "Servicepersonal"}
         </h3>
 
-
-         <div className="mb-6">
+        <div className="mb-6">
           <Label htmlFor="company" className={errors.company ? "text-red-500" : ""}>
             Företag {errors.company && <span className="text-red-500">*</span>}
           </Label>
@@ -142,8 +170,6 @@ const VisitorInfoForm = ({
             </SelectContent>
           </Select>
         </div>
-        
-       
         
         {visitors.map((visitor, index) => (
           <div key={visitor.id} className="p-4 bg-gray-50 rounded-md mb-4">
