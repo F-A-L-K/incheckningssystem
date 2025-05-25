@@ -165,11 +165,13 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         return <HostSelection hosts={HOSTS} onSelect={handleHostSelection} />;
         
       case "terms":
+        const primaryVisitorName = visitors.length > 0 ? `${visitors[0].firstName} ${visitors[0].lastName}` : "Besökare";
         return (
           <TermsAgreement 
             visitorType={visitorType || "regular"} 
             onAccept={handleTermsAccepted}
             loading={loading}
+            visitorName={primaryVisitorName}
           />
         );
         
