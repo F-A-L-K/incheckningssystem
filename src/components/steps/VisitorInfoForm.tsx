@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
@@ -33,6 +32,12 @@ const VisitorInfoForm = ({
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [company, setCompany] = useState<string>(initialCompany);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+
+  // Function to capitalize first letter and make rest lowercase
+  const formatName = (name: string): string => {
+    if (!name) return name;
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
 
   useEffect(() => {
     // Initialize visitors array based on count and initial data
@@ -84,6 +89,17 @@ const VisitorInfoForm = ({
     // Clear error for this field if value is not empty
     if (value) {
       setErrors(prev => ({ ...prev, [`visitor-${index}-${field}`]: false }));
+    }
+  };
+
+  const handleNameBlur = (index: number, field: "firstName" | "lastName") => {
+    const newVisitors = [...visitors];
+    const currentValue = newVisitors[index][field];
+    const formattedValue = formatName(currentValue);
+    
+    if (currentValue !== formattedValue) {
+      newVisitors[index] = { ...newVisitors[index], [field]: formattedValue };
+      setVisitors(newVisitors);
     }
   };
 
@@ -187,6 +203,7 @@ const VisitorInfoForm = ({
                   type="text"
                   value={visitor.firstName}
                   onChange={(e) => handleVisitorChange(index, "firstName", e.target.value)}
+                  onBlur={() => handleNameBlur(index, "firstName")}
                   className={errors[`visitor-${index}-firstName`] ? "border-red-500" : ""}
                   placeholder="Förnamn"
                 />
@@ -207,6 +224,7 @@ const VisitorInfoForm = ({
                   type="text"
                   value={visitor.lastName}
                   onChange={(e) => handleVisitorChange(index, "lastName", e.target.value)}
+                  onBlur={() => handleNameBlur(index, "lastName")}
                   className={errors[`visitor-${index}-lastName`] ? "border-red-500" : ""}
                   placeholder="Efternamn"
                 />
