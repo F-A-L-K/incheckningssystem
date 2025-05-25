@@ -43,6 +43,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
   const [checkedInVisitors, setCheckedInVisitors] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [recognizedVisitorData, setRecognizedVisitorData] = useState<any>(null);
 
   useEffect(() => {
     setStep(initialStep);
@@ -68,6 +69,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setCompany("");
     setSelectedHost(null);
     setTermsAccepted(false);
+    setRecognizedVisitorData(null);
     setStep("type-selection");
     if (onCheckOutComplete) {
       onCheckOutComplete();
@@ -77,6 +79,27 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   const handleTypeSelection = (type: VisitorType) => {
     setVisitorType(type);
     setStep("visitor-info");
+  };
+
+  const handleFaceRecognized = async (visitorData: any) => {
+    // Auto-fyll information baserat på ansiktsigenkänning
+    setRecognizedVisitorData(visitorData);
+    setVisitorType(visitorData.visitorType || "regular");
+    
+    // Sätt pre-ifylld besökarinformation
+    const recognizedVisitor: Visitor = {
+      id: "1",
+      firstName: visitorData.name.split(' ')[0] || "",
+      lastName: visitorData.name.split(' ').slice(1).join(' ') || "",
+    };
+    
+    setVisitors([recognizedVisitor]);
+    setCompany(visitorData.company || "");
+    
+    // Gå direkt till värdval
+    setStep("host-selection");
+    
+    toast.success(`Välkommen tillbaka ${visitorData.name}!`);
   };
 
   const handleVisitorInfoSubmit = (newVisitors: Visitor[], companyName: string) => {
@@ -138,7 +161,13 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     if (step === "visitor-info") {
       setStep("type-selection");
     } else if (step === "host-selection") {
-      setStep("visitor-info");
+      // Om det finns igenkänd data, gå tillbaka till type-selection
+      if (recognizedVisitorData) {
+        setStep("type-selection");
+        setRecognizedVisitorData(null);
+      } else {
+        setStep("visitor-info");
+      }
     } else if (step === "terms") {
       setStep("host-selection");
     }
@@ -147,7 +176,12 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   const renderCurrentStep = () => {
     switch (step) {
       case "type-selection":
-        return <VisitorTypeSelection onSelectType={handleTypeSelection} />;
+        return (
+          <VisitorTypeSelection 
+            onSelectType={handleTypeSelection}
+            onFaceRecognized={handleFaceRecognized}
+          />
+        );
       
       case "visitor-info":
         return (
