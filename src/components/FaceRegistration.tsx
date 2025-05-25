@@ -9,24 +9,24 @@ interface FaceRegistrationProps {
   onClose: () => void;
   onFaceRegistered: (faceData: string) => void;
   visitorName: string;
+  onAutoCheckIn: () => void;
 }
 
-const FaceRegistration = ({ onClose, onFaceRegistered, visitorName }: FaceRegistrationProps) => {
+const FaceRegistration = ({ onClose, onFaceRegistered, visitorName, onAutoCheckIn }: FaceRegistrationProps) => {
+  const [currentStep, setCurrentStep] = useState<"consent" | "scanning" | "completed">("consent");
   const [isScanning, setIsScanning] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [faceScanned, setFaceScanned] = useState(false);
-  const [scannedFaceId, setScannedFaceId] = useState<string>("");
   const [consentChecked, setConsentChecked] = useState(false);
+  const [scannedFaceId, setScannedFaceId] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
+  const handleConsentAccepted = () => {
+    if (!consentChecked) return;
+    setCurrentStep("scanning");
     startCamera();
-    return () => {
-      stopCamera();
-    };
-  }, []);
+  };
 
   const startCamera = async () => {
     try {
@@ -57,6 +57,12 @@ const FaceRegistration = ({ onClose, onFaceRegistered, visitorName }: FaceRegist
     }
   };
 
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
   const captureAndScanFace = async () => {
     if (!videoRef.current || !canvasRef.current) return;
 
@@ -69,60 +75,51 @@ const FaceRegistration = ({ onClose, onFaceRegistered, visitorName }: FaceRegist
       
       if (!context) return;
 
-      // Sätt canvas storlek till video storlek
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-
-      // Rita video frame till canvas
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Konvertera till base64
       const imageData = canvas.toDataURL('image/jpeg', 0.8);
 
-      // Simulera ansiktsskanning (i riktiga implementationen skulle du använda Face API eller liknande)
+      // Simulera ansiktsskanning
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Skapa en unik face ID (i verkligheten skulle detta vara en hash av ansiktsdata)
       const faceId = `face_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       setScannedFaceId(faceId);
-      setFaceScanned(true);
       
-      // Stoppa kameran efter skanningen
-      stopCamera();
+      // Spara ansiktsdata
+      const faceData = {
+        id: faceId,
+        name: visitorName,
+        timestamp: new Date().toISOString(),
+        features: `simulated_features_${Math.random().toString(36)}`
+      };
 
-      toast.success("Ansikte skannat framgångsrikt!");
+      const existingFaces = JSON.parse(localStorage.getItem('registeredFaces') || '[]');
+      existingFaces.push(faceData);
+      localStorage.setItem('registeredFaces', JSON.stringify(existingFaces));
+
+      stopCamera();
+      setCurrentStep("completed");
+      
+      onFaceRegistered(faceId);
+      toast.success("Ansikte registrerat! Checkar in automatiskt...");
+
+      // Automatisk incheckning efter 1 sekund
+      setTimeout(() => {
+        onAutoCheckIn();
+      }, 1000);
 
     } catch (error) {
-      console.error('Fel vid ansiktsskankning:', error);
+      console.error('Fel vid ansiktsskanning:', error);
       toast.error("Kunde inte skanna ansikte. Försök igen.");
     } finally {
       setIsScanning(false);
     }
   };
 
-  const handleConsentAndSave = () => {
-    if (!consentChecked || !scannedFaceId) return;
-
-    // Spara ansiktsdata (i verkligheten skulle detta vara biometriska features)
-    const faceData = {
-      id: scannedFaceId,
-      name: visitorName,
-      timestamp: new Date().toISOString(),
-      features: `simulated_features_${Math.random().toString(36)}`
-    };
-
-    // Spara till localStorage (i produktion skulle detta sparas säkert i databasen)
-    const existingFaces = JSON.parse(localStorage.getItem('registeredFaces') || '[]');
-    existingFaces.push(faceData);
-    localStorage.setItem('registeredFaces', JSON.stringify(existingFaces));
-
-    onFaceRegistered(scannedFaceId);
-    toast.success(`Ansiktsdata sparad för ${visitorName}!`);
-    onClose();
-  };
-
-  if (hasPermission === false) {
+  if (hasPermission === false && currentStep === "scanning") {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg max-w-md mx-4">
@@ -149,13 +146,54 @@ const FaceRegistration = ({ onClose, onFaceRegistered, visitorName }: FaceRegist
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg max-w-2xl mx-4">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">Registrera ansikte - {visitorName}</h3>
+          <h3 className="text-lg font-medium">
+            {currentStep === "consent" && `Samtycke för ansiktsregistrering - ${visitorName}`}
+            {currentStep === "scanning" && `Registrera ansikte - ${visitorName}`}
+            {currentStep === "completed" && "Registrering slutförd"}
+          </h3>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        {!faceScanned ? (
+        {currentStep === "consent" && (
+          <div className="space-y-6">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <h5 className="font-medium text-yellow-800 mb-3">Samtycke för datalagring</h5>
+              <p className="text-sm text-yellow-700 mb-4">
+                För att registrera ditt ansikte behöver vi ditt samtycke att spara dina ansiktsdata. 
+                Denna information används endast för identifiering vid framtida besök och kommer att 
+                hanteras enligt våra integritetspolicyer.
+              </p>
+              
+              <div className="flex items-start space-x-3">
+                <Checkbox 
+                  id="consent" 
+                  checked={consentChecked}
+                  onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
+                />
+                <label htmlFor="consent" className="text-sm leading-5 text-yellow-800">
+                  Jag samtycker till att mina ansiktsdata sparas för identifieringsändamål
+                </label>
+              </div>
+            </div>
+
+            <div className="flex gap-2 justify-center">
+              <Button variant="outline" onClick={onClose}>
+                Avbryt
+              </Button>
+              <Button 
+                onClick={handleConsentAccepted}
+                disabled={!consentChecked}
+                className="bg-[#19647E]"
+              >
+                Fortsätt till skanning
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {currentStep === "scanning" && (
           <>
             <div className="relative mb-4">
               <video
@@ -164,10 +202,9 @@ const FaceRegistration = ({ onClose, onFaceRegistered, visitorName }: FaceRegist
                 playsInline
                 muted
                 className="w-full max-w-md mx-auto rounded-lg bg-gray-900"
-                style={{ transform: 'scaleX(-1)' }} // Spegla för bättre användarupplevelse
+                style={{ transform: 'scaleX(-1)' }}
               />
               
-              {/* Ansikts-outline */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="relative">
                   <div className="w-48 h-60 border-4 border-blue-500 rounded-full opacity-70"></div>
@@ -179,10 +216,7 @@ const FaceRegistration = ({ onClose, onFaceRegistered, visitorName }: FaceRegist
                 </div>
               </div>
 
-              <canvas
-                ref={canvasRef}
-                className="hidden"
-              />
+              <canvas ref={canvasRef} className="hidden" />
             </div>
 
             <div className="text-center space-y-4">
@@ -205,47 +239,18 @@ const FaceRegistration = ({ onClose, onFaceRegistered, visitorName }: FaceRegist
               </div>
             </div>
           </>
-        ) : (
+        )}
+
+        {currentStep === "completed" && (
           <div className="space-y-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <div className="w-8 h-8 bg-green-500 rounded-full"></div>
               </div>
-              <h4 className="text-lg font-medium text-green-600 mb-2">Ansikte skannat!</h4>
-              <p className="text-gray-600">Ditt ansikte har registrerats framgångsrikt.</p>
-            </div>
-
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h5 className="font-medium text-yellow-800 mb-3">Samtycke för datalagring</h5>
-              <p className="text-sm text-yellow-700 mb-4">
-                För att slutföra registreringen behöver vi ditt samtycke att spara dina ansiktsdata. 
-                Denna information används endast för identifiering vid framtida besök och kommer att 
-                hanteras enligt våra integritetspolicyer.
+              <h4 className="text-lg font-medium text-green-600 mb-2">Ansikte registrerat!</h4>
+              <p className="text-gray-600">
+                Ditt ansikte har registrerats framgångsrikt. Du checkas nu in automatiskt...
               </p>
-              
-              <div className="flex items-start space-x-3">
-                <Checkbox 
-                  id="consent" 
-                  checked={consentChecked}
-                  onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
-                />
-                <label htmlFor="consent" className="text-sm leading-5 text-yellow-800">
-                  Jag samtycker till att mina ansiktsdata sparas för identifieringsändamål
-                </label>
-              </div>
-            </div>
-
-            <div className="flex gap-2 justify-center">
-              <Button variant="outline" onClick={onClose}>
-                Avbryt
-              </Button>
-              <Button 
-                onClick={handleConsentAndSave}
-                disabled={!consentChecked}
-                className="bg-[#19647E]"
-              >
-                Spara ansiktsdata
-              </Button>
             </div>
           </div>
         )}

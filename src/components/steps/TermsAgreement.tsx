@@ -25,7 +25,12 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 
   const handleFaceRegistered = (faceId: string) => {
     console.log('Ansikte registrerat med ID:', faceId);
+  };
+
+  const handleAutoCheckIn = () => {
     setShowFaceRegistration(false);
+    // Automatisk incheckning genom att kalla onAccept
+    onAccept();
   };
 
   const terms = visitorType === "service" 
@@ -99,6 +104,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
           onClose={() => setShowFaceRegistration(false)}
           onFaceRegistered={handleFaceRegistered}
           visitorName={visitorName}
+          onAutoCheckIn={handleAutoCheckIn}
         />
       )}
     </>
