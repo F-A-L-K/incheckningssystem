@@ -7,12 +7,26 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from PIL import Image
+import face_recognition
+import cv2
+import json
+import numpy as np
+
+FACE_DATA_PATH = "face_data.json"
 
 app = Flask(__name__)
 CORS(app)
 
-# In-memory storage for face data (in production, use a proper database)
-face_database = {}
+def load_face_database_from_disk():
+    try:
+        with open(FACE_DATA_PATH, "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def save_face_database_to_disk(face_db):
+    with open(FACE_DATA_PATH, "w") as f:
+        json.dump(face_db, f)
 
 @app.route('/api/scan-face', methods=['POST'])
 def scan_face():
@@ -21,43 +35,54 @@ def scan_face():
     visitor_info = data.get('visitorInfo', {})
 
     if image_data.startswith('data:image'):
-        # Remove the base64 header
         image_data = image_data.split(',')[1]
 
     try:
-        # Decode base64 and open image with PIL
+        # Avkoda och spara bilden
         image_bytes = base64.b64decode(image_data)
-        image = Image.open(io.BytesIO(image_bytes))
-
-        # Ensure the ./images directory exists
+        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
         os.makedirs('./images', exist_ok=True)
 
-        # Generate a random filename
-        filename = f"{uuid.uuid4().hex}.png"
+        name = visitor_info.get("name", "unknown").replace(" ", "_")
+        company = visitor_info.get("company", "unknown").replace(" ", "_")
+        filename = f"{name}-{company}.png"
         file_path = os.path.join('./images', filename)
-
-        # Save the image
         image.save(file_path)
 
-        # Store face data with visitor information
+        # Gör face encoding
+        np_image = face_recognition.load_image_file(io.BytesIO(image_bytes))
+        encodings = face_recognition.face_encodings(np_image)
+
+        if not encodings:
+            return jsonify({"status": "error", "message": "No face detected in uploaded image"}), 400
+
+        face_encoding = encodings[0].tolist()  # Gör JSON-kompatibel
+
+        # Ladda tidigare data
+        face_db = load_face_database_from_disk()
+
+        # Spara ny post
         face_id = str(uuid.uuid4())
-        face_database[face_id] = {
-            'filename': filename,
-            'visitor_info': visitor_info,
-            'file_path': file_path
+        face_db[face_id] = {
+            "filename": filename,
+            "file_path": file_path,
+            "face_encoding": face_encoding,
+            "visitor_info": visitor_info
         }
 
-        print("Received and saved image:", file_path)
-        print("Visitor info:", visitor_info)
+        # Uppdatera JSON-fil
+        save_face_database_to_disk(face_db)
+
         return jsonify({
-            "status": "success", 
-            "message": "Face and visitor info saved.", 
+            "status": "success",
+            "message": "Face and visitor info saved.",
             "face_id": face_id,
             "filename": filename
         })
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @app.route('/api/recognize-face', methods=['POST'])
 def recognize_face():
@@ -68,25 +93,39 @@ def recognize_face():
         image_data = image_data.split(',')[1]
 
     try:
-        # In a real implementation, you would use face recognition algorithms
-        # For demo purposes, we'll simulate recognition by checking if we have any stored faces
-        if face_database:
-            # Return the first stored face data as a match (for demo)
-            face_id = list(face_database.keys())[0]
-            stored_data = face_database[face_id]
-            
+        image_bytes = base64.b64decode(image_data)
+        unknown_image = face_recognition.load_image_file(io.BytesIO(image_bytes))
+        unknown_encodings = face_recognition.face_encodings(unknown_image)
+
+        if not unknown_encodings:
             return jsonify({
-                "status": "success",
-                "recognized": True,
-                "visitor_info": stored_data['visitor_info'],
-                "face_id": face_id
-            })
-        else:
-            return jsonify({
-                "status": "success",
+                "status": "error",
                 "recognized": False,
-                "message": "No matching face found"
-            })
+                "message": "No face detected in input image"
+            }), 400
+
+        unknown_encoding = unknown_encodings[0]
+
+        # Ladda sparad databas
+        face_db = load_face_database_from_disk()
+
+        for face_id, data_entry in face_db.items():
+            known_encoding = np.array(data_entry["face_encoding"])
+            match = face_recognition.compare_faces([known_encoding], unknown_encoding, tolerance=0.45)
+
+            if match[0]:
+                return jsonify({
+                    "status": "success",
+                    "recognized": True,
+                    "visitor_info": data_entry["visitor_info"],
+                    "face_id": face_id
+                })
+
+        return jsonify({
+            "status": "success",
+            "recognized": False,
+            "message": "No matching face found"
+        })
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
