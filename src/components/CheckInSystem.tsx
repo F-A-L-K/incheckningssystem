@@ -239,6 +239,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
             visitorName={primaryVisitorName}
             visitorInfo={visitorInfo}
             isCheckOut={false}
+            visitorCount={visitors.length}
           />
         );
         

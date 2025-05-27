@@ -18,9 +18,10 @@ interface TermsAgreementProps {
     visitorType: string;
   };
   isCheckOut?: boolean;
+  visitorCount?: number;
 }
 
-const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo, isCheckOut = false }: TermsAgreementProps) => {
+const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo, isCheckOut = false, visitorCount = 1 }: TermsAgreementProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [showFaceRegistration, setShowFaceRegistration] = useState(false);
 
@@ -56,7 +57,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-6 relative">
         <div>
           <h3 className="text-lg font-medium mb-4">Villkor och säkerhet</h3>
           
@@ -93,20 +94,20 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
           >
             {loading ? "Checkar in..." : "Genomför incheckning"}
           </Button>
-
-          {!isCheckOut && (
-            <div className="text-center">
-              <button
-                onClick={() => setShowFaceRegistration(true)}
-                disabled={!isChecked || loading}
-                className="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-2 mx-auto disabled:text-gray-400 disabled:cursor-not-allowed"
-              >
-                <Camera className="h-4 w-4" />
-                Registrera ansikte
-              </button>
-            </div>
-          )}
         </div>
+
+        {!isCheckOut && visitorCount === 1 && (
+          <div className="absolute bottom-0 right-0">
+            <button
+              onClick={() => setShowFaceRegistration(true)}
+              disabled={!isChecked || loading}
+              className="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed"
+            >
+              <Camera className="h-4 w-4" />
+              Registrera ansikte
+            </button>
+          </div>
+        )}
       </div>
 
       {showFaceRegistration && (
