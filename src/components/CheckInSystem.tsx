@@ -18,6 +18,7 @@ const HOSTS: Host[] = [
   { id: 3, name: "Anna Falk", department: "Försäljningschef" },
   { id: 4, name: "Erika Falk", department: "Processutveckling" },
   { id: 5, name: "Joel Hill Sveningsson", department: "Produktionstekniker" },
+  { id: 6, name: "Fredrik Falk", department: "Produktionstekniker" },
 ];
 
 type Step = 
