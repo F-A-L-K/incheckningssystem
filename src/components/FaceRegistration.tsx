@@ -10,9 +10,15 @@ interface FaceRegistrationProps {
   onFaceRegistered: (faceData: string) => void;
   visitorName: string;
   onAutoCheckIn: () => void;
+  visitorInfo?: {
+    name: string;
+    company: string;
+    visiting: string;
+    visitorType: string;
+  };
 }
 
-const FaceRegistration = ({ onClose, onFaceRegistered, visitorName, onAutoCheckIn }: FaceRegistrationProps) => {
+const FaceRegistration = ({ onClose, onFaceRegistered, visitorName, onAutoCheckIn, visitorInfo }: FaceRegistrationProps) => {
   const [currentStep, setCurrentStep] = useState<"consent" | "scanning" | "completed">("consent");
   const [isScanning, setIsScanning] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -66,34 +72,47 @@ const FaceRegistration = ({ onClose, onFaceRegistered, visitorName, onAutoCheckI
   const captureAndScanFace = async () => {
     setIsScanning(true);
 
-  try {
-        // Capture image from webcam video stream
-    const video = document.querySelector('video');
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    try {
+      // Capture image from webcam video stream
+      const video = document.querySelector('video');
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Convert to base64 image
-    const imageBase64 = canvas.toDataURL('image/jpeg');
+      // Convert to base64 image
+      const imageBase64 = canvas.toDataURL('image/jpeg');
 
-    // Send to backend
-    const response = await fetch('http://localhost:5000/api/scan-face', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: imageBase64 }),
-    });
+      // Send to backend with visitor information
+      const response = await fetch('http://localhost:5000/api/scan-face', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          image: imageBase64,
+          visitorInfo: visitorInfo || {
+            name: visitorName,
+            company: '',
+            visiting: '',
+            visitorType: 'regular'
+          }
+        }),
+      });
 
-    const data = await response.json();
-    console.log('Scan response:', data);
+      const data = await response.json();
+      console.log('Scan response:', data);
 
-    // Optional: show success to user
-    toast.success("Ansikte skannat!");
-      // Automatisk incheckning efter 1 sekund
-      setTimeout(() => {
-        onAutoCheckIn();
-      }, 1000);
+      if (data.status === 'success') {
+        setScannedFaceId(data.face_id);
+        toast.success("Ansikte och personuppgifter sparade!");
+        
+        // Automatisk incheckning efter 1 sekund
+        setTimeout(() => {
+          onAutoCheckIn();
+        }, 1000);
+      } else {
+        toast.error("Kunde inte spara ansikte och uppgifter.");
+      }
 
     } catch (error) {
       console.error('Fel vid ansiktsskanning:', error);

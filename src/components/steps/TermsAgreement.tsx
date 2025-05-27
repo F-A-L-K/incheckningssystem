@@ -11,9 +11,15 @@ interface TermsAgreementProps {
   onAccept: () => void;
   loading?: boolean;
   visitorName?: string;
+  visitorInfo?: {
+    name: string;
+    company: string;
+    visiting: string;
+    visitorType: string;
+  };
 }
 
-const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare" }: TermsAgreementProps) => {
+const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo }: TermsAgreementProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [showFaceRegistration, setShowFaceRegistration] = useState(false);
 
@@ -105,6 +111,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
           onFaceRegistered={handleFaceRegistered}
           visitorName={visitorName}
           onAutoCheckIn={handleAutoCheckIn}
+          visitorInfo={visitorInfo}
         />
       )}
     </>

@@ -9,27 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      app_access: {
-        Row: {
-          app_id: string
-          created_at: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          app_id: string
-          created_at?: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          app_id?: string
-          created_at?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       CHECKIN_visitors: {
         Row: {
           check_in_time: string
@@ -84,42 +63,6 @@ export type Database = {
         }
         Relationships: []
       }
-      login_logs: {
-        Row: {
-          id: string
-          login_time: string | null
-          machine_id: string
-          success: boolean
-        }
-        Insert: {
-          id?: string
-          login_time?: string | null
-          machine_id: string
-          success: boolean
-        }
-        Update: {
-          id?: string
-          login_time?: string | null
-          machine_id?: string
-          success?: boolean
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          id: string
-          username: string
-        }
-        Insert: {
-          id: string
-          username: string
-        }
-        Update: {
-          id?: string
-          username?: string
-        }
-        Relationships: []
-      }
       school_visits: {
         Row: {
           check_in_time: string
@@ -153,143 +96,6 @@ export type Database = {
         }
         Relationships: []
       }
-      signatures: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
-      user_machines: {
-        Row: {
-          machine: string
-          user_id: string
-        }
-        Insert: {
-          machine: string
-          user_id: string
-        }
-        Update: {
-          machine?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_machines_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
-      verktygsbyte: {
-        Row: {
-          anledning: string | null
-          id: string
-          kommentar: string | null
-          maskin: string
-          signatur: string | null
-          tid: string
-          tillverkningsorder: string | null
-          verktyg: string | null
-        }
-        Insert: {
-          anledning?: string | null
-          id?: string
-          kommentar?: string | null
-          maskin: string
-          signatur?: string | null
-          tid?: string
-          tillverkningsorder?: string | null
-          verktyg?: string | null
-        }
-        Update: {
-          anledning?: string | null
-          id?: string
-          kommentar?: string | null
-          maskin?: string
-          signatur?: string | null
-          tid?: string
-          tillverkningsorder?: string | null
-          verktyg?: string | null
-        }
-        Relationships: []
-      }
-      verktygskompensering: {
-        Row: {
-          id: string
-          kommentar: string | null
-          koordinatsystem: string | null
-          maskin: string
-          nummer: string | null
-          riktning: string | null
-          signatur: string | null
-          tid: string
-          tillverkningsorder: string | null
-          varde: string | null
-          verktyg: string | null
-        }
-        Insert: {
-          id?: string
-          kommentar?: string | null
-          koordinatsystem?: string | null
-          maskin: string
-          nummer?: string | null
-          riktning?: string | null
-          signatur?: string | null
-          tid?: string
-          tillverkningsorder?: string | null
-          varde?: string | null
-          verktyg?: string | null
-        }
-        Update: {
-          id?: string
-          kommentar?: string | null
-          koordinatsystem?: string | null
-          maskin?: string
-          nummer?: string | null
-          riktning?: string | null
-          signatur?: string | null
-          tid?: string
-          tillverkningsorder?: string | null
-          varde?: string | null
-          verktyg?: string | null
-        }
-        Relationships: []
-      }
       visitors: {
         Row: {
           check_in_time: string
@@ -319,45 +125,6 @@ export type Database = {
           id?: string
           is_service_personnel?: boolean | null
           name?: string
-          visiting?: string
-        }
-        Relationships: []
-      }
-      visitors_dupe: {
-        Row: {
-          check_in_time: string
-          check_out_time: string | null
-          checked_out: boolean
-          company: string
-          id: string
-          is_service_personnel: boolean | null
-          name: string
-          students: number | null
-          type: string | null
-          visiting: string
-        }
-        Insert: {
-          check_in_time?: string
-          check_out_time?: string | null
-          checked_out?: boolean
-          company: string
-          id?: string
-          is_service_personnel?: boolean | null
-          name: string
-          students?: number | null
-          type?: string | null
-          visiting: string
-        }
-        Update: {
-          check_in_time?: string
-          check_out_time?: string | null
-          checked_out?: boolean
-          company?: string
-          id?: string
-          is_service_personnel?: boolean | null
-          name?: string
-          students?: number | null
-          type?: string | null
           visiting?: string
         }
         Relationships: []

@@ -68,27 +68,35 @@ const FaceRecognition = ({ onClose, onFaceRecognized }: FaceRecognitionProps) =>
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Simulera ansiktsigenkänning genom att jämföra med sparade ansikten
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Convert to base64 image
+      const imageBase64 = canvas.toDataURL('image/jpeg');
 
-      const existingFaces = JSON.parse(localStorage.getItem('registeredFaces') || '[]');
-      
-      // Simulera att vi hittar ett matchande ansikte (för demo - i verkligheten skulle detta vara AI-baserad matchning)
-      if (existingFaces.length > 0) {
-        const recognizedFace = existingFaces[0]; // Använd första registrerade ansiktet för demo
+      // Send to backend for recognition
+      const response = await fetch('http://localhost:5000/api/recognize-face', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageBase64 }),
+      });
+
+      const data = await response.json();
+      console.log('Recognition response:', data);
+
+      if (data.status === 'success' && data.recognized) {
+        const visitorInfo = data.visitor_info;
         
-        // Simulera hämtning av besökardata baserat på ansiktet
+        // Transform the stored visitor info to match expected format
         const visitorData = {
-          name: recognizedFace.name,
-          company: "Känt företag AB", // Detta skulle komma från database
-          visitorType: "regular", // Detta skulle också komma från tidigare besök
-          phone: "070-123 45 67",
+          name: visitorInfo.name,
+          company: visitorInfo.company,
+          visiting: visitorInfo.visiting,
+          visitorType: visitorInfo.visitorType || "regular",
+          phone: "070-123 45 67", // Default values
           email: "exempel@foretagab.se"
         };
 
         stopCamera();
         onFaceRecognized(visitorData);
-        toast.success(`Välkommen tillbaka ${recognizedFace.name}!`);
+        toast.success(`Välkommen tillbaka ${visitorInfo.name}!`);
       } else {
         toast.error("Ansiktet kändes inte igen. Vänligen genomför vanlig incheckning.");
       }

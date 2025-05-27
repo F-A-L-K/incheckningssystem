@@ -201,12 +201,20 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         
       case "terms":
         const primaryVisitorName = visitors.length > 0 ? `${visitors[0].firstName} ${visitors[0].lastName}` : "Besökare";
+        const visitorInfo = {
+          name: primaryVisitorName,
+          company: company,
+          visiting: selectedHost?.name || "",
+          visitorType: visitorType || "regular"
+        };
+        
         return (
           <TermsAgreement 
             visitorType={visitorType || "regular"} 
             onAccept={handleTermsAccepted}
             loading={loading}
             visitorName={primaryVisitorName}
+            visitorInfo={visitorInfo}
           />
         );
         
