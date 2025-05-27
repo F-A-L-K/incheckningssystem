@@ -97,10 +97,10 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setVisitors([recognizedVisitor]);
     setCompany(visitorData.company || "");
     
-    // Gå direkt till värdval
-    setStep("host-selection");
+    // Gå till visitor-info steget med förifylld information
+    setStep("visitor-info");
     
-    toast.success(`Välkommen tillbaka ${visitorData.name}!`);
+    toast.success(`Välkommen tillbaka ${visitorData.name}! Information ifylld automatiskt.`);
   };
 
   const handleVisitorInfoSubmit = (newVisitors: Visitor[], companyName: string) => {
@@ -160,15 +160,16 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
 
   const handleBackNavigation = () => {
     if (step === "visitor-info") {
+      // Om det finns igenkänd data, rensa den och gå tillbaka
+      if (recognizedVisitorData) {
+        setRecognizedVisitorData(null);
+        setVisitors([]);
+        setCompany("");
+        setVisitorType(null);
+      }
       setStep("type-selection");
     } else if (step === "host-selection") {
-      // Om det finns igenkänd data, gå tillbaka till type-selection
-      if (recognizedVisitorData) {
-        setStep("type-selection");
-        setRecognizedVisitorData(null);
-      } else {
-        setStep("visitor-info");
-      }
+      setStep("visitor-info");
     } else if (step === "terms") {
       setStep("host-selection");
     }
