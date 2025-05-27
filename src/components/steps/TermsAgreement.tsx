@@ -57,7 +57,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 
   return (
     <>
-      <div className="space-y-6 relative">
+      <div className="space-y-6 relative pb-12">
         <div>
           <h3 className="text-lg font-medium mb-4">Villkor och säkerhet</h3>
           
