@@ -64,48 +64,32 @@ const FaceRegistration = ({ onClose, onFaceRegistered, visitorName, onAutoCheckI
   }, []);
 
   const captureAndScanFace = async () => {
-    if (!videoRef.current || !canvasRef.current) return;
-
     setIsScanning(true);
 
-    try {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      const context = canvas.getContext('2d');
-      
-      if (!context) return;
+  try {
+        // Capture image from webcam video stream
+    const video = document.querySelector('video');
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Convert to base64 image
+    const imageBase64 = canvas.toDataURL('image/jpeg');
 
-      const imageData = canvas.toDataURL('image/jpeg', 0.8);
+    // Send to backend
+    const response = await fetch('http://localhost:5000/api/scan-face', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: imageBase64 }),
+    });
 
-      // Simulera ansiktsskanning
-      await new Promise(resolve => setTimeout(resolve, 2000));
+    const data = await response.json();
+    console.log('Scan response:', data);
 
-      const faceId = `face_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-      setScannedFaceId(faceId);
-      
-      // Spara ansiktsdata
-      const faceData = {
-        id: faceId,
-        name: visitorName,
-        timestamp: new Date().toISOString(),
-        features: `simulated_features_${Math.random().toString(36)}`
-      };
-
-      const existingFaces = JSON.parse(localStorage.getItem('registeredFaces') || '[]');
-      existingFaces.push(faceData);
-      localStorage.setItem('registeredFaces', JSON.stringify(existingFaces));
-
-      stopCamera();
-      setCurrentStep("completed");
-      
-      onFaceRegistered(faceId);
-      toast.success("Ansikte registrerat! Checkar in automatiskt...");
-
+    // Optional: show success to user
+    toast.success("Ansikte skannat!");
       // Automatisk incheckning efter 1 sekund
       setTimeout(() => {
         onAutoCheckIn();
