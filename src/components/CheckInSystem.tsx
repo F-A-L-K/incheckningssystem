@@ -238,6 +238,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
             loading={loading}
             visitorName={primaryVisitorName}
             visitorInfo={visitorInfo}
+            isCheckOut={false}
           />
         );
         

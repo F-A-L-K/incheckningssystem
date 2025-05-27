@@ -17,9 +17,10 @@ interface TermsAgreementProps {
     visiting: string;
     visitorType: string;
   };
+  isCheckOut?: boolean;
 }
 
-const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo }: TermsAgreementProps) => {
+const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo, isCheckOut = false }: TermsAgreementProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [showFaceRegistration, setShowFaceRegistration] = useState(false);
 
@@ -93,15 +94,18 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
             {loading ? "Checkar in..." : "Genomför incheckning"}
           </Button>
 
-          <Button 
-            onClick={() => setShowFaceRegistration(true)}
-            variant="outline"
-            className="w-full border-[#19647E] text-[#19647E] hover:bg-[#19647E] hover:text-white"
-            disabled={loading}
-          >
-            <Camera className="h-4 w-4 mr-2" />
-            Registrera ansikte
-          </Button>
+          {!isCheckOut && (
+            <div className="text-center">
+              <button
+                onClick={() => setShowFaceRegistration(true)}
+                disabled={!isChecked || loading}
+                className="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-2 mx-auto disabled:text-gray-400 disabled:cursor-not-allowed"
+              >
+                <Camera className="h-4 w-4" />
+                Registrera ansikte
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
