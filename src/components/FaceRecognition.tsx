@@ -1,8 +1,7 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, X } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface FaceRecognitionProps {
   onClose: () => void;
@@ -10,6 +9,7 @@ interface FaceRecognitionProps {
 }
 
 const FaceRecognition = ({ onClose, onFaceRecognized }: FaceRecognitionProps) => {
+  const { toast } = useToast();
   const [isScanning, setIsScanning] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -34,7 +34,11 @@ const FaceRecognition = ({ onClose, onFaceRecognized }: FaceRecognitionProps) =>
     } catch (error) {
       console.error('Kunde inte starta kamera:', error);
       setHasPermission(false);
-      toast.error("Kunde inte komma åt kameran. Kontrollera behörigheter.");
+      toast({
+        title: "Kamerafel",
+        description: "Kunde inte komma åt kameran. Kontrollera behörigheter.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -96,14 +100,25 @@ const FaceRecognition = ({ onClose, onFaceRecognized }: FaceRecognitionProps) =>
 
         stopCamera();
         onFaceRecognized(visitorData);
-        toast.success(`Välkommen tillbaka ${visitorInfo.name}!`);
+        toast({
+          title: "Välkommen tillbaka!",
+          description: `${visitorInfo.name}!`,
+        });
       } else {
-        toast.error("Ansiktet kändes inte igen. Vänligen genomför vanlig incheckning.");
+        toast({
+          title: "Ansiktet kändes inte igen",
+          description: "Vänligen genomför vanlig incheckning.",
+          variant: "destructive",
+        });
       }
 
     } catch (error) {
       console.error('Fel vid ansiktsigenkänning:', error);
-      toast.error("Kunde inte skanna ansikte. Försök igen.");
+      toast({
+        title: "Skanningsfel",
+        description: "Kunde inte skanna ansikte. Försök igen.",
+        variant: "destructive",
+      });
     } finally {
       setIsScanning(false);
     }

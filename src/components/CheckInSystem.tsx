@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { VisitorType, Visitor, Host } from "@/types/visitors";
 import VisitorTypeSelection from "@/components/steps/VisitorTypeSelection";
 import VisitorInfoForm from "@/components/steps/VisitorInfoForm";
@@ -35,6 +35,7 @@ interface CheckInSystemProps {
 }
 
 const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: CheckInSystemProps) => {
+  const { toast } = useToast();
   const [step, setStep] = useState<Step>(initialStep);
   const [visitorType, setVisitorType] = useState<VisitorType | null>(null);
   const [visitors, setVisitors] = useState<Visitor[]>([]);
@@ -59,7 +60,11 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
       setCheckedInVisitors(visitors);
     } catch (error) {
       console.error('Failed to load checked-in visitors:', error);
-      toast.error("Kunde inte ladda incheckade besökare");
+      toast({
+        title: "Fel",
+        description: "Kunde inte ladda incheckade besökare",
+        variant: "destructive",
+      });
     }
   };
 
@@ -100,7 +105,10 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     // Gå till visitor-info steget med förifylld information
     setStep("visitor-info");
     
-    toast.success(`Välkommen tillbaka ${visitorData.name}! Information ifylld automatiskt.`);
+    toast({
+      title: "Välkommen tillbaka!",
+      description: `${visitorData.name}! Information ifylld automatiskt.`,
+    });
   };
 
   const handleVisitorInfoSubmit = (newVisitors: Visitor[], companyName: string) => {
@@ -132,10 +140,17 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
       }
       
       setStep("confirmation");
-      toast.success("Incheckning genomförd!");
+      toast({
+        title: "Incheckning genomförd!",
+        description: "Välkommen!",
+      });
     } catch (error) {
       console.error('Failed to save visitors:', error);
-      toast.error("Kunde inte genomföra incheckning");
+      toast({
+        title: "Fel",
+        description: "Kunde inte genomföra incheckning",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -150,11 +165,18 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     try {
       await checkOutVisitor(visitorId);
       setCheckedInVisitors(prev => prev.filter(v => v.id !== visitorId));
-      toast.success("Utcheckning genomförd!");
+      toast({
+        title: "Utcheckning genomförd!",
+        description: "Ha en bra dag!",
+      });
       resetForm();
     } catch (error) {
       console.error('Failed to check out visitor:', error);
-      toast.error("Kunde inte genomföra utcheckning");
+      toast({
+        title: "Fel",
+        description: "Kunde inte genomföra utcheckning",
+        variant: "destructive",
+      });
     }
   };
 

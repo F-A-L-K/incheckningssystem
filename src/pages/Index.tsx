@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import CheckInSystem from "@/components/CheckInSystem";
-import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut } from "lucide-react";
 
@@ -72,8 +71,6 @@ const Index = () => {
       <footer className="mt-auto pt-8 pb-4 text-center text-sm text-gray-400">
         <p>FMAB Incheckningssystem | {new Date().getFullYear()}</p>
       </footer>
-
-      <Toaster position="top-center" />
     </div>
   );
 };
