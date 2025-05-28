@@ -142,9 +142,12 @@ const VisitorInfoForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium mb-4">
-          Besökarinformation - {visitorType === "regular" ? "Vanlig besökare" : "Servicepersonal"}
+        <h3 className="text-lg font-medium">
+          Besökarinformation | {visitorType === "regular" ? "Vanligt besök" : "Servicepersonal"}
         </h3>
+         <p className="text-sm text-gray-500 mb-3">Vänligen skriv in besökarinformation. Vid osäkerhet,fråga personal om hjälp.</p>
+
+        
 
         <div className="mb-6">
           <Label htmlFor="company" className={errors.company ? "text-red-500" : ""}>
