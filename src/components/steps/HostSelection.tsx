@@ -14,9 +14,12 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
   const [search, setSearch] = useState("");
   const [selectedHostId, setSelectedHostId] = useState<number | null>(null);
   
+  // Sort hosts by ID first, then filter by search
+  const sortedHosts = [...hosts].sort((a, b) => a.id - b.id);
+  
   const filteredHosts = search.trim() === "" 
-    ? hosts 
-    : hosts.filter(host => 
+    ? sortedHosts 
+    : sortedHosts.filter(host => 
         host.name.toLowerCase().includes(search.toLowerCase()) ||
         host.department.toLowerCase().includes(search.toLowerCase())
       );
@@ -30,11 +33,9 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">Besöksvärd</h3>
-      <p className="text-sm text-gray-500 mb-3">Vänligen välj i listan vem ni besöker genom att klicka på namnet. Vid osäkerhet, fråga personal om hjälp.</p>
-
+        <p className="text-sm text-gray-500 mb-3">Vänligen välj i listan vem ni besöker genom att klicka på namnet. Vid osäkerhet, fråga personal om hjälp.</p>
       </div>
       
-        
       <div>
         <Input
           type="text"
