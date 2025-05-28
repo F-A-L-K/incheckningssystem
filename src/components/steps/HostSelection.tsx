@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Host } from "@/types/visitors";
 import { Check } from "lucide-react";
 
@@ -45,35 +46,37 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
           className="mb-4"
         />
         
-        <div className="max-h-[300px] overflow-y-auto space-y-2">
-          {filteredHosts.length > 0 ? (
-            filteredHosts.map((host) => (
-              <div 
-                key={host.id}
-                onClick={() => handleSelect(host)}
-                className={`
-                  flex justify-between items-center p-3 rounded-md cursor-pointer
-                  ${selectedHostId === host.id 
-                    ? 'bg-blue-50 border border-blue-300' 
-                    : 'hover:bg-gray-50 border border-gray-200'
-                  }
-                `}
-              >
-                <div>
-                  <p className="font-medium">{host.name}</p>
-                  <p className="text-sm text-gray-500">{host.department}</p>
+        <ScrollArea className="h-[300px] w-full border rounded-md">
+          <div className="p-2 space-y-2">
+            {filteredHosts.length > 0 ? (
+              filteredHosts.map((host) => (
+                <div 
+                  key={host.id}
+                  onClick={() => handleSelect(host)}
+                  className={`
+                    flex justify-between items-center p-3 rounded-md cursor-pointer
+                    ${selectedHostId === host.id 
+                      ? 'bg-blue-50 border border-blue-300' 
+                      : 'hover:bg-gray-50 border border-gray-200'
+                    }
+                  `}
+                >
+                  <div>
+                    <p className="font-medium">{host.name}</p>
+                    <p className="text-sm text-gray-500">{host.department}</p>
+                  </div>
+                  {selectedHostId === host.id && (
+                    <Check className="h-5 w-5 text-blue-500" />
+                  )}
                 </div>
-                {selectedHostId === host.id && (
-                  <Check className="h-5 w-5 text-blue-500" />
-                )}
+              ))
+            ) : (
+              <div className="text-center py-4 text-gray-500">
+                Inga matchande personer hittades
               </div>
-            ))
-          ) : (
-            <div className="text-center py-4 text-gray-500">
-              Inga matchande personer hittades
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );
