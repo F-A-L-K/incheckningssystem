@@ -16,14 +16,17 @@ const HOSTS: Host[] = [
   { id: 1, name: "Per Falk", department: "VD" },
   { id: 2, name: "Magnus Ericsson", department: "Produktionsledning" },
   { id: 3, name: "Anna Falk", department: "Försäljning" },
-  { id: 4, name: "Erika Falk", department: "Processutveckling" },
-  { id: 5, name: "Joel Hill Sveningsson", department: "Produktionsteknik" },
-  { id: 6, name: "Fredrik Falk", department: "Produktionsteknik" },
+  { id: 8, name: "Erika Falk", department: "Processutveckling" },
+  { id: 4, name: "Joel Hill Sveningsson", department: "Produktionsteknik" },
+  { id: 5, name: "Fredrik Falk", department: "Produktionsteknik" },
   { id: 7, name: "Håkan Hansson", department: "Kvalitet- och miljö" },
-  { id: 8, name: "Robert Sandtjärn", department: "Produktionsteknik" },
-  { id: 11, name: "Gunilla Ljungkvist", department: "Ekonomi" },
-  { id: 10, name: "Jonathan Lind", department: "Logistik" },
-  { id: 9, name: "Jonas Wadhed", department: "Teknik" },
+  { id: 9, name: "Robert Sandtjärn", department: "Produktionsteknik" },
+  { id: 6, name: "Jonas Wadhed", department: "Teknik" },
+  { id: 10, name: "Gunilla Ljungkvist", department: "Ekonomi" },
+  { id: 11, name: "Jonathan Lind", department: "Logistik" },
+  { id: 13, name: "Roland Mellin", department: "Teknik" },
+  
+  { id: 13, name: "Lena Bergquist", department: "Lager" },
   
 ];
 
