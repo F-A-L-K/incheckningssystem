@@ -145,9 +145,30 @@ const VisitorInfoForm = ({
         <h3 className="text-lg font-medium">
           Besökarinformation | {visitorType === "regular" ? "Vanligt besök" : "Servicepersonal"}
         </h3>
-         <p className="text-sm text-gray-500 mb-3">Vänligen skriv in besökarinformation. Vid osäkerhet,fråga personal om hjälp.</p>
+         <p className="text-sm text-gray-500 mb-3">Vänligen skriv in besökarinformation. Vid osäkerhet, fråga personal om hjälp.</p>
 
         
+
+        
+        
+        <div className="mb-6">
+          <Label htmlFor="visitor-count">Antal besökare</Label>
+          <Select 
+            value={visitorCount.toString()} 
+            onValueChange={(value) => onVisitorCountChange(parseInt(value))}
+          >
+            <SelectTrigger id="visitor-count" className="w-full">
+              <SelectValue placeholder="Välj antal" />
+            </SelectTrigger>
+            <SelectContent>
+              {countOptions.map((count) => (
+                <SelectItem key={count} value={count.toString()}>
+                  {count}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         <div className="mb-6">
           <Label htmlFor="company" className={errors.company ? "text-red-500" : ""}>
@@ -169,25 +190,6 @@ const VisitorInfoForm = ({
           {errors.company && (
             <p className="text-red-500 text-xs mt-1">Ange namn på företag/organisation</p>
           )}
-        </div>
-        
-        <div className="mb-6">
-          <Label htmlFor="visitor-count">Antal besökare</Label>
-          <Select 
-            value={visitorCount.toString()} 
-            onValueChange={(value) => onVisitorCountChange(parseInt(value))}
-          >
-            <SelectTrigger id="visitor-count" className="w-full">
-              <SelectValue placeholder="Välj antal" />
-            </SelectTrigger>
-            <SelectContent>
-              {countOptions.map((count) => (
-                <SelectItem key={count} value={count.toString()}>
-                  {count}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
         
         {visitors.map((visitor, index) => (
