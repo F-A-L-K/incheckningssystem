@@ -74,7 +74,7 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
             className="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-2 mx-auto"
           >
             <ScanFace className="h-4 w-4" />
-            Skanna ansikte
+            Ansiktsidentifiering
           </button>
         </div>
       </div>

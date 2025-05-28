@@ -237,7 +237,7 @@ const VisitorInfoForm = ({
         ))}
       </div>
       
-      <Button type="submit" className="w-full bg-[#19647E]">
+      <Button type="submit" className="w-full bg-[#3B82F6]">
         Fortsätt
       </Button>
     </form>
