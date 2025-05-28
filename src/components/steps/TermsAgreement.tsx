@@ -58,6 +58,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 
       ]
     : [
+"Besökare skall vara inskrivna i systemet.",
 "Fotografering är förbjuden.",
 "Vi har en rökfri arbetsplats. Rökning kan ske utomhus vid uppsatta askkoppar.",
 "Rör aldrig maskinutrustning och ta inte med händer i några produkter.",
