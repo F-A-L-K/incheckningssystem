@@ -24,7 +24,54 @@ export const saveVisitor = async (visitorData: CheckInData) => {
   return data;
 };
 
+// Funktion för att automatiskt checka ut gamla besökare
+const autoCheckoutOldVisitors = async () => {
+  const now = new Date();
+  const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+  
+  try {
+    // Checka ut besökare som checkade in före 18:00 och det är nu efter 18:00 samma dag eller senare
+    const { error: error1 } = await supabase
+      .from('CHECKIN_visitors')
+      .update({ 
+        checked_out: true, 
+        check_out_time: new Date().toISOString()
+      })
+      .eq('checked_out', false)
+      .lt('check_in_time', `${currentDate}T18:00:00`)
+      .filter('check_in_time', 'lt', `${currentDate}T00:00:00`);
+
+    if (error1) {
+      console.error('Error auto-checking out visitors (before 18:00):', error1);
+    }
+
+    // Checka ut besökare som checkade in efter 18:00 och det är nu efter 18:00 nästa dag
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayDate = yesterday.toISOString().split('T')[0];
+    
+    const { error: error2 } = await supabase
+      .from('CHECKIN_visitors')
+      .update({ 
+        checked_out: true, 
+        check_out_time: new Date().toISOString()
+      })
+      .eq('checked_out', false)
+      .gte('check_in_time', `${yesterdayDate}T18:00:00`)
+      .lt('check_in_time', `${currentDate}T00:00:00`);
+
+    if (error2) {
+      console.error('Error auto-checking out visitors (after 18:00):', error2);
+    }
+  } catch (error) {
+    console.error('Error in auto-checkout process:', error);
+  }
+};
+
 export const getCheckedInVisitors = async () => {
+  // Kör automatisk utcheckning först
+  await autoCheckoutOldVisitors();
+  
   const { data, error } = await supabase
     .from('CHECKIN_visitors')
     .select('*')
