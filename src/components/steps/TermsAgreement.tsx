@@ -46,7 +46,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 "Besökare skall vara inskrivna i systemet.",
 "Fotografering är förbjuden.",
 "Vi har en rökfri arbetsplats. Rökning kan ske utomhus vid uppsatta askkoppar.",
-"Rör aldrig maskinutrustning och ta inte med händer i några produkter.",
+"Rör aldrig några produkter.",
 "I händelse av nödsignal lämna byggnaden och uppsök samlingspunkten bakom fabriken i kanten av parkeringen.",
 
 
@@ -58,10 +58,11 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 
       ]
     : [
-        "Jag förstår att jag måste följa alla säkerhetsföreskrifter",
-        "Jag kommer att bära skyddsutrustning vid behov",
-        "Jag accepterar att mitt besök registreras",
-        "Jag kommer att följa min värd under hela besöket"
+"Fotografering är förbjuden.",
+"Vi har en rökfri arbetsplats. Rökning kan ske utomhus vid uppsatta askkoppar.",
+"Rör aldrig maskinutrustning och ta inte med händer i några produkter.",
+"I händelse av nödsignal lämna byggnaden och uppsök samlingspunkten bakom fabriken i kanten av parkeringen.",
+
       ];
 
   return (
