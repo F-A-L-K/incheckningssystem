@@ -46,7 +46,7 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
           className="mb-4"
         />
         
-        <ScrollArea className="h-[300px] w-full border rounded-md">
+        <ScrollArea className="h-[300px] w-full">
           <div className="p-2 space-y-2">
             {filteredHosts.length > 0 ? (
               filteredHosts.map((host) => (
