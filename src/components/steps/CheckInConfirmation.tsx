@@ -69,7 +69,6 @@ const CheckInConfirmation = ({
           <p><span className="font-medium">Företag:</span> {company}</p>
           <p><span className="font-medium">Värd:</span> {host}</p>
           <p><span className="font-medium">Besökstyp:</span> {visitorType === "regular" ? "Vanligt besök" : "Service besök"}</p>
-          <p><span className="font-medium">Tid:</span> {new Date().toLocaleString('sv-SE')}</p>
         </div>
       </div>
       
