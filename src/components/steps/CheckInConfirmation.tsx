@@ -55,11 +55,7 @@ const CheckInConfirmation = ({
         <h3 className="text-xl font-semibold text-gray-800">
           Incheckning genomförd!
         </h3>
-        <p className="text-gray-500 mt-2">
-          {visitors.length > 1 
-            ? `${visitors.length} besökare har checkats in.`
-            : 'Du är nu incheckad.'}
-        </p>
+
       </div>
       
       <div className="bg-blue-50 rounded-lg p-4 text-left">
