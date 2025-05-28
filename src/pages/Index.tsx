@@ -31,7 +31,7 @@ const Index = () => {
           <div className="w-full max-w-xl flex flex-col sm:flex-row justify-center gap-4">
             <Button 
               onClick={handleCheckIn} 
-              className="bg-[#19647E] hover:bg-[#16576C] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
+              className="bg-[#3B82F6] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
               size="lg"
             >
               <LogIn className="h-6 w-6" />
@@ -40,7 +40,7 @@ const Index = () => {
             
             <Button 
               onClick={handleCheckOut} 
-              className="bg-[#19647E] hover:bg-[#16576C] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
+              className="bg-[#3B82F6] text-white py-6 px-10 rounded-lg text-xl flex items-center justify-center gap-3 shadow-md"
               size="lg"
             >
               <LogOut className="h-6 w-6" />
