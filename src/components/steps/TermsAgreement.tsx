@@ -90,7 +90,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
           <Button 
             onClick={handleSubmit}
             disabled={!isChecked || loading}
-            className="w-full bg-[#19647E]"
+            className="w-full bg-[#3B82F6]"
           >
             {loading ? "Checkar in..." : "Genomför incheckning"}
           </Button>
