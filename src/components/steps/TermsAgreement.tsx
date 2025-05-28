@@ -43,10 +43,19 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 
   const terms = visitorType === "service" 
     ? [
-        "Jag förstår att jag måste följa alla säkerhetsföreskrifter",
-        "Jag har rätt behörighet för att utföra det planerade arbetet",
-        "Jag kommer att rapportera eventuella säkerhetsincidenter omedelbart",
-        "Jag accepterar att mitt besök registreras"
+"Besökare skall vara inskrivna i systemet.",
+"Fotografering är förbjuden.",
+"Vi har en rökfri arbetsplats. Rökning kan ske utomhus vid uppsatta askkoppar.",
+"Rör aldrig maskinutrustning och ta inte med händer i några produkter.",
+"I händelse av nödsignal lämna byggnaden och uppsök samlingspunkten bakom fabriken i kanten av parkeringen.",
+
+
+"Heta arbeten får endast utföras av behörig personal. En godkänd blankett ska vara signerad och tillgänglig innan arbetet påbörjas.",
+"Använd alltid korrekt säkerhetsutrustning som är anpassad till det arbete som ska utföras. Kontakta din beställare vid osäkerhet om vad som krävs.",
+"Vi tillämpar källsortering. Om du producerar avfall under ditt arbete, fråga din beställare var det ska läggas och följ angivna rutiner.",
+"Säkerställ att allt arbete är slutfört enligt överenskommelse och att arbetsområdet är återställt innan du lämnar. Efter genomfört arbete ska beställaren tillsammans med besökaren gå igenom vad som gjorts samt erhålla eventuell servicerapport.",
+"Anmäl till din beställare när du lämnar lokalen och checka ut dig i entrén innan du lämnar byggnaden",
+
       ]
     : [
         "Jag förstår att jag måste följa alla säkerhetsföreskrifter",
