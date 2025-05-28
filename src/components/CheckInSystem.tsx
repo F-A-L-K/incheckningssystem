@@ -24,8 +24,7 @@ const HOSTS: Host[] = [
   { id: 6, name: "Jonas Wadhed", department: "Teknik" },
   { id: 10, name: "Gunilla Ljungkvist", department: "Ekonomi" },
   { id: 11, name: "Jonathan Lind", department: "Logistik" },
-  { id: 13, name: "Roland Mellin", department: "Teknik" },
-  
+  { id: 12, name: "Roland Mellin", department: "Teknik" },
   { id: 13, name: "Lena Bergquist", department: "Lager" },
   
 ];
