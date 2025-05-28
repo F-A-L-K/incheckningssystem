@@ -74,8 +74,8 @@ const CheckInConfirmation = ({
       
       <p className="text-sm text-gray-500">
         {visitorType === "regular" 
-          ? "En av våra medarbetare kommer snart och möter dig. Vänligen ta plats i väntrummet."
-          : "Vänligen vänta på att din kontaktperson kommer och möter dig. Ha din ID-handling redo."}
+          ? "Vid väntan, ta gärna en titt på vår utställningen av produkter vid ingången eller sätt er ner vid bordet bakom."
+          : "Vänligen vänta på att din kontaktperson kommer och möter dig."}
       </p>
 
       <div className="mt-6">
