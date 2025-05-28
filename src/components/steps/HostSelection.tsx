@@ -28,9 +28,12 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
   
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-medium">Besöksvärd</h3>
+      <div>
+        <h3 className="text-lg font-medium">Besöksvärd</h3>
       <p className="text-sm text-gray-500 mb-3">Vänligen välj i listan vem ni besöker genom att klicka på namnet. Vid osäkerhet, fråga personal om hjälp.</p>
 
+      </div>
+      
         
       <div>
         <Input
