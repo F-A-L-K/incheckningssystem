@@ -50,13 +50,6 @@ const Index = () => {
         </div>
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center">
-          <header className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-gray-900">Välkommen till Falks Metall AB!</h1>
-            <p className="text-gray-600">
-              {activeView === "check-in" ? "Incheckning" : "Utcheckning"}
-            </p>
-          </header>
-          
           <div className="w-full max-w-xl">
             <CheckInSystem 
               initialStep={activeView === "check-out" ? "check-out" : "type-selection"} 
