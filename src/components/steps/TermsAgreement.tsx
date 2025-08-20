@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Camera } from "lucide-react";
 import { VisitorType } from "@/types/visitors";
 import FaceRegistration from "@/components/FaceRegistration";
+import { useToast } from "@/hooks/use-toast";
 
 interface TermsAgreementProps {
   visitorType: VisitorType;
@@ -24,8 +25,18 @@ interface TermsAgreementProps {
 const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo, isCheckOut = false, visitorCount = 1 }: TermsAgreementProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [showFaceRegistration, setShowFaceRegistration] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = () => {
+    if (!isChecked && !loading) {
+      toast({
+        title: "Villkor måste godkännas",
+        description: "Du måste kryssa i rutan för att godkänna villkoren innan du kan fortsätta.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (isChecked && !loading) {
       onAccept();
     }
@@ -100,7 +111,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
         <div className="space-y-3">
           <Button 
             onClick={handleSubmit}
-            disabled={!isChecked || loading}
+            disabled={loading}
             className="w-full bg-[#3B82F6]"
           >
             {loading ? "Checkar in..." : "Genomför incheckning"}
