@@ -111,8 +111,12 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
         <div className="space-y-3">
           <Button 
             onClick={handleSubmit}
-            disabled={!isChecked || loading}
-            className="w-full bg-[#3B82F6]"
+            disabled={loading}
+            className={`w-full ${
+              !isChecked && !loading 
+                ? "bg-gray-400 text-gray-600 cursor-pointer hover:bg-gray-400" 
+                : "bg-[#3B82F6]"
+            }`}
           >
             {loading ? "Checkar in..." : "Genomför incheckning"}
           </Button>
