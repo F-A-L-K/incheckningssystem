@@ -25,7 +25,7 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
     <>
       <div className="text-center">
         <h3 className="text-lg font-medium">Besökstyp</h3>
-          <p className="text-sm text-gray-500 mb-3">Vänligen välj besökstyp genom att klicka på en besöksruta. Vid osäkerhet, välj "Vanligt besök" eller fråga personal.</p>
+          <p className="text-sm text-gray-500 mb-3">Vänligen välj besökstyp genom att klicka på en besöksruta.</p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <motion.div 

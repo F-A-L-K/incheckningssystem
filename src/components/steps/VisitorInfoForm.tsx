@@ -145,7 +145,7 @@ const VisitorInfoForm = ({
         <h3 className="text-lg font-medium">
           Besökarinformation | {visitorType === "regular" ? "Vanligt besök" : "Servicepersonal"}
         </h3>
-         <p className="text-sm text-gray-500 mb-3">Vänligen skriv in besökarinformation. Vid osäkerhet, fråga personal om hjälp.</p>
+         <p className="text-sm text-gray-500 mb-3">Vänligen skriv in besökarinformation.</p>
 
         
 
