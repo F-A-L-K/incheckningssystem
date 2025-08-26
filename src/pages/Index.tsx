@@ -24,10 +24,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white p-6">
-      {/* Language switcher in top right */}
-      <div className="absolute top-6 right-6">
-        <LanguageSwitcher />
-      </div>
+      {/* Language switcher only on main menu */}
+      {activeView === "menu" && (
+        <div className="absolute top-6 right-6">
+          <LanguageSwitcher />
+        </div>
+      )}
 
       {activeView === "menu" ? (
         <div className="flex-1 flex flex-col items-center justify-center">

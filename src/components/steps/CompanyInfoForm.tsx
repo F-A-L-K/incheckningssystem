@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { VisitorType } from "@/types/visitors";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CompanyInfoFormProps {
   visitorCount: number;
@@ -29,6 +30,7 @@ const CompanyInfoForm = ({
 }: CompanyInfoFormProps) => {
   const [company, setCompany] = useState<string>(initialCompany);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const { t } = useLanguage();
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, boolean> = {};
@@ -57,13 +59,13 @@ const CompanyInfoForm = ({
     <form onSubmit={handleSubmit} className="space-y-8">
       <div>
         <h3 className="text-3xl font-medium mb-4">
-          Företagsinformation | {visitorType === "regular" ? "Vanligt besök" : "Servicepersonal"}
+          {t('companyInformation')} | {visitorType === "regular" ? t('regularVisit') : t('serviceVisit')}
         </h3>
-        <p className="text-xl text-gray-500 mb-8">Vänligen ange företag och antal besökare.</p>
+        <p className="text-xl text-gray-500 mb-8">{t('pleaseEnterCompanyAndCount')}</p>
 
         <div className="mb-8">
           <Label htmlFor="company" className={`text-xl font-medium mb-3 block ${errors.company ? "text-red-500" : ""}`}>
-            Företag {errors.company && <span className="text-red-500">*</span>}
+            {t('company')} {errors.company && <span className="text-red-500">*</span>}
           </Label>
           <Input 
             id="company"
@@ -76,21 +78,21 @@ const CompanyInfoForm = ({
               }
             }}
             className={`h-14 text-2xl ${errors.company ? "border-red-500" : ""}`}
-            placeholder="Företagsnamn"
+            placeholder={t('companyPlaceholder')}
           />
           {errors.company && (
-            <p className="text-red-500 text-base mt-2">Ange namn på företag/organisation</p>
+            <p className="text-red-500 text-base mt-2">{t('enterCompanyName')}</p>
           )}
         </div>
 
         <div className="mb-8">
-          <Label htmlFor="visitor-count" className="text-xl font-medium mb-3 block">Antal besökare</Label>
+          <Label htmlFor="visitor-count" className="text-xl font-medium mb-3 block">{t('numberOfVisitors')}</Label>
           <Select 
             value={visitorCount.toString()} 
             onValueChange={(value) => onVisitorCountChange(parseInt(value))}
           >
             <SelectTrigger id="visitor-count" className="w-full h-14 text-xl">
-              <SelectValue placeholder="Välj antal" />
+              <SelectValue placeholder={t('selectNumber')} />
             </SelectTrigger>
             <SelectContent>
               {countOptions.map((count) => (
@@ -104,7 +106,7 @@ const CompanyInfoForm = ({
       </div>
       
       <Button type="submit" className="w-full bg-[#3B82F6] h-16 text-2xl">
-        Fortsätt
+        {t('continue')}
       </Button>
     </form>
   );

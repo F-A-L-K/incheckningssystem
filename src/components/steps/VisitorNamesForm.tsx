@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Visitor, VisitorType } from "@/types/visitors";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface VisitorNamesFormProps {
   visitorCount: number;
@@ -23,6 +24,7 @@ const VisitorNamesForm = ({
 }: VisitorNamesFormProps) => {
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const { t } = useLanguage();
 
   // Function to capitalize first letter and make rest lowercase
   const formatName = (name: string): string => {
@@ -104,20 +106,20 @@ const VisitorNamesForm = ({
     <form onSubmit={handleSubmit} className="space-y-8">
       <div>
         <h3 className="text-3xl font-medium mb-4">
-          Besökarnamn | {visitorType === "regular" ? "Vanligt besök" : "Servicepersonal"}
+          {t('visitorNames')} | {visitorType === "regular" ? t('regularVisit') : t('serviceVisit')}
         </h3>
-        <p className="text-xl text-gray-500 mb-6">Ange namn på alla besökare från {company}.</p>
+        <p className="text-xl text-gray-500 mb-6">{t('enterNamesForAllVisitors')} {company}.</p>
         
         {visitors.map((visitor, index) => (
           <div key={visitor.id} className="p-6 bg-gray-50 rounded-lg mb-6">
-            <h4 className="font-medium mb-5 text-2xl">Besökare {index + 1}</h4>
+            <h4 className="font-medium mb-5 text-2xl">{t('visitor')} {index + 1}</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <Label 
                   htmlFor={`visitor-${index}-firstName`}
                   className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-firstName`] ? "text-red-500" : ""}`}
                 >
-                  Förnamn {errors[`visitor-${index}-firstName`] && <span className="text-red-500">*</span>}
+                  {t('firstName')} {errors[`visitor-${index}-firstName`] && <span className="text-red-500">*</span>}
                 </Label>
                 <Input
                   id={`visitor-${index}-firstName`}
@@ -126,10 +128,10 @@ const VisitorNamesForm = ({
                   onChange={(e) => handleVisitorChange(index, "firstName", e.target.value)}
                   onBlur={() => handleNameBlur(index, "firstName")}
                   className={`h-14 text-2xl ${errors[`visitor-${index}-firstName`] ? "border-red-500" : ""}`}
-                  placeholder="Förnamn"
+                  placeholder={t('firstNamePlaceholder')}
                 />
                 {errors[`visitor-${index}-firstName`] && (
-                  <p className="text-red-500 text-base mt-2">Ange ett förnamn</p>
+                  <p className="text-red-500 text-base mt-2">{t('enterFirstName')}</p>
                 )}
               </div>
               
@@ -138,7 +140,7 @@ const VisitorNamesForm = ({
                   htmlFor={`visitor-${index}-lastName`}
                   className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-lastName`] ? "text-red-500" : ""}`}
                 >
-                  Efternamn {errors[`visitor-${index}-lastName`] && <span className="text-red-500">*</span>}
+                  {t('lastName')} {errors[`visitor-${index}-lastName`] && <span className="text-red-500">*</span>}
                 </Label>
                 <Input
                   id={`visitor-${index}-lastName`}
@@ -147,10 +149,10 @@ const VisitorNamesForm = ({
                   onChange={(e) => handleVisitorChange(index, "lastName", e.target.value)}
                   onBlur={() => handleNameBlur(index, "lastName")}
                   className={`h-14 text-2xl ${errors[`visitor-${index}-lastName`] ? "border-red-500" : ""}`}
-                  placeholder="Efternamn"
+                  placeholder={t('lastNamePlaceholder')}
                 />
                 {errors[`visitor-${index}-lastName`] && (
-                  <p className="text-red-500 text-base mt-2">Ange ett efternamn</p>
+                  <p className="text-red-500 text-base mt-2">{t('enterLastName')}</p>
                 )}
               </div>
             </div>
@@ -159,7 +161,7 @@ const VisitorNamesForm = ({
       </div>
       
       <Button type="submit" className="w-full bg-[#3B82F6] h-16 text-2xl">
-        Fortsätt
+        {t('continue')}
       </Button>
     </form>
   );
