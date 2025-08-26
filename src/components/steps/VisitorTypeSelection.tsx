@@ -39,7 +39,8 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
               onClick={() => onSelectType("regular")}
             >
               <CardContent className="p-16 flex flex-col items-center justify-center">
-                <h4 className="font-medium text-4xl text-center">{t('regularVisit')}</h4>
+                <h4 className="font-medium text-4xl text-center mb-4">{t('regularVisit')}</h4>
+                <p className="text-xl text-gray-600 text-center">{t('regularVisitDescription')}</p>
               </CardContent>
             </Card>
           </motion.div>
@@ -53,7 +54,8 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
               onClick={() => onSelectType("service")}
             >
               <CardContent className="p-16 flex flex-col items-center justify-center">
-                <h4 className="font-medium text-4xl text-center">{t('serviceVisit')}</h4>
+                <h4 className="font-medium text-4xl text-center mb-4">{t('serviceVisit')}</h4>
+                <p className="text-xl text-gray-600 text-center">{t('serviceVisitDescription')}</p>
               </CardContent>
             </Card>
           </motion.div>
