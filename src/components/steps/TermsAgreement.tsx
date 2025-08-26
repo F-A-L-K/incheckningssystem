@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Camera } from "lucide-react";
 import { VisitorType } from "@/types/visitors";
 import FaceRegistration from "@/components/FaceRegistration";
@@ -23,21 +22,11 @@ interface TermsAgreementProps {
 }
 
 const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo, isCheckOut = false, visitorCount = 1 }: TermsAgreementProps) => {
-  const [isChecked, setIsChecked] = useState(false);
   const [showFaceRegistration, setShowFaceRegistration] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = () => {
-    if (!isChecked && !loading) {
-      toast({
-        title: "Villkor måste godkännas",
-        description: "Du måste kryssa i rutan för att godkänna villkoren innan du kan fortsätta.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (isChecked && !loading) {
+    if (!loading) {
       onAccept();
     }
   };
@@ -94,31 +83,15 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
               ))}
             </ul>
           </div>
-          
-          <div className="flex items-start space-x-3">
-            <Checkbox 
-              id="terms" 
-              checked={isChecked}
-              onCheckedChange={(checked) => setIsChecked(checked as boolean)}
-              disabled={loading}
-            />
-            <label htmlFor="terms" className="text-sm leading-5">
-              Jag har läst och godkänner ovanstående villkor
-            </label>
-          </div>
         </div>
         
         <div className="space-y-3">
           <Button 
             onClick={handleSubmit}
             disabled={loading}
-            className={`w-full bg-[#3B82F6] ${
-              !isChecked && !loading 
-                ? "opacity-50" 
-                : ""
-            }`}
+            className="w-full bg-[#3B82F6]"
           >
-            {loading ? "Checkar in..." : "Genomför incheckning"}
+            {loading ? "Checkar in..." : "Godkänner villkoren"}
           </Button>
         </div>
 
@@ -126,7 +99,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
           <div className="absolute bottom-0 right-0">
             <button
               onClick={() => setShowFaceRegistration(true)}
-              disabled={!isChecked || loading}
+              disabled={loading}
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               <Camera className="h-4 w-4" />
