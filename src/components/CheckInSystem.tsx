@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { VisitorType, Visitor, Host } from "@/types/visitors";
 import VisitorTypeSelection from "@/components/steps/VisitorTypeSelection";
-import VisitorInfoForm from "@/components/steps/VisitorInfoForm";
+import CompanyInfoForm from "@/components/steps/CompanyInfoForm";
+import VisitorNamesForm from "@/components/steps/VisitorNamesForm";
 import HostSelection from "@/components/steps/HostSelection";
 import TermsAgreement from "@/components/steps/TermsAgreement";
 import CheckInConfirmation from "@/components/steps/CheckInConfirmation";
@@ -32,7 +33,8 @@ const HOSTS: Host[] = [
 
 type Step = 
   | "type-selection"
-  | "visitor-info"
+  | "company-info"
+  | "visitor-names"
   | "host-selection"
   | "terms"
   | "confirmation"
@@ -94,7 +96,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
 
   const handleTypeSelection = (type: VisitorType) => {
     setVisitorType(type);
-    setStep("visitor-info");
+    setStep("company-info");
   };
 
   const handleFaceRecognized = async (visitorData: any) => {
@@ -102,7 +104,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setRecognizedVisitorData(visitorData);
     setVisitorType(visitorData.visitorType || "regular");
     
-    // Sätt pre-ifylld besökarinformation
+    // Sätt pre-ifylld besökarinformation  
     const recognizedVisitor: Visitor = {
       id: "1",
       firstName: visitorData.name.split(' ')[0] || "",
@@ -112,8 +114,8 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setVisitors([recognizedVisitor]);
     setCompany(visitorData.company || "");
     
-    // Gå till visitor-info steget med förifylld information
-    setStep("visitor-info");
+    // Gå till company-info steget med förifylld information
+    setStep("company-info");
     
     toast({
       title: t('welcomeBack'),
@@ -121,9 +123,14 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     });
   };
 
-  const handleVisitorInfoSubmit = (newVisitors: Visitor[], companyName: string) => {
-    setVisitors(newVisitors);
+  const handleCompanyInfoSubmit = (companyName: string, count: number) => {
     setCompany(companyName);
+    setVisitorCount(count);
+    setStep("visitor-names");
+  };
+
+  const handleVisitorNamesSubmit = (newVisitors: Visitor[]) => {
+    setVisitors(newVisitors);
     setStep("host-selection");
   };
 
@@ -191,7 +198,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   };
 
   const handleBackNavigation = () => {
-    if (step === "visitor-info") {
+    if (step === "company-info") {
       // Om det finns igenkänd data, rensa den och gå tillbaka
       if (recognizedVisitorData) {
         setRecognizedVisitorData(null);
@@ -200,8 +207,10 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         setVisitorType(null);
       }
       setStep("type-selection");
+    } else if (step === "visitor-names") {
+      setStep("company-info");
     } else if (step === "host-selection") {
-      setStep("visitor-info");
+      setStep("visitor-names");
     } else if (step === "terms") {
       setStep("host-selection");
     }
@@ -217,15 +226,25 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
           />
         );
       
-      case "visitor-info":
+      case "company-info":
         return (
-          <VisitorInfoForm 
+          <CompanyInfoForm 
             visitorCount={visitorCount}
             onVisitorCountChange={setVisitorCount}
-            onSubmit={handleVisitorInfoSubmit}
+            onSubmit={handleCompanyInfoSubmit}
             visitorType={visitorType || "regular"}
-            initialVisitors={visitors}
             initialCompany={company}
+          />
+        );
+
+      case "visitor-names":
+        return (
+          <VisitorNamesForm 
+            visitorCount={visitorCount}
+            visitorType={visitorType || "regular"}
+            company={company}
+            onSubmit={handleVisitorNamesSubmit}
+            initialVisitors={visitors}
           />
         );
       
