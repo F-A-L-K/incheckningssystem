@@ -12,12 +12,12 @@ const LanguageSwitcher = () => {
   ];
 
   return (
-    <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-md shadow-sm p-2">
+    <div className="flex items-center gap-3 bg-white border border-gray-300 rounded-lg shadow-sm p-3">
       {languages.map((lang) => (
         <button
           key={lang.code}
           onClick={() => setLanguage(lang.code as 'sv' | 'en' | 'de')}
-          className={`p-2 rounded-md transition-colors ${
+          className={`p-3 rounded-lg transition-colors ${
             language === lang.code 
               ? 'bg-gray-200 shadow-inner' 
               : 'hover:bg-gray-50'
@@ -27,7 +27,7 @@ const LanguageSwitcher = () => {
           <img
             src={`https://flagicons.lipis.dev/flags/4x3/${lang.flag}.svg`}
             alt={lang.name}
-            className="w-8 h-6 object-cover rounded-sm"
+            className="w-10 h-8 object-cover rounded-sm"
           />
         </button>
       ))}

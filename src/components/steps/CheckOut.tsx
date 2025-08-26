@@ -47,30 +47,30 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
   
   if (checkedInVisitors.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-500 mb-4">{t('noCheckedInVisitors')}</p>
+      <div className="text-center py-12">
+        <p className="text-gray-500 mb-6 text-xl">{t('noCheckedInVisitors')}</p>
       </div>
     );
   }
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h3 className="text-lg font-medium mb-2">{t('clickNameToCheckOut')}</h3>
+        <h3 className="text-2xl font-medium mb-6">{t('clickNameToCheckOut')}</h3>
         
-        <div className="space-y-2 max-h-[400px] overflow-y-auto">
+        <div className="space-y-4 max-h-[500px] overflow-y-auto">
           {checkedInVisitors.map((visitor) => (
             <div 
               key={visitor.id}
               onClick={() => handleVisitorClick(visitor)}
-              className="border border-gray-200 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+              className="border border-gray-200 rounded-lg p-6 cursor-pointer hover:bg-gray-50 transition-colors"
             >
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">{formatPrivacyName(visitor.name)}</p>
-                  <p className="text-sm text-gray-500">{t('visiting')} {visitor.visiting}</p>
+                  <p className="font-medium text-xl">{formatPrivacyName(visitor.name)}</p>
+                  <p className="text-lg text-gray-500">{t('visiting')} {visitor.visiting}</p>
                 </div>
-                <div className="text-sm text-gray-400">
+                <div className="text-lg text-gray-400">
                   {visitor.check_in_time && new Date(visitor.check_in_time).toLocaleTimeString('sv-SE', {
                     hour: '2-digit',
                     minute: '2-digit'
@@ -82,27 +82,27 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
         </div>
       </div>
       
-      <Button variant="outline" onClick={onCancel} className="w-full">
+      <Button variant="outline" onClick={onCancel} className="w-full text-lg py-4">
         {t('cancel')}
       </Button>
       
       <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>{t('confirmCheckOut')}</DialogTitle>
+            <DialogTitle className="text-xl">{t('confirmCheckOut')}</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
+          <div className="py-6">
             {selectedVisitor && (
-              <p>
+              <p className="text-lg">
                 {t('areYouSureCheckOut')} {selectedVisitor.name}?
               </p>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setConfirmDialogOpen(false)} className="text-lg py-3 px-6">
               {t('cancel')}
             </Button>
-            <Button onClick={handleConfirmCheckOut}>
+            <Button onClick={handleConfirmCheckOut} className="text-lg py-3 px-6">
               {t('checkOutButton')}
             </Button>
           </DialogFooter>

@@ -33,10 +33,10 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
   };
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h3 className="text-lg font-medium">{t('visitingHost')}</h3>
-        <p className="text-sm text-gray-500 mb-3">{t('pleaseSelectHost')}</p>
+        <h3 className="text-2xl font-medium mb-3">{t('visitingHost')}</h3>
+        <p className="text-lg text-gray-500 mb-6">{t('pleaseSelectHost')}</p>
       </div>
       
       <div>
@@ -45,18 +45,18 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
           placeholder={t('searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="mb-4"
+          className="mb-6 text-lg py-4 px-4"
         />
         
-        <ScrollArea className="h-[300px] w-full">
-          <div className="p-2 space-y-2">
+        <ScrollArea className="h-[400px] w-full">
+          <div className="p-2 space-y-3">
             {filteredHosts.length > 0 ? (
               filteredHosts.map((host) => (
                 <div 
                   key={host.id}
                   onClick={() => handleSelect(host)}
                   className={`
-                    flex justify-between items-center p-3 rounded-md cursor-pointer
+                    flex justify-between items-center p-5 rounded-lg cursor-pointer
                     ${selectedHostId === host.id 
                       ? 'bg-blue-50 border border-blue-300' 
                       : 'hover:bg-gray-50 border border-gray-200'
@@ -64,16 +64,16 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
                   `}
                 >
                   <div>
-                    <p className="font-medium">{host.name}</p>
-                    <p className="text-sm text-gray-500">{host.department}</p>
+                    <p className="font-medium text-xl">{host.name}</p>
+                    <p className="text-lg text-gray-500">{host.department}</p>
                   </div>
                   {selectedHostId === host.id && (
-                    <Check className="h-5 w-5 text-blue-500" />
+                    <Check className="h-7 w-7 text-blue-500" />
                   )}
                 </div>
               ))
             ) : (
-              <div className="text-center py-4 text-gray-500">
+              <div className="text-center py-8 text-gray-500 text-lg">
                 {t('noMatchingPersons')}
               </div>
             )}
