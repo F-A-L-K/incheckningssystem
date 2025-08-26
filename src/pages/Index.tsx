@@ -1,11 +1,14 @@
 
 import { useState } from "react";
 import CheckInSystem from "@/components/CheckInSystem";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut } from "lucide-react";
 
 const Index = () => {
   const [activeView, setActiveView] = useState<"menu" | "check-in" | "check-out">("menu");
+  const { t } = useLanguage();
   
   const handleCheckOut = () => {
     setActiveView("check-out");
@@ -21,11 +24,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white p-4">
+      {/* Language switcher in top right */}
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
+
       {activeView === "menu" ? (
         <div className="flex-1 flex flex-col items-center justify-center">
           <header className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-gray-900">Välkommen!</h1>
-            <p className="text-gray-600">Vänligen välj ett alternativ nedan</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t('welcome')}</h1>
+            <p className="text-gray-600">{t('selectOption')}</p>
           </header>
           
           <div className="w-full max-w-xl flex flex-col sm:flex-row justify-center gap-4">
@@ -35,7 +43,7 @@ const Index = () => {
               size="lg"
             >
               <LogIn className="h-6 w-6" />
-              Checka in
+              {t('checkIn')}
             </Button>
             
             <Button 
@@ -44,7 +52,7 @@ const Index = () => {
               size="lg"
             >
               <LogOut className="h-6 w-6" />
-              Checka ut
+              {t('checkOut')}
             </Button>
           </div>
         </div>
@@ -62,7 +70,7 @@ const Index = () => {
                 onClick={handleReturn}
                 className="text-gray-500"
               >
-                Tillbaka till huvudmenyn
+                {t('backToMenu')}
               </Button>
             </div>
           </div>
@@ -70,7 +78,7 @@ const Index = () => {
       )}
       
       <footer className="pt-8 pb-4 text-center text-sm text-gray-400">
-        <p>FMAB Incheckningssystem | {new Date().getFullYear()}</p>
+        <p>{t('footer')} | {new Date().getFullYear()}</p>
       </footer>
     </div>
   );
