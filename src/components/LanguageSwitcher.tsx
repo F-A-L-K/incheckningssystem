@@ -28,14 +28,17 @@ const LanguageSwitcher = () => {
           <span className="text-gray-800 font-medium">{currentLanguage?.name}</span>
         </div>
       </SelectTrigger>
-      <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
+      <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg z-50">
         {languages.map((lang) => (
           <SelectItem 
             key={lang.code} 
             value={lang.code}
-            className="flex items-center justify-center px-3 py-2 hover:bg-gray-50 cursor-pointer"
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 cursor-pointer"
           >
-            <span className="text-xl">{lang.flag}</span>
+            <div className="flex items-center gap-2 w-full">
+              <span className="text-lg">{lang.flag}</span>
+              <span className="text-gray-800 font-medium">{lang.name}</span>
+            </div>
           </SelectItem>
         ))}
       </SelectContent>
