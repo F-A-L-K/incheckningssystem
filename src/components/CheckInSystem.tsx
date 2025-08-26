@@ -280,6 +280,15 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 animate-fade-in">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          {step === "check-out" ? t('checkOutTitle') : t('checkIn')}
+        </h2>
+        
+        {step !== "check-out" && checkedInVisitors.length > 0 && (
+          null
+        )}
+      </div>
       
       <motion.div
         initial={{ opacity: 0, y: 10 }}

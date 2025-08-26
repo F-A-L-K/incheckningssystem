@@ -26,10 +26,10 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
   return (
     <>
       <div className="text-center">
-        <h3 className="text-4xl font-medium mb-6">{t('visitorType')}</h3>
-        <p className="text-2xl text-gray-500 mb-12">{t('pleaseSelectVisitorType')}</p>
+        <h3 className="text-2xl font-medium mb-3">{t('visitorType')}</h3>
+        <p className="text-lg text-gray-500 mb-8">{t('pleaseSelectVisitorType')}</p>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <motion.div 
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
@@ -38,8 +38,14 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
               className="cursor-pointer hover:border-blue-400 transition-all"
               onClick={() => onSelectType("regular")}
             >
-              <CardContent className="p-16 flex flex-col items-center justify-center">
-                <h4 className="font-medium text-4xl text-center">{t('regularVisit')}</h4>
+              <CardContent className="p-10 flex flex-col items-center">
+                <div className="bg-blue-100 p-5 rounded-full mb-4">
+                  <User className="h-12 w-12 text-blue-500" />
+                </div>
+                <h4 className="font-medium text-2xl mb-3">{t('regularVisit')}</h4>
+                <p className="text-gray-500 text-base">
+                  {t('regularVisitDescription')}
+                </p>
               </CardContent>
             </Card>
           </motion.div>
@@ -52,14 +58,19 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
               className="cursor-pointer hover:border-blue-400 transition-all"
               onClick={() => onSelectType("service")}
             >
-              <CardContent className="p-16 flex flex-col items-center justify-center">
-                <h4 className="font-medium text-4xl text-center">{t('serviceVisit')}</h4>
+              <CardContent className="p-10 flex flex-col items-center">
+                <div className="bg-blue-100 p-5 rounded-full mb-4">
+                  <Wrench className="h-12 w-12 text-blue-500" />
+                </div>
+                <h4 className="font-medium text-2xl mb-3">{t('serviceVisit')}</h4>
+                <p className="text-gray-500 text-base">
+                  {t('serviceVisitDescription')}
+                </p>
               </CardContent>
             </Card>
           </motion.div>
         </div>
 
-        {/* Commented out face identification button
         <div className="mt-8 text-center">
           <button
             onClick={() => setShowFaceRecognition(true)}
@@ -69,7 +80,6 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
             {t('faceIdentification')}
           </button>
         </div>
-        */}
       </div>
 
       {showFaceRecognition && (
