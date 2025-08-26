@@ -5,11 +5,11 @@ import { Users, History, Home } from 'lucide-react';
 
 const AdminSidebar = () => {
   return (
-    <div className="w-64 bg-blue-600 text-white min-h-screen">
+    <div className="w-96 bg-blue-600 text-white min-h-screen">
       <div className="p-6">
         <div className="flex items-center gap-2 mb-8">
           <Home className="w-6 h-6" />
-          <h1 className="text-xl font-bold">ADMIN PANEL</h1>
+          <h1 className="text-xl font-bold">FMAB Kontrollpanel</h1>
         </div>
         
         <nav className="space-y-2">
