@@ -5,6 +5,7 @@ import { Camera } from "lucide-react";
 import { VisitorType } from "@/types/visitors";
 import FaceRegistration from "@/components/FaceRegistration";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface TermsAgreementProps {
   visitorType: VisitorType;
@@ -24,6 +25,7 @@ interface TermsAgreementProps {
 const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo, isCheckOut = false, visitorCount = 1 }: TermsAgreementProps) => {
   const [showFaceRegistration, setShowFaceRegistration] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSubmit = () => {
     if (!loading) {
@@ -49,7 +51,6 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 "Rör aldrig några produkter.",
 "I händelse av nödsignal lämna byggnaden och uppsök samlingspunkten bakom fabriken i kanten av parkeringen.",
 
-
 "Heta arbeten får endast utföras av behörig personal. En godkänd blankett ska vara signerad och tillgänglig innan arbetet påbörjas.",
 "Använd alltid korrekt säkerhetsutrustning som är anpassad till det arbete som ska utföras. Kontakta din beställare vid osäkerhet om vad som krävs.",
 "Vi tillämpar källsortering. Om du producerar avfall under ditt arbete, fråga din beställare var det ska läggas och följ angivna rutiner.",
@@ -70,10 +71,10 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
     <>
       <div className="space-y-6 relative pb-12">
         <div>
-          <h3 className="text-lg font-medium mb-4">Villkor och säkerhet</h3>
+          <h3 className="text-lg font-medium mb-4">{t('termsAndSafety')}</h3>
           
           <div className="bg-gray-50 p-4 rounded-md mb-6">
-            <h4 className="font-medium mb-3">Genom att fortsätta godkänner du följande:</h4>
+            <h4 className="font-medium mb-3">{t('byContunuingYouAgree')}</h4>
             <ul className="space-y-2">
               {terms.map((term, index) => (
                 <li key={index} className="flex items-start">
@@ -91,7 +92,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
             disabled={loading}
             className="w-full bg-[#3B82F6]"
           >
-            {loading ? "Checkar in..." : "Godkänner villkoren"}
+            {loading ? t('checkingIn') : t('acceptTermsAndCheckIn')}
           </Button>
         </div>
 
@@ -103,7 +104,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               <Camera className="h-4 w-4" />
-              Registrera ansikte
+              {t('registerFace')}
             </button>
           </div>
         )}

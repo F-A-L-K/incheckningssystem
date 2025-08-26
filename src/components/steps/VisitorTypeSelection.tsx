@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { VisitorType } from "@/types/visitors";
 import { User, Wrench, ScanFace } from "lucide-react";
 import FaceRecognition from "@/components/FaceRecognition";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface VisitorTypeSelectionProps {
   onSelectType: (type: VisitorType) => void;
@@ -13,6 +14,7 @@ interface VisitorTypeSelectionProps {
 
 const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSelectionProps) => {
   const [showFaceRecognition, setShowFaceRecognition] = useState(false);
+  const { t } = useLanguage();
 
   const handleFaceRecognized = (visitorData: any) => {
     setShowFaceRecognition(false);
@@ -24,8 +26,8 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
   return (
     <>
       <div className="text-center">
-        <h3 className="text-lg font-medium">Besökstyp</h3>
-          <p className="text-sm text-gray-500 mb-3">Vänligen välj besökstyp genom att klicka på en besöksruta.</p>
+        <h3 className="text-lg font-medium">{t('visitorType')}</h3>
+        <p className="text-sm text-gray-500 mb-3">{t('pleaseSelectVisitorType')}</p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <motion.div 
@@ -40,9 +42,9 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
                 <div className="bg-blue-100 p-3 rounded-full mb-3">
                   <User className="h-8 w-8 text-blue-500" />
                 </div>
-                <h4 className="font-medium text-lg">Vanligt besök</h4>
+                <h4 className="font-medium text-lg">{t('regularVisit')}</h4>
                 <p className="text-gray-500 text-sm mt-2">
-                  Möten, intervjuer eller andra besök
+                  {t('regularVisitDescription')}
                 </p>
               </CardContent>
             </Card>
@@ -60,9 +62,9 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
                 <div className="bg-blue-100 p-3 rounded-full mb-3">
                   <Wrench className="h-8 w-8 text-blue-500" />
                 </div>
-                <h4 className="font-medium text-lg">Service besök</h4>
+                <h4 className="font-medium text-lg">{t('serviceVisit')}</h4>
                 <p className="text-gray-500 text-sm mt-2">
-                  Underhåll, bygg eller servicearbete
+                  {t('serviceVisitDescription')}
                 </p>
               </CardContent>
             </Card>
@@ -75,7 +77,7 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
             className="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-2 mx-auto"
           >
             <ScanFace className="h-4 w-4" />
-            Ansiktsidentifiering
+            {t('faceIdentification')}
           </button>
         </div>
       </div>

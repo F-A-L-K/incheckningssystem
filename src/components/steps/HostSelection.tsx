@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Host } from "@/types/visitors";
 import { Check } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HostSelectionProps {
   hosts: Host[];
@@ -14,6 +15,7 @@ interface HostSelectionProps {
 const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
   const [search, setSearch] = useState("");
   const [selectedHostId, setSelectedHostId] = useState<number | null>(null);
+  const { t } = useLanguage();
   
   // Sort hosts by ID first, then filter by search
   const sortedHosts = [...hosts].sort((a, b) => a.id - b.id);
@@ -33,14 +35,14 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium">Besöksvärd</h3>
-        <p className="text-sm text-gray-500 mb-3">Vänligen välj i listan vem ni besöker genom att klicka på namnet.</p>
+        <h3 className="text-lg font-medium">{t('visitingHost')}</h3>
+        <p className="text-sm text-gray-500 mb-3">{t('pleaseSelectHost')}</p>
       </div>
       
       <div>
         <Input
           type="text"
-          placeholder="Sök efter namn eller avdelning..."
+          placeholder={t('searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-4"
@@ -72,7 +74,7 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
               ))
             ) : (
               <div className="text-center py-4 text-gray-500">
-                Inga matchande personer hittades
+                {t('noMatchingPersons')}
               </div>
             )}
           </div>

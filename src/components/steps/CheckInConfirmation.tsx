@@ -4,6 +4,7 @@ import { Visitor, VisitorType } from "@/types/visitors";
 import { CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CheckInConfirmationProps {
   visitors: Visitor[];
@@ -21,6 +22,7 @@ const CheckInConfirmation = ({
   onClose
 }: CheckInConfirmationProps) => {
   const [countdown, setCountdown] = useState(10);
+  const { t } = useLanguage();
 
   // Effect to handle countdown and automatic close
   useEffect(() => {
@@ -53,25 +55,24 @@ const CheckInConfirmation = ({
       
       <div>
         <h3 className="text-xl font-semibold text-gray-800">
-          Incheckning genomförd!
+          {t('checkInCompleted')}
         </h3>
-
       </div>
       
       <div className="bg-blue-50 rounded-lg p-4 text-left">
-        <h4 className="font-medium text-gray-700 mb-2">Besöksinformation</h4>
+        <h4 className="font-medium text-gray-700 mb-2">{t('visitorInfo')}</h4>
         <div className="space-y-2 text-sm">
-          <p><span className="font-medium">Besökare:</span> {visitors.map(v => `${v.firstName} ${v.lastName}`).join(', ')}</p>
-          <p><span className="font-medium">Företag:</span> {company}</p>
-          <p><span className="font-medium">Värd:</span> {host}</p>
-          <p><span className="font-medium">Besökstyp:</span> {visitorType === "regular" ? "Vanligt besök" : "Service besök"}</p>
+          <p><span className="font-medium">{t('visitor')}:</span> {visitors.map(v => `${v.firstName} ${v.lastName}`).join(', ')}</p>
+          <p><span className="font-medium">{t('company')}:</span> {company}</p>
+          <p><span className="font-medium">{t('host')}:</span> {host}</p>
+          <p><span className="font-medium">{t('visitType')}:</span> {visitorType === "regular" ? t('regularVisitText') : t('serviceVisitText')}</p>
         </div>
       </div>
       
       <p className="text-sm text-gray-500">
         {visitorType === "regular" 
-          ? "Vid väntan, ta gärna en titt på vår utställning av diverse produkter vid ingången eller sätt er ner vid bordet bakom."
-          : "Vänligen vänta på att din kontaktperson kommer och möter dig."}
+          ? t('regularWaitingMessage')
+          : t('serviceWaitingMessage')}
       </p>
 
       <div className="mt-6">
@@ -80,7 +81,7 @@ const CheckInConfirmation = ({
           onClick={onClose}
           className="text-gray-500"
         >
-          Stänger om {countdown} sekunder...
+          {t('closingIn')} {countdown} {t('seconds')}
         </Button>
       </div>
     </div>

@@ -10,6 +10,7 @@ import CheckInConfirmation from "@/components/steps/CheckInConfirmation";
 import CheckOut from "@/components/steps/CheckOut";
 import { Button } from "@/components/ui/button";
 import { saveVisitor, getCheckedInVisitors, checkOutVisitor, convertToVisitorFormat } from "@/services/visitorService";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Mock data for hosts
 const HOSTS: Host[] = [
@@ -44,6 +45,7 @@ interface CheckInSystemProps {
 
 const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: CheckInSystemProps) => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [step, setStep] = useState<Step>(initialStep);
   const [visitorType, setVisitorType] = useState<VisitorType | null>(null);
   const [visitors, setVisitors] = useState<Visitor[]>([]);
@@ -69,8 +71,8 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     } catch (error) {
       console.error('Failed to load checked-in visitors:', error);
       toast({
-        title: "Fel",
-        description: "Kunde inte ladda incheckade besökare",
+        title: t('error'),
+        description: t('failedToLoad'),
         variant: "destructive",
       });
     }
@@ -114,8 +116,8 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setStep("visitor-info");
     
     toast({
-      title: "Välkommen tillbaka!",
-      description: `${visitorData.name}! Information ifylld automatiskt.`,
+      title: t('welcomeBack'),
+      description: `${visitorData.name}! ${t('infoFilledAutomatically')}`,
     });
   };
 
@@ -149,14 +151,14 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
       
       setStep("confirmation");
       toast({
-        title: "Incheckning genomförd!",
-        description: "Välkommen!",
+        title: t('checkInCompletedToast'),
+        description: t('welcomeToast'),
       });
     } catch (error) {
       console.error('Failed to save visitors:', error);
       toast({
-        title: "Fel",
-        description: "Kunde inte genomföra incheckning",
+        title: t('error'),
+        description: t('failedToCheckIn'),
         variant: "destructive",
       });
     } finally {
@@ -174,15 +176,15 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
       await checkOutVisitor(visitorId);
       setCheckedInVisitors(prev => prev.filter(v => v.id !== visitorId));
       toast({
-        title: "Utcheckning genomförd!",
-        description: "Ha en bra dag!",
+        title: t('checkOutCompletedToast'),
+        description: t('haveANiceDay'),
       });
       resetForm();
     } catch (error) {
       console.error('Failed to check out visitor:', error);
       toast({
-        title: "Fel",
-        description: "Kunde inte genomföra utcheckning",
+        title: t('error'),
+        description: t('failedToCheckOut'),
         variant: "destructive",
       });
     }
@@ -280,7 +282,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     <div className="bg-white rounded-xl shadow-lg p-6 animate-fade-in">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">
-          {step === "check-out" ? "Utcheckning" : "Incheckning"}
+          {step === "check-out" ? t('checkOutTitle') : t('checkIn')}
         </h2>
         
         {step !== "check-out" && checkedInVisitors.length > 0 && (
@@ -303,7 +305,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
             onClick={handleBackNavigation}
             className="text-gray-500"
           >
-            Tillbaka
+            {t('back')}
           </Button>
         </div>
       )}

@@ -1,6 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CheckOutProps {
   checkedInVisitors: any[];
@@ -11,6 +13,7 @@ interface CheckOutProps {
 const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) => {
   const [selectedVisitor, setSelectedVisitor] = useState<any | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const { t } = useLanguage();
   
   // Auto-close after 1 minute
   useEffect(() => {
@@ -45,8 +48,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
   if (checkedInVisitors.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500 mb-4">Det finns inga incheckade besökare för närvarande.</p>
-        {/* <Button variant="outline" onClick={onCancel}>Tillbaka</Button> */}
+        <p className="text-gray-500 mb-4">{t('noCheckedInVisitors')}</p>
       </div>
     );
   }
@@ -54,7 +56,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium mb-2">Klicka på ditt namn i listan nedan för att checka ut</h3>
+        <h3 className="text-lg font-medium mb-2">{t('clickNameToCheckOut')}</h3>
         
         <div className="space-y-2 max-h-[400px] overflow-y-auto">
           {checkedInVisitors.map((visitor) => (
@@ -66,7 +68,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium">{formatPrivacyName(visitor.name)}</p>
-                  <p className="text-sm text-gray-500">Besöker {visitor.visiting}</p>
+                  <p className="text-sm text-gray-500">{t('visiting')} {visitor.visiting}</p>
                 </div>
                 <div className="text-sm text-gray-400">
                   {visitor.check_in_time && new Date(visitor.check_in_time).toLocaleTimeString('sv-SE', {
@@ -81,27 +83,27 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
       </div>
       
       <Button variant="outline" onClick={onCancel} className="w-full">
-        Avbryt
+        {t('cancel')}
       </Button>
       
       <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Bekräfta utcheckning</DialogTitle>
+            <DialogTitle>{t('confirmCheckOut')}</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             {selectedVisitor && (
               <p>
-                Är du säker på att du vill checka ut {selectedVisitor.name}?
+                {t('areYouSureCheckOut')} {selectedVisitor.name}?
               </p>
             )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmDialogOpen(false)}>
-              Avbryt
+              {t('cancel')}
             </Button>
             <Button onClick={handleConfirmCheckOut}>
-              Checka ut
+              {t('checkOutButton')}
             </Button>
           </DialogFooter>
         </DialogContent>
