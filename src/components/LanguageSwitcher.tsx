@@ -33,12 +33,9 @@ const LanguageSwitcher = () => {
           <SelectItem 
             key={lang.code} 
             value={lang.code}
-            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 cursor-pointer"
+            className="flex items-center justify-center px-3 py-2 hover:bg-gray-50 cursor-pointer"
           >
-            <div className="flex items-center gap-2 w-full">
-              <span className="text-lg">{lang.flag}</span>
-              <span className="text-gray-800 font-medium">{lang.name}</span>
-            </div>
+            <span className="text-xl">{lang.flag}</span>
           </SelectItem>
         ))}
       </SelectContent>
