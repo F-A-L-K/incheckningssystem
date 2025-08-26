@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { VisitorType } from "@/types/visitors";
-import { User, Wrench, ScanFace } from "lucide-react";
+import { Users, Wrench, ScanFace, ArrowRight } from "lucide-react";
 import FaceRecognition from "@/components/FaceRecognition";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -35,12 +35,28 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
             whileTap={{ scale: 0.98 }}
           >
             <Card 
-              className="cursor-pointer hover:border-blue-400 transition-all"
+              className="cursor-pointer hover:border-blue-400 transition-all h-64 relative overflow-hidden"
               onClick={() => onSelectType("regular")}
             >
-              <CardContent className="p-16 flex flex-col items-center justify-center">
-                <h4 className="font-medium text-4xl text-center mb-4">{t('regularVisit')}</h4>
-                <p className="text-xl text-gray-600 text-center">{t('regularVisitDescription')}</p>
+              <CardContent className="p-8 h-full flex flex-col">
+                {/* Icon in top left */}
+                <div className="flex justify-start mb-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Users className="h-6 w-6 text-blue-600" />
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1 flex flex-col justify-center text-left">
+                  <h4 className="font-semibold text-2xl mb-3 text-gray-900">{t('regularVisit')}</h4>
+                  <p className="text-lg text-gray-600 leading-relaxed">{t('regularVisitDescription')}</p>
+                </div>
+                
+                {/* Bottom section with arrow and "Välj" */}
+                <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+                  <span className="text-lg font-medium text-blue-600">Välj</span>
+                  <ArrowRight className="h-5 w-5 text-blue-600" />
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -50,12 +66,28 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
             whileTap={{ scale: 0.98 }}
           >
             <Card 
-              className="cursor-pointer hover:border-blue-400 transition-all"
+              className="cursor-pointer hover:border-blue-400 transition-all h-64 relative overflow-hidden"
               onClick={() => onSelectType("service")}
             >
-              <CardContent className="p-16 flex flex-col items-center justify-center">
-                <h4 className="font-medium text-4xl text-center mb-4">{t('serviceVisit')}</h4>
-                <p className="text-xl text-gray-600 text-center">{t('serviceVisitDescription')}</p>
+              <CardContent className="p-8 h-full flex flex-col">
+                {/* Icon in top left */}
+                <div className="flex justify-start mb-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <Wrench className="h-6 w-6 text-green-600" />
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1 flex flex-col justify-center text-left">
+                  <h4 className="font-semibold text-2xl mb-3 text-gray-900">{t('serviceVisit')}</h4>
+                  <p className="text-lg text-gray-600 leading-relaxed">{t('serviceVisitDescription')}</p>
+                </div>
+                
+                {/* Bottom section with arrow and "Välj" */}
+                <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+                  <span className="text-lg font-medium text-green-600">Välj</span>
+                  <ArrowRight className="h-5 w-5 text-green-600" />
+                </div>
               </CardContent>
             </Card>
           </motion.div>
