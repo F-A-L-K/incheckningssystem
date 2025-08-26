@@ -125,7 +125,7 @@ const VisitorNamesForm = ({
                   value={visitor.firstName}
                   onChange={(e) => handleVisitorChange(index, "firstName", e.target.value)}
                   onBlur={() => handleNameBlur(index, "firstName")}
-                  className={`h-14 text-xl ${errors[`visitor-${index}-firstName`] ? "border-red-500" : ""}`}
+                  className={`h-14 text-2xl ${errors[`visitor-${index}-firstName`] ? "border-red-500" : ""}`}
                   placeholder="Förnamn"
                 />
                 {errors[`visitor-${index}-firstName`] && (
@@ -146,7 +146,7 @@ const VisitorNamesForm = ({
                   value={visitor.lastName}
                   onChange={(e) => handleVisitorChange(index, "lastName", e.target.value)}
                   onBlur={() => handleNameBlur(index, "lastName")}
-                  className={`h-14 text-xl ${errors[`visitor-${index}-lastName`] ? "border-red-500" : ""}`}
+                  className={`h-14 text-2xl ${errors[`visitor-${index}-lastName`] ? "border-red-500" : ""}`}
                   placeholder="Efternamn"
                 />
                 {errors[`visitor-${index}-lastName`] && (

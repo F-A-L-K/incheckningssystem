@@ -75,7 +75,7 @@ const CompanyInfoForm = ({
                 setErrors(prev => ({ ...prev, company: false }));
               }
             }}
-            className={`h-14 text-xl ${errors.company ? "border-red-500" : ""}`}
+            className={`h-14 text-2xl ${errors.company ? "border-red-500" : ""}`}
             placeholder="Företagsnamn"
           />
           {errors.company && (
