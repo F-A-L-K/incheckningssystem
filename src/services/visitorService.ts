@@ -86,12 +86,14 @@ export const getCheckedInVisitors = async () => {
   return data || [];
 };
 
-export const checkOutVisitor = async (visitorId: string) => {
+export const checkOutVisitor = async (visitorId: string, customCheckOutTime?: string) => {
+  const checkOutTime = customCheckOutTime || new Date().toISOString();
+  
   const { data, error } = await supabase
     .from('CHECKIN_visitors')
     .update({ 
       checked_out: true, 
-      check_out_time: new Date().toISOString() 
+      check_out_time: checkOutTime
     })
     .eq('id', visitorId)
     .select()
