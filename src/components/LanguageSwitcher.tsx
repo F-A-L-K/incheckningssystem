@@ -1,47 +1,48 @@
 
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const LanguageSwitcher = () => {
   const { language, setLanguage } = useLanguage();
 
+  const languages = [
+    { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  ];
+
+  const currentLanguage = languages.find(lang => lang.code === language);
+
   return (
-    <div className="flex gap-2">
-      <button
-        onClick={() => setLanguage('sv')}
-        className={`w-8 h-6 rounded border-2 transition-all ${
-          language === 'sv' ? 'border-blue-500 shadow-lg' : 'border-gray-300 opacity-70 hover:opacity-100'
-        }`}
-        title="Svenska"
-      >
-        {/* Swedish flag */}
-        <div className="w-full h-full relative overflow-hidden rounded">
-          <div className="absolute inset-0 bg-[#006AA7]"></div>
-          <div className="absolute inset-y-0 left-1/2 transform -translate-x-1/2 w-1 bg-[#FECC00]"></div>
-          <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-1 bg-[#FECC00]"></div>
+    <Select value={language} onValueChange={setLanguage}>
+      <SelectTrigger className="w-48 bg-white border border-gray-300 rounded-md shadow-sm">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">{currentLanguage?.flag}</span>
+          <span className="text-gray-800 font-medium">{currentLanguage?.name}</span>
         </div>
-      </button>
-      
-      <button
-        onClick={() => setLanguage('en')}
-        className={`w-8 h-6 rounded border-2 transition-all ${
-          language === 'en' ? 'border-blue-500 shadow-lg' : 'border-gray-300 opacity-70 hover:opacity-100'
-        }`}
-        title="English"
-      >
-        {/* American flag simplified */}
-        <div className="w-full h-full relative overflow-hidden rounded">
-          <div className="absolute inset-0 bg-[#B22234]"></div>
-          <div className="absolute top-0 left-0 w-3 h-3 bg-[#3C3B6E]"></div>
-          <div className="absolute top-0 right-0 h-0.5 bg-white"></div>
-          <div className="absolute top-1 right-0 h-0.5 bg-white"></div>
-          <div className="absolute top-2 right-0 h-0.5 bg-white"></div>
-          <div className="absolute bottom-0 right-0 h-0.5 bg-white"></div>
-          <div className="absolute bottom-1 right-0 h-0.5 bg-white"></div>
-          <div className="absolute bottom-2 right-0 h-0.5 bg-white"></div>
-        </div>
-      </button>
-    </div>
+      </SelectTrigger>
+      <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
+        {languages.map((lang) => (
+          <SelectItem 
+            key={lang.code} 
+            value={lang.code}
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 cursor-pointer"
+          >
+            <div className="flex items-center gap-2 w-full">
+              <span className="text-lg">{lang.flag}</span>
+              <span className="text-gray-800 font-medium">{lang.name}</span>
+            </div>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 };
 

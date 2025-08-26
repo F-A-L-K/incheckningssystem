@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type Language = 'sv' | 'en';
+type Language = 'sv' | 'en' | 'de';
 
 interface LanguageContextType {
   language: Language;
@@ -25,6 +25,14 @@ const translations = {
     checkOut: 'Check out',
     backToMenu: 'Back to main menu',
     footer: 'FMAB Check-in System'
+  },
+  de: {
+    welcome: 'Willkommen!',
+    selectOption: 'Bitte wählen Sie eine Option unten',
+    checkIn: 'Einchecken',
+    checkOut: 'Auschecken',
+    backToMenu: 'Zurück zum Hauptmenü',
+    footer: 'FMAB Einchecksystem'
   }
 };
 
