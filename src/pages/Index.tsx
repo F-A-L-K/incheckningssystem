@@ -1,8 +1,9 @@
+
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { CheckInSystem } from "@/sections/CheckInSystem";
+import CheckInSystem from "@/components/CheckInSystem";
 import { useNavigate } from "react-router-dom";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Index() {
   const { t } = useLanguage();
@@ -29,10 +30,10 @@ export default function Index() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-gray-900">
-            {t.welcome}
+            {t('welcome')}
           </h1>
           <p className="text-lg text-gray-600">
-            {t.subtitle}
+            {t('selectOption')}
           </p>
         </div>
 
@@ -41,14 +42,14 @@ export default function Index() {
             onClick={() => navigate('/?mode=checkin')}
             className="w-full h-20 text-2xl font-semibold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
           >
-            {t.checkIn}
+            {t('checkIn')}
           </Button>
 
           <Button
             onClick={() => navigate('/?mode=checkout')}
             className="w-full h-20 text-2xl font-semibold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
           >
-            {t.checkOut}
+            {t('checkOut')}
           </Button>
         </div>
       </div>
