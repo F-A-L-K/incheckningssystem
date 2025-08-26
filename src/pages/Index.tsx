@@ -1,89 +1,59 @@
-
-import { useState } from "react";
-import CheckInSystem from "@/components/CheckInSystem";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { CheckInSystem } from "@/sections/CheckInSystem";
+import { useNavigate } from "react-router-dom";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const Index = () => {
-  const [activeView, setActiveView] = useState<"menu" | "check-in" | "check-out">("menu");
+export default function Index() {
   const { t } = useLanguage();
-  
-  const handleCheckOut = () => {
-    setActiveView("check-out");
-  };
-
-  const handleCheckIn = () => {
-    setActiveView("check-in");
-  };
-
-  const handleReturn = () => {
-    setActiveView("menu");
-  };
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white p-6">
-      {/* Language switcher only on main menu */}
-      {activeView === "menu" && (
-        <div className="absolute top-6 right-6">
-          <LanguageSwitcher />
-        </div>
-      )}
-
-      {activeView === "menu" ? (
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <header className="mb-12 text-center">
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">{t('welcome')}</h1>
-            <p className="text-xl text-gray-600">{t('selectOption')}</p>
-          </header>
-          
-          <div className="w-full max-w-4xl flex flex-col sm:flex-row justify-center gap-8">
-            <Button 
-              onClick={handleCheckIn} 
-              className="bg-[#3B82F6] text-white py-12 px-16 rounded-xl text-3xl flex items-center justify-center gap-4 shadow-lg hover:bg-[#2563EB] transition-colors"
-              size="lg"
-            >
-              <LogIn className="h-10 w-10" />
-              {t('checkIn')}
-            </Button>
-            
-            <Button 
-              onClick={handleCheckOut} 
-              className="bg-[#3B82F6] text-white py-12 px-16 rounded-xl text-3xl flex items-center justify-center gap-4 shadow-lg hover:bg-[#2563EB] transition-colors"
-              size="lg"
-            >
-              <LogOut className="h-10 w-10" />
-              {t('checkOut')}
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="w-full max-w-4xl">
-            <CheckInSystem 
-              initialStep={activeView === "check-out" ? "check-out" : "type-selection"} 
-              onCheckOutComplete={handleReturn}
-            />
-            
-            <div className="mt-8 text-center">
-              <Button 
-                variant="outline"
-                onClick={handleReturn}
-                className="text-gray-500 text-lg py-3 px-6"
-              >
-                {t('backToMenu')}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       
-      <footer className="pt-8 pb-4 text-center text-base text-gray-400">
-        <p>{t('footer')} | {new Date().getFullYear()}</p>
-      </footer>
+      {/* Admin access button */}
+      <div className="absolute top-4 left-4">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => navigate('/admin')}
+          className="text-sm"
+        >
+          Admin
+        </Button>
+      </div>
+
+      <div className="w-full max-w-md space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold text-gray-900">
+            {t.welcome}
+          </h1>
+          <p className="text-lg text-gray-600">
+            {t.subtitle}
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <Button
+            onClick={() => navigate('/?mode=checkin')}
+            className="w-full h-20 text-2xl font-semibold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+          >
+            {t.checkIn}
+          </Button>
+
+          <Button
+            onClick={() => navigate('/?mode=checkout')}
+            className="w-full h-20 text-2xl font-semibold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+          >
+            {t.checkOut}
+          </Button>
+        </div>
+      </div>
+
+      <CheckInSystem />
     </div>
   );
-};
-
-export default Index;
+}
