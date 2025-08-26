@@ -66,8 +66,8 @@ const VisitorHistory = () => {
 
     // Sort the filtered results
     filtered.sort((a: VisitorHistoryData, b: VisitorHistoryData) => {
-      let aValue = a[sortField];
-      let bValue = b[sortField];
+      let aValue: string | number = a[sortField];
+      let bValue: string | number = b[sortField];
       
       // Handle null values for check_out_time
       if (sortField === 'check_out_time') {
