@@ -140,29 +140,25 @@ const VisitorInfoForm = ({
   const countOptions = [1, 2, 3, 4, 5];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-8">
       <div>
-        <h3 className="text-lg font-medium">
+        <h3 className="text-3xl font-medium mb-4">
           Besökarinformation | {visitorType === "regular" ? "Vanligt besök" : "Servicepersonal"}
         </h3>
-         <p className="text-sm text-gray-500 mb-3">Vänligen skriv in besökarinformation.</p>
+        <p className="text-xl text-gray-500 mb-6">Vänligen skriv in besökarinformation.</p>
 
-        
-
-        
-        
-        <div className="mb-6">
-          <Label htmlFor="visitor-count">Antal besökare</Label>
+        <div className="mb-8">
+          <Label htmlFor="visitor-count" className="text-xl font-medium mb-3 block">Antal besökare</Label>
           <Select 
             value={visitorCount.toString()} 
             onValueChange={(value) => onVisitorCountChange(parseInt(value))}
           >
-            <SelectTrigger id="visitor-count" className="w-full">
+            <SelectTrigger id="visitor-count" className="w-full h-14 text-xl">
               <SelectValue placeholder="Välj antal" />
             </SelectTrigger>
             <SelectContent>
               {countOptions.map((count) => (
-                <SelectItem key={count} value={count.toString()}>
+                <SelectItem key={count} value={count.toString()} className="text-xl py-3">
                   {count}
                 </SelectItem>
               ))}
@@ -170,8 +166,8 @@ const VisitorInfoForm = ({
           </Select>
         </div>
 
-        <div className="mb-6">
-          <Label htmlFor="company" className={errors.company ? "text-red-500" : ""}>
+        <div className="mb-8">
+          <Label htmlFor="company" className={`text-xl font-medium mb-3 block ${errors.company ? "text-red-500" : ""}`}>
             Företag {errors.company && <span className="text-red-500">*</span>}
           </Label>
           <Input 
@@ -184,22 +180,22 @@ const VisitorInfoForm = ({
                 setErrors(prev => ({ ...prev, company: false }));
               }
             }}
-            className={errors.company ? "border-red-500" : ""}
+            className={`h-14 text-xl ${errors.company ? "border-red-500" : ""}`}
             placeholder="Företagsnamn"
           />
           {errors.company && (
-            <p className="text-red-500 text-xs mt-1">Ange namn på företag/organisation</p>
+            <p className="text-red-500 text-base mt-2">Ange namn på företag/organisation</p>
           )}
         </div>
         
         {visitors.map((visitor, index) => (
-          <div key={visitor.id} className="p-4 bg-gray-50 rounded-md mb-4">
-            <h4 className="font-medium mb-3">Besökare {index + 1}</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div key={visitor.id} className="p-6 bg-gray-50 rounded-lg mb-6">
+            <h4 className="font-medium mb-5 text-2xl">Besökare {index + 1}</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <Label 
                   htmlFor={`visitor-${index}-firstName`}
-                  className={errors[`visitor-${index}-firstName`] ? "text-red-500" : ""}
+                  className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-firstName`] ? "text-red-500" : ""}`}
                 >
                   Förnamn {errors[`visitor-${index}-firstName`] && <span className="text-red-500">*</span>}
                 </Label>
@@ -209,18 +205,18 @@ const VisitorInfoForm = ({
                   value={visitor.firstName}
                   onChange={(e) => handleVisitorChange(index, "firstName", e.target.value)}
                   onBlur={() => handleNameBlur(index, "firstName")}
-                  className={errors[`visitor-${index}-firstName`] ? "border-red-500" : ""}
+                  className={`h-14 text-xl ${errors[`visitor-${index}-firstName`] ? "border-red-500" : ""}`}
                   placeholder="Förnamn"
                 />
                 {errors[`visitor-${index}-firstName`] && (
-                  <p className="text-red-500 text-xs mt-1">Ange ett förnamn</p>
+                  <p className="text-red-500 text-base mt-2">Ange ett förnamn</p>
                 )}
               </div>
               
               <div>
                 <Label 
                   htmlFor={`visitor-${index}-lastName`}
-                  className={errors[`visitor-${index}-lastName`] ? "text-red-500" : ""}
+                  className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-lastName`] ? "text-red-500" : ""}`}
                 >
                   Efternamn {errors[`visitor-${index}-lastName`] && <span className="text-red-500">*</span>}
                 </Label>
@@ -230,11 +226,11 @@ const VisitorInfoForm = ({
                   value={visitor.lastName}
                   onChange={(e) => handleVisitorChange(index, "lastName", e.target.value)}
                   onBlur={() => handleNameBlur(index, "lastName")}
-                  className={errors[`visitor-${index}-lastName`] ? "border-red-500" : ""}
+                  className={`h-14 text-xl ${errors[`visitor-${index}-lastName`] ? "border-red-500" : ""}`}
                   placeholder="Efternamn"
                 />
                 {errors[`visitor-${index}-lastName`] && (
-                  <p className="text-red-500 text-xs mt-1">Ange ett efternamn</p>
+                  <p className="text-red-500 text-base mt-2">Ange ett efternamn</p>
                 )}
               </div>
             </div>
@@ -242,7 +238,7 @@ const VisitorInfoForm = ({
         ))}
       </div>
       
-      <Button type="submit" className="w-full bg-[#3B82F6]">
+      <Button type="submit" className="w-full bg-[#3B82F6] h-16 text-2xl">
         Fortsätt
       </Button>
     </form>
