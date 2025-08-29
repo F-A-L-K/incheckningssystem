@@ -15,34 +15,30 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Break down the query to avoid complex type inference
-    const query = supabase
+    // Use a simplified query approach to avoid type inference issues
+    const { data: rawData, error } = await supabase
       .from('CHECKIN_visitors')
-      .select('name');
-    
-    // Apply filters step by step
-    const filteredQuery = query
+      .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
       .ilike('name', `${namePrefix}%`)
       .not('name', 'is', null);
 
-    // Execute the query with explicit typing
-    const result = await filteredQuery;
-    const data = result.data as Array<{ name: string }> | null;
-    const error = result.error;
-
-    if (error || !data) {
+    if (error) {
       console.error('Error fetching frequent visitors:', error);
       return [];
     }
 
+    // Safely handle the data with explicit type checking
+    const visitors = rawData || [];
+    const validVisitors = visitors.filter((item): item is { name: string } => 
+      item && typeof item === 'object' && 'name' in item && typeof item.name === 'string'
+    );
+
     // Count occurrences of each name
     const nameCounts: Record<string, number> = {};
-    data.forEach((visitor) => {
-      if (visitor.name && typeof visitor.name === 'string') {
-        nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
-      }
+    validVisitors.forEach((visitor) => {
+      nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
     });
 
     // Filter names that appear at least 3 times and sort by frequency
