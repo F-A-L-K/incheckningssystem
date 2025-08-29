@@ -8,7 +8,7 @@ const LanguageSwitcher = () => {
   const languages = [
     { code: 'sv', name: 'Svenska', flag: 'se' },
     { code: 'en', name: 'English', flag: 'gb' },
-    { code: 'de', name: 'Deutsch', flag: 'de' },
+    // { code: 'de', name: 'Deutsch', flag: 'de' },
   ];
 
   return (
