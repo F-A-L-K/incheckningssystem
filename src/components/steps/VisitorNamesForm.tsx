@@ -24,6 +24,7 @@ const VisitorNamesForm = ({
 }: VisitorNamesFormProps) => {
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [activeFieldIndex, setActiveFieldIndex] = useState<number | null>(null);
   const { t } = useLanguage();
   const { suggestions, loading, searchVisitors, clearSuggestions } = useVisitorAutocomplete(company);
 
@@ -60,6 +61,9 @@ const VisitorNamesForm = ({
     newVisitors[index] = { ...newVisitors[index], fullName: value };
     setVisitors(newVisitors);
     
+    // Set this field as active
+    setActiveFieldIndex(index);
+    
     // Clear error for this field if value is not empty
     if (value) {
       setErrors(prev => ({ ...prev, [`visitor-${index}-fullName`]: false }));
@@ -78,6 +82,7 @@ const VisitorNamesForm = ({
     newVisitors[index] = { ...newVisitors[index], fullName: selectedName };
     setVisitors(newVisitors);
     clearSuggestions();
+    setActiveFieldIndex(null);
     
     // Clear any error for this field
     setErrors(prev => ({ ...prev, [`visitor-${index}-fullName`]: false }));
@@ -93,8 +98,15 @@ const VisitorNamesForm = ({
       setVisitors(newVisitors);
     }
     
-    // Clear suggestions when field loses focus
-    setTimeout(() => clearSuggestions(), 150);
+    // Clear suggestions and active field when field loses focus
+    setTimeout(() => {
+      clearSuggestions();
+      setActiveFieldIndex(null);
+    }, 150);
+  };
+
+  const handleFieldFocus = (index: number) => {
+    setActiveFieldIndex(index);
   };
 
   const validateForm = (): boolean => {
@@ -139,8 +151,9 @@ const VisitorNamesForm = ({
                 value={visitor.fullName || ''}
                 onChange={(e) => handleVisitorChange(index, e.target.value)}
                 onBlur={() => handleNameBlur(index)}
+                onFocus={() => handleFieldFocus(index)}
                 onOptionSelect={(selectedName) => handleAutocompleteSelect(index, selectedName)}
-                options={suggestions}
+                options={activeFieldIndex === index ? suggestions : []}
                 loading={loading}
                 className={`h-14 text-2xl ${errors[`visitor-${index}-fullName`] ? "border-red-500" : ""}`}
                 placeholder={`${t('visitor')} ${index + 1}`}
