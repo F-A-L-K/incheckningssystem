@@ -15,34 +15,28 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use rpc with a simple query to completely avoid type inference issues
-    const { data, error } = await supabase.rpc('exec', {
-      sql: `
-        SELECT name 
-        FROM "CHECKIN_visitors" 
-        WHERE company = $1 
-        AND is_school_visit = false 
-        AND name ILIKE $2 
-        AND name IS NOT NULL
-      `,
-      args: [company, `${namePrefix}%`]
-    });
+    const { data, error } = await supabase
+      .from('CHECKIN_visitors')
+      .select('name')
+      .eq('company', company)
+      .eq('is_school_visit', false)
+      .ilike('name', `${namePrefix}%`)
+      .not('name', 'is', null);
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
       return [];
     }
 
-    if (!data || !Array.isArray(data)) {
+    if (!data) {
       return [];
     }
 
     // Count occurrences of each name
-    const nameCounts: Record<string, number> = {};
-    data.forEach((row: any) => {
-      const name = row.name;
-      if (name && typeof name === 'string') {
-        nameCounts[name] = (nameCounts[name] || 0) + 1;
+    const nameCounts: { [key: string]: number } = {};
+    data.forEach((visitor: { name: string | null }) => {
+      if (visitor.name) {
+        nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
     });
 
