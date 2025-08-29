@@ -46,6 +46,7 @@ const HOSTS: Host[] = [
   { id: 11, name: "Jonathan Lind", department: "Logistik" },
   { id: 12, name: "Roland Mellin", department: "Teknik" },
   { id: 13, name: "Lena Bergquist", department: "Lager" },
+  
 ];
 
 type Step = 
@@ -80,7 +81,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   const [visitorCount, setVisitorCount] = useState<number>(1);
   const [company, setCompany] = useState<string>("");
   const [school, setSchool] = useState<string>("");
-  const [teacherName, setTeacherName] = useState<string>("");
+  const [teacherCount, setTeacherCount] = useState<number>(1);
   const [studentCount, setStudentCount] = useState<number>(1);
   const [selectedHost, setSelectedHost] = useState<Host | null>(null);
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
@@ -115,7 +116,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setVisitorCount(1);
     setCompany("");
     setSchool("");
-    setTeacherName("");
+    setTeacherCount(1);
     setStudentCount(1);
     setSelectedHost(null);
     setTermsAccepted(false);
@@ -170,10 +171,10 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setStep("host-selection");
   };
 
-  const handleSchoolInfoSubmit = (schoolName: string, teacherNameValue: string, studentCountValue: number) => {
+  const handleSchoolInfoSubmit = (schoolName: string, teachers: number, students: number) => {
     setSchool(schoolName);
-    setTeacherName(teacherNameValue);
-    setStudentCount(studentCountValue);
+    setTeacherCount(teachers);
+    setStudentCount(students);
     setStep("host-selection");
   };
 
@@ -187,32 +188,16 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setLoading(true);
     
     try {
-      if (visitorType === "school") {
-        // For school visits, create a single entry with teacher name and student count
+      // Save each visitor to the database
+      for (const visitor of visitors) {
         const visitorData = {
-          name: teacherName,
-          company: school,
+          name: visitor.fullName || `${visitor.firstName} ${visitor.lastName}`,
+          company: visitorType === "school" ? school : company,
           visiting: selectedHost?.name || "",
-          is_service_personnel: false,
-          is_school_visit: true,
-          student_count: studentCount,
-          teacher_name: teacherName
+          is_service_personnel: visitorType === "service"
         };
         
         await saveVisitor(visitorData);
-      } else {
-        // For regular and service visits, save each visitor individually
-        for (const visitor of visitors) {
-          const visitorData = {
-            name: visitor.fullName || `${visitor.firstName} ${visitor.lastName}`,
-            company: company,
-            visiting: selectedHost?.name || "",
-            is_service_personnel: visitorType === "service",
-            is_school_visit: false
-          };
-          
-          await saveVisitor(visitorData);
-        }
       }
       
       setStep("confirmation");
@@ -316,7 +301,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
           <SchoolInfoForm 
             onSubmit={handleSchoolInfoSubmit}
             initialSchool={school}
-            initialTeacherName={teacherName}
+            initialTeacherCount={teacherCount}
             initialStudentCount={studentCount}
           />
         );
@@ -336,9 +321,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         return <HostSelection hosts={getTranslatedHosts()} onSelect={handleHostSelection} />;
         
       case "terms":
-        const primaryVisitorName = visitorType === "school" 
-          ? teacherName 
-          : visitors.length > 0 ? (visitors[0].fullName || `${visitors[0].firstName} ${visitors[0].lastName}`) : "Besökare";
+        const primaryVisitorName = visitors.length > 0 ? (visitors[0].fullName || `${visitors[0].firstName} ${visitors[0].lastName}`) : "Besökare";
         const visitorInfo = {
           name: primaryVisitorName,
           company: visitorType === "school" ? school : company,
@@ -354,14 +337,14 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
             visitorName={primaryVisitorName}
             visitorInfo={visitorInfo}
             isCheckOut={false}
-            visitorCount={visitorType === "school" ? studentCount : visitors.length}
+            visitorCount={visitors.length}
           />
         );
         
       case "confirmation":
         return (
           <CheckInConfirmation 
-            visitors={visitorType === "school" ? [{id: "1", firstName: teacherName, lastName: ""}] : visitors}
+            visitors={visitors}
             company={visitorType === "school" ? school : company}
             host={selectedHost?.name || ""}
             visitorType={visitorType || "regular"}
