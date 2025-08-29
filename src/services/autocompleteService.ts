@@ -6,6 +6,10 @@ export interface FrequentVisitor {
   visitCount: number;
 }
 
+type VisitorNameRow = {
+  name: string;
+};
+
 export const getFrequentVisitorNames = async (
   company: string, 
   namePrefix: string
@@ -15,14 +19,16 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Explicitly type the query result to avoid deep type instantiation
-    const { data, error } = await supabase
+    // Use a simpler query approach to avoid deep type instantiation
+    const query = supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
       .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null) as { data: { name: string }[] | null; error: any };
+      .not('name', 'is', null);
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
@@ -35,7 +41,7 @@ export const getFrequentVisitorNames = async (
 
     // Count occurrences of each name
     const nameCounts: Record<string, number> = {};
-    data.forEach((visitor) => {
+    (data as VisitorNameRow[]).forEach((visitor) => {
       if (visitor.name) {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
