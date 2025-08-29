@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -16,14 +17,13 @@ interface AutocompleteInputProps {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: () => void;
-  onFocus?: () => void;
   placeholder?: string;
   id?: string;
   type?: string;
 }
 
 const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputProps>(
-  ({ className, options, onOptionSelect, loading, onFocus, ...props }, ref) => {
+  ({ className, options, onOptionSelect, loading, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -82,7 +82,6 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
           ref={ref}
           className={cn(className)}
           onKeyDown={handleKeyDown}
-          onFocus={onFocus}
           autoComplete="off"
         />
         {isOpen && options.length > 0 && (
@@ -98,6 +97,11 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
               >
                 <div className="flex justify-between items-center">
                   <span>{option.label}</span>
+                  {/* {option.visitCount && (
+                    <span className="text-xs text-gray-500">
+                      {option.visitCount} besök
+                    </span>
+                  )} */}
                 </div>
               </div>
             ))}
