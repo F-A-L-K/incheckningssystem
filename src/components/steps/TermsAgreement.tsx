@@ -81,7 +81,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
             <ul className="space-y-2">
               {terms.map((term, index) => (
                 <li key={index} className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
+                  {term && <span className="text-blue-500 mr-2">•</span>}
                   <span className="text-lg">{term}</span>
                 </li>
               ))}
