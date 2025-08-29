@@ -7,6 +7,9 @@ export interface CheckInData {
   company: string;
   visiting: string;
   is_service_personnel: boolean;
+  is_school_visit?: boolean;
+  student_count?: number;
+  teacher_name?: string;
 }
 
 export const saveVisitor = async (visitorData: CheckInData) => {
@@ -115,6 +118,6 @@ export const convertToVisitorFormat = (dbVisitor: any): Visitor => {
     checkInTime: dbVisitor.check_in_time,
     hostName: dbVisitor.visiting,
     company: dbVisitor.company,
-    type: dbVisitor.is_service_personnel ? 'service' : 'regular'
+    type: dbVisitor.is_service_personnel ? 'service' : dbVisitor.is_school_visit ? 'school' : 'regular'
   };
 };

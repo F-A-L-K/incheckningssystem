@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,20 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SchoolInfoFormProps {
-  onSubmit: (school: string, teacherCount: number, studentCount: number) => void;
+  onSubmit: (school: string, teacherName: string, studentCount: number) => void;
   initialSchool?: string;
-  initialTeacherCount?: number;
+  initialTeacherName?: string;
   initialStudentCount?: number;
 }
 
 const SchoolInfoForm = ({ 
   onSubmit, 
   initialSchool = "", 
-  initialTeacherCount = 1,
+  initialTeacherName = "",
   initialStudentCount = 1
 }: SchoolInfoFormProps) => {
   const [school, setSchool] = useState(initialSchool);
-  const [teacherCount, setTeacherCount] = useState(initialTeacherCount);
+  const [teacherName, setTeacherName] = useState(initialTeacherName);
   const [studentCount, setStudentCount] = useState(initialStudentCount);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const { t } = useLanguage();
@@ -33,8 +34,8 @@ const SchoolInfoForm = ({
       valid = false;
     }
 
-    if (teacherCount < 1) {
-      newErrors.teacherCount = true;
+    if (!teacherName.trim()) {
+      newErrors.teacherName = true;
       valid = false;
     }
 
@@ -51,7 +52,7 @@ const SchoolInfoForm = ({
     e.preventDefault();
     
     if (validateForm()) {
-      onSubmit(school, teacherCount, studentCount);
+      onSubmit(school, teacherName, studentCount);
     }
   };
 
@@ -59,6 +60,13 @@ const SchoolInfoForm = ({
     setSchool(value);
     if (value) {
       setErrors(prev => ({ ...prev, school: false }));
+    }
+  };
+
+  const handleTeacherNameChange = (value: string) => {
+    setTeacherName(value);
+    if (value) {
+      setErrors(prev => ({ ...prev, teacherName: false }));
     }
   };
 
@@ -92,28 +100,24 @@ const SchoolInfoForm = ({
             )}
           </div>
 
-          {/* Number of Teachers */}
+          {/* Responsible Teacher Name */}
           <div>
             <Label 
-              htmlFor="teacherCount" 
-              className={`text-xl font-medium mb-3 block ${errors.teacherCount ? "text-red-500" : ""}`}
+              htmlFor="teacherName" 
+              className={`text-xl font-medium mb-3 block ${errors.teacherName ? "text-red-500" : ""}`}
             >
-              {t('numberOfTeachers')} {errors.teacherCount && <span className="text-red-500">*</span>}
+              {t('responsibleTeacher')} {errors.teacherName && <span className="text-red-500">*</span>}
             </Label>
-            <Select value={teacherCount.toString()} onValueChange={(value) => setTeacherCount(parseInt(value))}>
-              <SelectTrigger className={`h-14 text-2xl ${errors.teacherCount ? "border-red-500" : ""}`}>
-                <SelectValue placeholder={t('selectNumber')} />
-              </SelectTrigger>
-              <SelectContent>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                  <SelectItem key={num} value={num.toString()} className="text-xl">
-                    {num}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.teacherCount && (
-              <p className="text-red-500 text-base mt-2">{t('selectValidNumber')}</p>
+            <Input
+              id="teacherName"
+              type="text"
+              value={teacherName}
+              onChange={(e) => handleTeacherNameChange(e.target.value)}
+              className={`h-14 text-2xl ${errors.teacherName ? "border-red-500" : ""}`}
+              placeholder={t('responsibleTeacherPlaceholder')}
+            />
+            {errors.teacherName && (
+              <p className="text-red-500 text-base mt-2">{t('enterTeacherName')}</p>
             )}
           </div>
 
