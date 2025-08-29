@@ -52,14 +52,14 @@ const translations = {
     termsVisitors: 'Besökare skall vara inskrivna i systemet.',
     termsPhotography: 'Fotografering är förbjuden.',
     termsSmokeFree: 'Vi har en rökfri arbetsplats. Rökning kan ske utomhus vid uppsatta askkoppar.',
-    termsRegularProducts: 'Rör aldrig maskinutrustning och ta inte med händer i några produkter.',
-    termsServiceProducts: 'Rör aldrig några produkter.',
-    termsEmergency: 'I händelse av nödsignal lämna byggnaden och uppsök samlingspunkten bakom fabriken i kanten av parkeringen.',
+    termsRegularProducts: 'Rör aldrig maskinutrustning, material eller producerade artiklar.',
+    termsServiceProducts: 'Rör aldrig några detaljer.',
+    termsEmergency: 'I händelse av nödsignal, lämna byggnaden och uppsök samlingspunkten bakom fabriken i kanten av parkeringen.',
     termsHotWork: 'Heta arbeten får endast utföras av behörig personal. En godkänd blankett ska vara signerad och tillgänglig innan arbetet påbörjas.',
     termsSafety: 'Använd alltid korrekt säkerhetsutrustning som är anpassad till det arbete som ska utföras. Kontakta din beställare vid osäkerhet om vad som krävs.',
     termsWasteSort: 'Vi tillämpar källsortering. Om du producerar avfall under ditt arbete, fråga din beställare var det ska läggas och följ angivna rutiner.',
     termsWorkComplete: 'Säkerställ att allt arbete är slutfört enligt överenskommelse och att arbetsområdet är återställt innan du lämnar. Efter genomfört arbete ska beställaren tillsammans med besökaren gå igenom vad som gjorts samt erhålla eventuell servicerapport.',
-    termsCheckOut: 'Anmäl till din beställare när du lämnar lokalen och checka ut dig i entrén innan du lämnar byggnaden',
+    termsCheckOut: 'Anmäl till din beställare när du lämnar lokalen och checka ut dig i entrén innan du lämnar byggnaden.',
     // Department translations
     departmentVD: 'VD',
     departmentProduktionsledning: 'Produktionsledning',
@@ -93,7 +93,7 @@ const translations = {
     // Host Selection
     visitingHost: 'Besöksvärd',
     pleaseSelectHost: 'Vänligen välj i listan vem ni besöker genom att klicka på namnet.',
-    searchPlaceholder: 'Sök efter namn eller avdelning...',
+    searchPlaceholder: 'Sök efter namn...',
     noMatchingPersons: 'Inga matchande personer hittades',
     // Check In Confirmation
     checkInCompleted: 'Incheckning genomförd!',
@@ -212,7 +212,7 @@ const translations = {
     // Host Selection
     visitingHost: 'Visiting Host',
     pleaseSelectHost: 'Please select from the list who you are visiting by clicking on the name.',
-    searchPlaceholder: 'Search by name or department...',
+    searchPlaceholder: 'Search by name...',
     noMatchingPersons: 'No matching persons found',
     // Check In Confirmation
     checkInCompleted: 'Check-in completed!',

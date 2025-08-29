@@ -97,7 +97,7 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
               <div
                 key={option.value}
                 className={cn(
-                  "px-3 py-2 cursor-pointer text-sm hover:bg-gray-100",
+                  "px-3 py-2 cursor-pointer text-lg hover:bg-gray-100",
                   selectedIndex === index && "bg-gray-100"
                 )}
                 onClick={() => handleOptionClick(option.value)}

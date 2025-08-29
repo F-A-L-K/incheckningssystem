@@ -50,7 +50,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 
   const terms = visitorType === "service" 
     ? [
-        t('termsVisitors'),
+        // t('termsVisitors'),
         t('termsPhotography'),
         t('termsSmokeFree'),
         t('termsServiceProducts'),
@@ -63,7 +63,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
         t('termsCheckOut'),
       ]
     : [
-        t('termsVisitors'),
+        // t('termsVisitors'),
         t('termsPhotography'),
         t('termsSmokeFree'),
         t('termsRegularProducts'),
@@ -74,15 +74,16 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
     <>
       <div className="space-y-6 relative pb-12">
         <div>
-          <h3 className="text-lg font-medium mb-4">{t('termsAndSafety')}</h3>
-          
+          {/* <h3 className="text-lg font-medium mb-4">{t('termsAndSafety')}</h3>
+           */}
+           <h4 className="font-medium text-lg mb-3">{t('byContunuingYouAgree')}</h4>
           <div className="bg-gray-50 p-4 rounded-md mb-6">
-            <h4 className="font-medium mb-3">{t('byContunuingYouAgree')}</h4>
+            
             <ul className="space-y-2">
               {terms.map((term, index) => (
                 <li key={index} className="flex items-start">
                   <span className="text-blue-500 mr-2">•</span>
-                  <span className="text-sm">{term}</span>
+                  <span className="text-lg">{term}</span>
                 </li>
               ))}
             </ul>
@@ -93,7 +94,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
           <Button 
             onClick={handleSubmit}
             disabled={loading || isSubmitting}
-            className="w-full bg-[#3B82F6]"
+            className="w-full bg-[#3B82F6] h-16 text-lg  "
           >
             {(loading || isSubmitting) ? t('checkingIn') : t('acceptTermsAndCheckIn')}
           </Button>

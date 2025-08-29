@@ -23,8 +23,8 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
   const filteredHosts = search.trim() === "" 
     ? sortedHosts 
     : sortedHosts.filter(host => 
-        host.name.toLowerCase().includes(search.toLowerCase()) ||
-        host.department.toLowerCase().includes(search.toLowerCase())
+        host.name.toLowerCase().includes(search.toLowerCase())
+        // host.department.toLowerCase().includes(search.toLowerCase())
       );
   
   const handleSelect = (host: Host) => {
