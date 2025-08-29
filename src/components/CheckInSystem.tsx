@@ -147,7 +147,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
       // Save each visitor to the database
       for (const visitor of visitors) {
         const visitorData = {
-          name: `${visitor.firstName} ${visitor.lastName}`,
+          name: visitor.fullName || `${visitor.firstName} ${visitor.lastName}`,
           company,
           visiting: selectedHost?.name || "",
           is_service_personnel: visitorType === "service"
@@ -252,7 +252,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         return <HostSelection hosts={HOSTS} onSelect={handleHostSelection} />;
         
       case "terms":
-        const primaryVisitorName = visitors.length > 0 ? `${visitors[0].firstName} ${visitors[0].lastName}` : "Besökare";
+        const primaryVisitorName = visitors.length > 0 ? (visitors[0].fullName || `${visitors[0].firstName} ${visitors[0].lastName}`) : "Besökare";
         const visitorInfo = {
           name: primaryVisitorName,
           company: company,
