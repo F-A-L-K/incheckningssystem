@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Host } from "@/types/visitors";
 import { Check } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -15,6 +16,8 @@ interface HostSelectionProps {
 const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
   const [search, setSearch] = useState("");
   const [selectedHostId, setSelectedHostId] = useState<number | null>(null);
+  const [isCustomDialogOpen, setIsCustomDialogOpen] = useState(false);
+  const [customHostName, setCustomHostName] = useState("");
   const { t } = useLanguage();
   
   // Sort hosts by ID first, then filter by search
@@ -30,6 +33,20 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
   const handleSelect = (host: Host) => {
     setSelectedHostId(host.id);
     onSelect(host);
+  };
+
+  const handleCustomHostSubmit = () => {
+    if (customHostName.trim()) {
+      const customHost: Host = {
+        id: -1, // Use -1 for custom hosts
+        name: customHostName.trim(),
+        department: "Annan"
+      };
+      setSelectedHostId(-1);
+      onSelect(customHost);
+      setIsCustomDialogOpen(false);
+      setCustomHostName("");
+    }
   };
   
   return (
@@ -69,6 +86,59 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
                   )}
                 </div>
               ))}
+              
+              {/* Annan... button */}
+              <Dialog open={isCustomDialogOpen} onOpenChange={setIsCustomDialogOpen}>
+                <DialogTrigger asChild>
+                  <div className={`
+                    relative p-4 rounded-lg cursor-pointer text-center transition-all
+                    ${selectedHostId === -1 
+                      ? 'bg-primary text-primary-foreground shadow-md scale-105' 
+                      : 'bg-card border border-border hover:bg-accent hover:text-accent-foreground hover:shadow-sm'
+                    }
+                  `}>
+                    <p className="font-medium text-lg leading-tight">Annan...</p>
+                    {selectedHostId === -1 && (
+                      <Check className="absolute top-2 right-2 h-5 w-5" />
+                    )}
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Ange namn på besöksvärd</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Input
+                      placeholder="Skriv namn här..."
+                      value={customHostName}
+                      onChange={(e) => setCustomHostName(e.target.value)}
+                      className="text-lg py-4 px-4"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleCustomHostSubmit();
+                        }
+                      }}
+                    />
+                    <div className="flex gap-2 justify-end">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setIsCustomDialogOpen(false);
+                          setCustomHostName("");
+                        }}
+                      >
+                        Avbryt
+                      </Button>
+                      <Button
+                        onClick={handleCustomHostSubmit}
+                        disabled={!customHostName.trim()}
+                      >
+                        Bekräfta
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           ) : (
             <div className="text-center py-8 text-muted-foreground text-lg">
