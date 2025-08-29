@@ -1,5 +1,5 @@
 
-export type VisitorType = "regular" | "service";
+export type VisitorType = "regular" | "service" | "school";
 
 export interface Visitor {
   id: string;

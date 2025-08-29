@@ -71,10 +71,14 @@ const translations = {
     // Visitor Type Selection
     visitorType: 'Besökstyp',
     pleaseSelectVisitorType: 'Vänligen välj besökstyp genom att klicka på en besöksruta.',
+    generalVisit: 'Allmänt besök',
+    generalVisitDescription: 'Möten, intervjuer eller andra besök',
     regularVisit: 'Vanligt besök',
     regularVisitDescription: 'Möten, intervjuer eller andra besök',
     serviceVisit: 'Service besök',
     serviceVisitDescription: 'Underhåll, bygg eller servicearbete',
+    schoolVisit: 'Skolbesök',
+    schoolVisitDescription: 'Utbildning och skolrelaterade besök',
     faceIdentification: 'Ansiktsidentifiering',
     choose: 'Välj',
     // Host Selection
@@ -177,10 +181,14 @@ const translations = {
     // Visitor Type Selection
     visitorType: 'Visitor Type',
     pleaseSelectVisitorType: 'Please select visitor type by clicking on a visit box.',
+    generalVisit: 'General visit',
+    generalVisitDescription: 'Meetings, interviews or other visits',
     regularVisit: 'Regular visit',
     regularVisitDescription: 'Meetings, interviews or other visits',
     serviceVisit: 'Service visit',
     serviceVisitDescription: 'Maintenance, construction or service work',
+    schoolVisit: 'School visit',
+    schoolVisitDescription: 'Education and school-related visits',
     faceIdentification: 'Face identification',
     choose: 'Choose',
     // Host Selection
@@ -283,10 +291,14 @@ const translations = {
     // Visitor Type Selection
     visitorType: 'Besuchertyp',
     pleaseSelectVisitorType: 'Bitte wählen Sie den Besuchertyp durch Klicken auf ein Besuchsfeld.',
+    generalVisit: 'Allgemeiner Besuch',
+    generalVisitDescription: 'Besprechungen, Interviews oder andere Besuche',
     regularVisit: 'Regulärer Besuch',
     regularVisitDescription: 'Besprechungen, Interviews oder andere Besuche',
     serviceVisit: 'Service-Besuch',
     serviceVisitDescription: 'Wartung, Bau oder Servicearbeiten',
+    schoolVisit: 'Schulbesuch',
+    schoolVisitDescription: 'Bildung und schulbezogene Besuche',
     faceIdentification: 'Gesichtserkennung',
     choose: 'Wählen',
     // Host Selection
