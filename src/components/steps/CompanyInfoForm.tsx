@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 import { VisitorType } from "@/types/visitors";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -81,27 +81,19 @@ const CompanyInfoForm = ({
 
         <div className="mb-8">
           <Label className="text-xl font-medium mb-3 block">{t('numberOfVisitors')}</Label>
-          <RadioGroup 
-            value={visitorCount.toString()} 
-            onValueChange={(value) => onVisitorCountChange(parseInt(value))}
-            className="flex flex-row gap-4"
-          >
+          <div className="flex gap-2">
             {countOptions.map((count) => (
-              <div key={count} className="flex items-center space-x-2">
-                <RadioGroupItem 
-                  value={count.toString()} 
-                  id={`visitor-${count}`}
-                  className="h-6 w-6"
-                />
-                <Label 
-                  htmlFor={`visitor-${count}`} 
-                  className="text-xl font-medium cursor-pointer"
-                >
-                  {count}
-                </Label>
-              </div>
+              <Button
+                key={count}
+                type="button"
+                variant={visitorCount === count ? "default" : "outline"}
+                onClick={() => onVisitorCountChange(count)}
+                className="h-12 w-12 text-xl font-medium"
+              >
+                {count}
+              </Button>
             ))}
-          </RadioGroup>
+          </div>
         </div>
       </div>
       
