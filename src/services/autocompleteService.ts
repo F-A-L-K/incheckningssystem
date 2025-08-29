@@ -15,26 +15,44 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
+    // Use rpc to bypass complex type inference
+    const { data, error } = await supabase.rpc('get_frequent_visitor_names', {
+      company_param: company,
+      name_prefix: namePrefix
+    });
+
+    if (error) {
+      console.error('Error fetching frequent visitors:', error);
+      // Fallback to direct query if RPC fails
+      return await fallbackQuery(company, namePrefix);
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in getFrequentVisitorNames:', error);
+    // Fallback to direct query
+    return await fallbackQuery(company, namePrefix);
+  }
+};
+
+// Fallback function with explicit typing to avoid type inference issues
+const fallbackQuery = async (company: string, namePrefix: string): Promise<FrequentVisitor[]> => {
+  try {
     const { data, error } = await supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
       .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null);
+      .not('name', 'is', null) as { data: { name: string }[] | null, error: any };
 
-    if (error) {
-      console.error('Error fetching frequent visitors:', error);
-      return [];
-    }
-
-    if (!data) {
+    if (error || !data) {
       return [];
     }
 
     // Count occurrences of each name
-    const nameCounts: { [key: string]: number } = {};
-    data.forEach((visitor: { name: string | null }) => {
+    const nameCounts: Record<string, number> = {};
+    data.forEach((visitor) => {
       if (visitor.name) {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
@@ -48,7 +66,7 @@ export const getFrequentVisitorNames = async (
 
     return frequentVisitors;
   } catch (error) {
-    console.error('Error in getFrequentVisitorNames:', error);
+    console.error('Error in fallbackQuery:', error);
     return [];
   }
 };
