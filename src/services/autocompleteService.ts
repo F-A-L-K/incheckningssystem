@@ -20,8 +20,7 @@ export const getFrequentVisitorNames = async (
       .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
-      .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null);
+      .ilike('name', `${namePrefix}%`);
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
@@ -32,10 +31,10 @@ export const getFrequentVisitorNames = async (
       return [];
     }
 
-    // Count occurrences of each name
+    // Count occurrences of each name and filter out null/empty names
     const nameCounts: { [key: string]: number } = {};
-    data.forEach((visitor: { name: string | null }) => {
-      if (visitor.name) {
+    data.forEach((visitor) => {
+      if (visitor.name && visitor.name.trim()) {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
     });
