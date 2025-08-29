@@ -72,8 +72,8 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
               <CardContent className="p-8 h-full flex flex-col">
                 {/* Icon in top left */}
                 <div className="flex justify-start mb-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <Wrench className="h-6 w-6 text-green-600" />
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Wrench className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
                 
@@ -85,8 +85,8 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
                 
                 {/* Bottom section with arrow and "Välj" */}
                 <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
-                  <span className="text-lg font-medium text-green-600">Välj</span>
-                  <ArrowRight className="h-5 w-5 text-green-600" />
+                  <span className="text-lg font-medium text-blue-600">Välj</span>
+                  <ArrowRight className="h-5 w-5 text-blue-600" />
                 </div>
               </CardContent>
             </Card>

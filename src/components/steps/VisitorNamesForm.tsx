@@ -26,10 +26,12 @@ const VisitorNamesForm = ({
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const { t } = useLanguage();
 
-  // Function to capitalize first letter and make rest lowercase
-  const formatName = (name: string): string => {
+  // Function to capitalize first letter and letters after spaces, make rest lowercase
+  const formatFullName = (name: string): string => {
     if (!name) return name;
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    return name.split(' ').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    ).join(' ');
   };
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const VisitorNamesForm = ({
       
       // Ensure we have the right number of visitors
       while (newVisitors.length < visitorCount) {
-        newVisitors.push({ id: uuidv4(), firstName: "", lastName: "" });
+        newVisitors.push({ id: uuidv4(), firstName: "", lastName: "", fullName: "" });
       }
       
       setVisitors(newVisitors.slice(0, visitorCount));
@@ -46,30 +48,30 @@ const VisitorNamesForm = ({
       // Create empty visitors if no initial data
       const newVisitors = [];
       for (let i = 0; i < visitorCount; i++) {
-        newVisitors.push({ id: uuidv4(), firstName: "", lastName: "" });
+        newVisitors.push({ id: uuidv4(), firstName: "", lastName: "", fullName: "" });
       }
       setVisitors(newVisitors);
     }
   }, [visitorCount, initialVisitors]);
 
-  const handleVisitorChange = (index: number, field: "firstName" | "lastName", value: string) => {
+  const handleVisitorChange = (index: number, value: string) => {
     const newVisitors = [...visitors];
-    newVisitors[index] = { ...newVisitors[index], [field]: value };
+    newVisitors[index] = { ...newVisitors[index], fullName: value };
     setVisitors(newVisitors);
     
     // Clear error for this field if value is not empty
     if (value) {
-      setErrors(prev => ({ ...prev, [`visitor-${index}-${field}`]: false }));
+      setErrors(prev => ({ ...prev, [`visitor-${index}-fullName`]: false }));
     }
   };
 
-  const handleNameBlur = (index: number, field: "firstName" | "lastName") => {
+  const handleNameBlur = (index: number) => {
     const newVisitors = [...visitors];
-    const currentValue = newVisitors[index][field];
-    const formattedValue = formatName(currentValue);
+    const currentValue = newVisitors[index].fullName;
+    const formattedValue = formatFullName(currentValue);
     
     if (currentValue !== formattedValue) {
-      newVisitors[index] = { ...newVisitors[index], [field]: formattedValue };
+      newVisitors[index] = { ...newVisitors[index], fullName: formattedValue };
       setVisitors(newVisitors);
     }
   };
@@ -80,12 +82,8 @@ const VisitorNamesForm = ({
     
     // Check all visitors have names
     visitors.forEach((visitor, index) => {
-      if (!visitor.firstName.trim()) {
-        newErrors[`visitor-${index}-firstName`] = true;
-        valid = false;
-      }
-      if (!visitor.lastName.trim()) {
-        newErrors[`visitor-${index}-lastName`] = true;
+      if (!visitor.fullName?.trim()) {
+        newErrors[`visitor-${index}-fullName`] = true;
         valid = false;
       }
     });
@@ -113,48 +111,25 @@ const VisitorNamesForm = ({
         {visitors.map((visitor, index) => (
           <div key={visitor.id} className="p-6 bg-gray-50 rounded-lg mb-6">
             <h4 className="font-medium mb-5 text-2xl">{t('visitor')} {index + 1}</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <Label 
-                  htmlFor={`visitor-${index}-firstName`}
-                  className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-firstName`] ? "text-red-500" : ""}`}
-                >
-                  {t('firstName')} {errors[`visitor-${index}-firstName`] && <span className="text-red-500">*</span>}
-                </Label>
-                <Input
-                  id={`visitor-${index}-firstName`}
-                  type="text"
-                  value={visitor.firstName}
-                  onChange={(e) => handleVisitorChange(index, "firstName", e.target.value)}
-                  onBlur={() => handleNameBlur(index, "firstName")}
-                  className={`h-14 text-2xl ${errors[`visitor-${index}-firstName`] ? "border-red-500" : ""}`}
-                  placeholder={t('firstNamePlaceholder')}
-                />
-                {errors[`visitor-${index}-firstName`] && (
-                  <p className="text-red-500 text-base mt-2">{t('enterFirstName')}</p>
-                )}
-              </div>
-              
-              <div>
-                <Label 
-                  htmlFor={`visitor-${index}-lastName`}
-                  className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-lastName`] ? "text-red-500" : ""}`}
-                >
-                  {t('lastName')} {errors[`visitor-${index}-lastName`] && <span className="text-red-500">*</span>}
-                </Label>
-                <Input
-                  id={`visitor-${index}-lastName`}
-                  type="text"
-                  value={visitor.lastName}
-                  onChange={(e) => handleVisitorChange(index, "lastName", e.target.value)}
-                  onBlur={() => handleNameBlur(index, "lastName")}
-                  className={`h-14 text-2xl ${errors[`visitor-${index}-lastName`] ? "border-red-500" : ""}`}
-                  placeholder={t('lastNamePlaceholder')}
-                />
-                {errors[`visitor-${index}-lastName`] && (
-                  <p className="text-red-500 text-base mt-2">{t('enterLastName')}</p>
-                )}
-              </div>
+            <div>
+              <Label 
+                htmlFor={`visitor-${index}-fullName`}
+                className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-fullName`] ? "text-red-500" : ""}`}
+              >
+                Skriv in fullständigt namn {errors[`visitor-${index}-fullName`] && <span className="text-red-500">*</span>}
+              </Label>
+              <Input
+                id={`visitor-${index}-fullName`}
+                type="text"
+                value={visitor.fullName || ''}
+                onChange={(e) => handleVisitorChange(index, e.target.value)}
+                onBlur={() => handleNameBlur(index)}
+                className={`h-14 text-2xl ${errors[`visitor-${index}-fullName`] ? "border-red-500" : ""}`}
+                placeholder="Förnamn Efternamn"
+              />
+              {errors[`visitor-${index}-fullName`] && (
+                <p className="text-red-500 text-base mt-2">Ange fullständigt namn</p>
+              )}
             </div>
           </div>
         ))}

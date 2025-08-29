@@ -5,6 +5,7 @@ export interface Visitor {
   id: string;
   firstName: string;
   lastName: string;
+  fullName?: string;
   checkInTime?: string;
   hostName?: string;
   company?: string;
