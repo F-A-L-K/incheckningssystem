@@ -15,9 +15,12 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    const { data, error } = await supabase
+    // Break down the query to avoid deep type instantiation
+    const query = supabase
       .from('CHECKIN_visitors')
-      .select('name')
+      .select('name');
+    
+    const { data, error } = await query
       .eq('company', company)
       .eq('is_school_visit', false)
       .ilike('name', `${namePrefix}%`);
