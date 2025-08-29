@@ -13,6 +13,23 @@ import { Button } from "@/components/ui/button";
 import { saveVisitor, getCheckedInVisitors, checkOutVisitor, convertToVisitorFormat } from "@/services/visitorService";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+// Department mapping function
+const getDepartmentTranslationKey = (department: string): string => {
+  const departmentMap: Record<string, string> = {
+    "VD": "departmentVD",
+    "Produktionsledning": "departmentProduktionsledning", 
+    "Försäljning": "departmentForsaljning",
+    "Processutveckling": "departmentProcessutveckling",
+    "Produktionsteknik": "departmentProduktionsteknik",
+    "Kvalitet- och miljö": "departmentKvalitetOchMiljo",
+    "Teknik": "departmentTeknik",
+    "Ekonomi": "departmentEkonomi",
+    "Logistik": "departmentLogistik",
+    "Lager": "departmentLager"
+  };
+  return departmentMap[department] || department;
+};
+
 // Mock data for hosts
 const HOSTS: Host[] = [
   { id: 1, name: "Per Falk", department: "VD" },
@@ -48,6 +65,14 @@ interface CheckInSystemProps {
 const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: CheckInSystemProps) => {
   const { toast } = useToast();
   const { t } = useLanguage();
+  
+  // Create translated hosts based on current language
+  const getTranslatedHosts = (): Host[] => {
+    return HOSTS.map(host => ({
+      ...host,
+      department: t(getDepartmentTranslationKey(host.department) as any) as string
+    }));
+  };
   const [step, setStep] = useState<Step>(initialStep);
   const [visitorType, setVisitorType] = useState<VisitorType | null>(null);
   const [visitors, setVisitors] = useState<Visitor[]>([]);
@@ -255,7 +280,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         );
       
       case "host-selection":
-        return <HostSelection hosts={HOSTS} onSelect={handleHostSelection} />;
+        return <HostSelection hosts={getTranslatedHosts()} onSelect={handleHostSelection} />;
         
       case "terms":
         const primaryVisitorName = visitors.length > 0 ? (visitors[0].fullName || `${visitors[0].firstName} ${visitors[0].lastName}`) : "Besökare";

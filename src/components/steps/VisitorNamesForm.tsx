@@ -116,7 +116,7 @@ const VisitorNamesForm = ({
                 htmlFor={`visitor-${index}-fullName`}
                 className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-fullName`] ? "text-red-500" : ""}`}
               >
-                Skriv in fullständigt namn {errors[`visitor-${index}-fullName`] && <span className="text-red-500">*</span>}
+                {t('enterFullName')} {errors[`visitor-${index}-fullName`] && <span className="text-red-500">*</span>}
               </Label>
               <Input
                 id={`visitor-${index}-fullName`}
@@ -125,10 +125,10 @@ const VisitorNamesForm = ({
                 onChange={(e) => handleVisitorChange(index, e.target.value)}
                 onBlur={() => handleNameBlur(index)}
                 className={`h-14 text-2xl ${errors[`visitor-${index}-fullName`] ? "border-red-500" : ""}`}
-                placeholder="Förnamn + Efternamn"
+                placeholder={t('fullNamePlaceholder')}
               />
               {errors[`visitor-${index}-fullName`] && (
-                <p className="text-red-500 text-base mt-2">Ange fullständigt namn</p>
+                <p className="text-red-500 text-base mt-2">{t('enterFullNameError')}</p>
               )}
             </div>
           </div>
