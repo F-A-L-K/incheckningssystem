@@ -15,14 +15,14 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use a simplified query approach to avoid type inference issues
+    // Use explicit any type to avoid type inference issues
     const { data: rawData, error } = await supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
       .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null);
+      .not('name', 'is', null) as { data: any[] | null; error: any };
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
