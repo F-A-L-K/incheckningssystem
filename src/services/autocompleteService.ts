@@ -15,29 +15,32 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
+    // Simplified query to avoid complex type inference
     const { data, error } = await supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
-      .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null);
+      .ilike('name', `${namePrefix}%`);
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
       return [];
     }
 
-    if (!data) {
+    // Filter out null/empty names and process the data
+    const validNames = (data || [])
+      .map(item => item.name)
+      .filter((name): name is string => name != null && name.trim() !== '');
+
+    if (validNames.length === 0) {
       return [];
     }
 
     // Count occurrences of each name
     const nameCounts: { [key: string]: number } = {};
-    data.forEach((visitor: { name: string | null }) => {
-      if (visitor.name) {
-        nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
-      }
+    validNames.forEach((name: string) => {
+      nameCounts[name] = (nameCounts[name] || 0) + 1;
     });
 
     // Filter names that appear at least 3 times and sort by frequency
