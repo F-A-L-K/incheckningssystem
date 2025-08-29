@@ -3,6 +3,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import { VisitorType } from "@/types/visitors";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -15,6 +19,17 @@ interface CompanyInfoFormProps {
   initialCompany?: string;
 }
 
+// Hårdkodade företag för service besök
+const SERVICE_COMPANIES = [
+  "Fanuc",
+  "Inneklimat", 
+  "Westbo Elteknik",
+  "Ravema",
+  "Kaeser",
+  "Uffes mek AB",
+  "Lindroths maskinservice"
+];
+
 const CompanyInfoForm = ({ 
   visitorCount, 
   visitorType, 
@@ -24,6 +39,7 @@ const CompanyInfoForm = ({
 }: CompanyInfoFormProps) => {
   const [company, setCompany] = useState<string>(initialCompany);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [open, setOpen] = useState(false);
   const { t } = useLanguage();
 
   const validateForm = (): boolean => {
@@ -61,19 +77,68 @@ const CompanyInfoForm = ({
           <Label htmlFor="company" className={`text-xl font-medium mb-3 block ${errors.company ? "text-red-500" : ""}`}>
             {t('company')} {errors.company && <span className="text-red-500">*</span>}
           </Label>
-          <Input 
-            id="company"
-            type="text" 
-            value={company} 
-            onChange={(e) => {
-              setCompany(e.target.value);
-              if (e.target.value) {
-                setErrors(prev => ({ ...prev, company: false }));
-              }
-            }}
-            className={`h-14 text-2xl ${errors.company ? "border-red-500" : ""}`}
-            placeholder={t('companyPlaceholder')}
-          />
+          
+          {visitorType === "service" ? (
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className={`w-full h-14 text-2xl justify-between font-normal ${errors.company ? "border-red-500" : ""}`}
+                >
+                  {company || t('companyPlaceholder')}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Sök företag..." />
+                  <CommandList>
+                    <CommandEmpty>Inget företag hittades.</CommandEmpty>
+                    <CommandGroup>
+                      {SERVICE_COMPANIES.map((serviceCompany) => (
+                        <CommandItem
+                          key={serviceCompany}
+                          value={serviceCompany}
+                          onSelect={(currentValue) => {
+                            setCompany(currentValue === company ? "" : currentValue);
+                            setOpen(false);
+                            if (currentValue) {
+                              setErrors(prev => ({ ...prev, company: false }));
+                            }
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              company === serviceCompany ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {serviceCompany}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Input 
+              id="company"
+              type="text" 
+              value={company} 
+              onChange={(e) => {
+                setCompany(e.target.value);
+                if (e.target.value) {
+                  setErrors(prev => ({ ...prev, company: false }));
+                }
+              }}
+              className={`h-14 text-2xl ${errors.company ? "border-red-500" : ""}`}
+              placeholder={t('companyPlaceholder')}
+            />
+          )}
+          
           {errors.company && (
             <p className="text-red-500 text-base mt-2">{t('enterCompanyName')}</p>
           )}
