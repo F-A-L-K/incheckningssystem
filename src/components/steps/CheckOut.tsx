@@ -31,13 +31,14 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut
   useEffect(() => {
     resetAutoCloseTimer();
     
-    // Cleanup on unmount
+    // Cleanup on unmount - CRITICAL: Clear timer when component unmounts
     return () => {
       if (autoCloseTimer) {
         clearTimeout(autoCloseTimer);
+        setAutoCloseTimer(null);
       }
     };
-  }, []);
+  }, [autoCloseTimer]);
   
   // Reset timer on any activity
   const handleActivity = () => {
