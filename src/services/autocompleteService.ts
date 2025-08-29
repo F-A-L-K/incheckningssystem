@@ -15,14 +15,14 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use explicit any type to avoid type inference issues
+    // Simple query without explicit type casting - let TypeScript infer naturally
     const { data: rawData, error } = await supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
       .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null) as { data: any[] | null; error: any };
+      .not('name', 'is', null);
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
