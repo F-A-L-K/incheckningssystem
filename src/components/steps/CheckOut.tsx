@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -14,18 +14,17 @@ interface CheckOutProps {
 const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut }: CheckOutProps) => {
   const [selectedVisitor, setSelectedVisitor] = useState<any | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [autoCloseTimer, setAutoCloseTimer] = useState<NodeJS.Timeout | null>(null);
+  const autoCloseTimer = useRef<NodeJS.Timeout | null>(null);
   const { t } = useLanguage();
   
-  // Auto-close after 45 seconds without activity
+  // Auto-close after 30 seconds without activity
   const resetAutoCloseTimer = () => {
-    if (autoCloseTimer) {
-      clearTimeout(autoCloseTimer);
+    if (autoCloseTimer.current) {
+      clearTimeout(autoCloseTimer.current);
     }
-    const timer = setTimeout(() => {
+    autoCloseTimer.current = setTimeout(() => {
       onCancel();
     }, 30000); // 30 seconds
-    setAutoCloseTimer(timer);
   };
   
   useEffect(() => {
@@ -33,12 +32,12 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut
     
     // Cleanup on unmount - CRITICAL: Clear timer when component unmounts
     return () => {
-      if (autoCloseTimer) {
-        clearTimeout(autoCloseTimer);
-        setAutoCloseTimer(null);
+      if (autoCloseTimer.current) {
+        clearTimeout(autoCloseTimer.current);
+        autoCloseTimer.current = null;
       }
     };
-  }, [autoCloseTimer]);
+  }, []);
   
   // Reset timer on any activity
   const handleActivity = () => {
