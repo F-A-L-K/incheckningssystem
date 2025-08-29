@@ -75,6 +75,22 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Make placeholder text larger and more visible */
+  input::placeholder {
+    font-size: inherit;
+    opacity: 0.6;
+  }
+  
+  input.text-2xl::placeholder {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  input.text-lg::placeholder {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
 }
 
 .animate-fade-in {
