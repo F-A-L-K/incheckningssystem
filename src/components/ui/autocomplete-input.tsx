@@ -97,11 +97,11 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
               >
                 <div className="flex justify-between items-center">
                   <span>{option.label}</span>
-                  {option.visitCount && (
+                  {/* {option.visitCount && (
                     <span className="text-xs text-gray-500">
                       {option.visitCount} besök
                     </span>
-                  )}
+                  )} */}
                 </div>
               </div>
             ))}

@@ -109,9 +109,9 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut
         </div>
       </div>
       
-      <Button variant="outline" onClick={() => { handleActivity(); onCancel(); }} className="w-full text-lg py-4">
+      {/* <Button variant="outline" onClick={() => { handleActivity(); onCancel(); }} className="w-full text-lg py-4">
         {t('cancel')}
-      </Button>
+      </Button> */}
       
       <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
         <DialogContent className="max-w-md">

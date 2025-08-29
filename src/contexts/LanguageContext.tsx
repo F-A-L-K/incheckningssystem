@@ -37,7 +37,7 @@ const translations = {
     continue: 'Fortsätt',
     // Visitor Names Form
     visitorNames: 'Besökarnamn',
-    enterNamesForAllVisitors: 'Ange namn på alla besökare från',
+    enterNamesForAllVisitors: 'Ange fullständiga namn på alla besökare från',
     visitor: 'Besökare',
     firstName: 'Förnamn',
     lastName: 'Efternamn',
@@ -46,7 +46,7 @@ const translations = {
     enterFirstName: 'Ange ett förnamn',
     enterLastName: 'Ange ett efternamn',
     enterFullName: 'Skriv in fullständigt namn',
-    fullNamePlaceholder: 'Förnamn + Efternamn',
+    fullNamePlaceholder: 'namn',
     enterFullNameError: 'Ange fullständigt namn',
     // Terms content
     termsVisitors: 'Besökare skall vara inskrivna i systemet.',
