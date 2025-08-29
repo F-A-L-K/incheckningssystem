@@ -28,16 +28,20 @@ export const getFrequentVisitorNames = async (
       return [];
     }
 
+    if (!data) {
+      return [];
+    }
+
     // Count occurrences of each name
-    const nameCounts: Record<string, number> = {};
-    data.forEach(visitor => {
+    const nameCounts: { [key: string]: number } = {};
+    data.forEach((visitor: { name: string | null }) => {
       if (visitor.name) {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
     });
 
     // Filter names that appear at least 3 times and sort by frequency
-    const frequentVisitors = Object.entries(nameCounts)
+    const frequentVisitors: FrequentVisitor[] = Object.entries(nameCounts)
       .filter(([_, count]) => count >= 3)
       .map(([name, count]) => ({ name, visitCount: count }))
       .sort((a, b) => b.visitCount - a.visitCount);

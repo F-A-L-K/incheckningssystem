@@ -9,14 +9,21 @@ interface AutocompleteOption {
   visitCount?: number;
 }
 
-interface AutocompleteInputProps extends React.ComponentProps<"input"> {
+interface AutocompleteInputProps {
+  className?: string;
   options: AutocompleteOption[];
-  onSelect: (value: string) => void;
+  onOptionSelect: (value: string) => void;
   loading?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: () => void;
+  placeholder?: string;
+  id?: string;
+  type?: string;
 }
 
 const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputProps>(
-  ({ className, options, onSelect, loading, ...props }, ref) => {
+  ({ className, options, onOptionSelect, loading, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -52,7 +59,7 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
         case 'Enter':
           e.preventDefault();
           if (selectedIndex >= 0) {
-            onSelect(options[selectedIndex].value);
+            onOptionSelect(options[selectedIndex].value);
             setIsOpen(false);
           }
           break;
@@ -63,7 +70,7 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
     };
 
     const handleOptionClick = (value: string) => {
-      onSelect(value);
+      onOptionSelect(value);
       setIsOpen(false);
     };
 

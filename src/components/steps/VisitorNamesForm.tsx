@@ -139,7 +139,7 @@ const VisitorNamesForm = ({
                 value={visitor.fullName || ''}
                 onChange={(e) => handleVisitorChange(index, e.target.value)}
                 onBlur={() => handleNameBlur(index)}
-                onSelect={(selectedName) => handleAutocompleteSelect(index, selectedName)}
+                onOptionSelect={(selectedName) => handleAutocompleteSelect(index, selectedName)}
                 options={suggestions}
                 loading={loading}
                 className={`h-14 text-2xl ${errors[`visitor-${index}-fullName`] ? "border-red-500" : ""}`}
