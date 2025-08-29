@@ -3,13 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { VisitorType } from "@/types/visitors";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -86,22 +80,28 @@ const CompanyInfoForm = ({
         </div>
 
         <div className="mb-8">
-          <Label htmlFor="visitor-count" className="text-xl font-medium mb-3 block">{t('numberOfVisitors')}</Label>
-          <Select 
+          <Label className="text-xl font-medium mb-3 block">{t('numberOfVisitors')}</Label>
+          <RadioGroup 
             value={visitorCount.toString()} 
             onValueChange={(value) => onVisitorCountChange(parseInt(value))}
+            className="flex flex-row gap-4"
           >
-            <SelectTrigger id="visitor-count" className="w-full h-14 text-xl">
-              <SelectValue placeholder={t('selectNumber')} />
-            </SelectTrigger>
-            <SelectContent>
-              {countOptions.map((count) => (
-                <SelectItem key={count} value={count.toString()} className="text-xl py-3">
+            {countOptions.map((count) => (
+              <div key={count} className="flex items-center space-x-2">
+                <RadioGroupItem 
+                  value={count.toString()} 
+                  id={`visitor-${count}`}
+                  className="h-6 w-6"
+                />
+                <Label 
+                  htmlFor={`visitor-${count}`} 
+                  className="text-xl font-medium cursor-pointer"
+                >
                   {count}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
         </div>
       </div>
       
