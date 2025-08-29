@@ -24,9 +24,10 @@ interface AutocompleteInputProps {
 
 const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputProps>(
   ({ className, options, onOptionSelect, loading, ...props }, ref) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const containerRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isFocused, setIsFocused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -40,10 +41,10 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
     }, []);
 
     useEffect(() => {
-      // Only show dropdown if there are actual options
-      setIsOpen(options.length > 0);
+      // Only show dropdown if there are actual options AND the input is focused
+      setIsOpen(options.length > 0 && isFocused);
       setSelectedIndex(-1);
-    }, [options]);
+    }, [options, isFocused]);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
       if (!isOpen) return;
@@ -82,6 +83,12 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
           ref={ref}
           className={cn(className)}
           onKeyDown={handleKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={(e) => {
+            // Delay hiding to allow option selection
+            setTimeout(() => setIsFocused(false), 200);
+            if (props.onBlur) props.onBlur();
+          }}
           autoComplete="off"
         />
         {isOpen && options.length > 0 && (

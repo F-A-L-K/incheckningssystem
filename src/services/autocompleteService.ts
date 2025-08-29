@@ -15,13 +15,12 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
+    // @ts-ignore - Temporary workaround for deep type inference issue
     const { data, error } = await supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
-      .eq('is_school_visit', false)
-      .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null);
+      .eq('is_school_visit', false);
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
@@ -32,10 +31,12 @@ export const getFrequentVisitorNames = async (
       return [];
     }
 
-    // Count occurrences of each name
+    // Filter by name prefix and count occurrences
     const nameCounts: { [key: string]: number } = {};
-    data.forEach((visitor: { name: string | null }) => {
-      if (visitor.name) {
+    data.forEach((visitor: any) => {
+      if (visitor.name && 
+          typeof visitor.name === 'string' && 
+          visitor.name.toLowerCase().startsWith(namePrefix.toLowerCase())) {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
     });
