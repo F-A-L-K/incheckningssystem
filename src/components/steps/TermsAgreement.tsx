@@ -50,7 +50,6 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
 
   const terms = visitorType === "service" 
     ? [
-        // t('termsVisitors'),
         t('termsPhotography'),
         t('termsSmokeFree'),
         t('termsServiceProducts'),
@@ -63,7 +62,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
         t('termsCheckOut'),
       ]
     : [
-        // t('termsVisitors'),
+   
         t('termsPhotography'),
         t('termsSmokeFree'),
         t('termsRegularProducts'),
