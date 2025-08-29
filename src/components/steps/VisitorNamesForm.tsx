@@ -125,7 +125,7 @@ const VisitorNamesForm = ({
                 onChange={(e) => handleVisitorChange(index, e.target.value)}
                 onBlur={() => handleNameBlur(index)}
                 className={`h-14 text-2xl ${errors[`visitor-${index}-fullName`] ? "border-red-500" : ""}`}
-                placeholder="Förnamn Efternamn"
+                placeholder="Förnamn + Efternamn"
               />
               {errors[`visitor-${index}-fullName`] && (
                 <p className="text-red-500 text-base mt-2">Ange fullständigt namn</p>
