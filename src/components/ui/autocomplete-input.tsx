@@ -40,6 +40,7 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
     }, []);
 
     useEffect(() => {
+      // Only show dropdown if there are actual options
       setIsOpen(options.length > 0);
       setSelectedIndex(-1);
     }, [options]);
@@ -83,33 +84,27 @@ const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputPr
           onKeyDown={handleKeyDown}
           autoComplete="off"
         />
-        {isOpen && (
+        {isOpen && options.length > 0 && (
           <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
-            {loading ? (
-              <div className="px-3 py-2 text-sm text-gray-500">Söker...</div>
-            ) : options.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-gray-500">Inga förslag</div>
-            ) : (
-              options.map((option, index) => (
-                <div
-                  key={option.value}
-                  className={cn(
-                    "px-3 py-2 cursor-pointer text-sm hover:bg-gray-100",
-                    selectedIndex === index && "bg-gray-100"
+            {options.map((option, index) => (
+              <div
+                key={option.value}
+                className={cn(
+                  "px-3 py-2 cursor-pointer text-sm hover:bg-gray-100",
+                  selectedIndex === index && "bg-gray-100"
+                )}
+                onClick={() => handleOptionClick(option.value)}
+              >
+                <div className="flex justify-between items-center">
+                  <span>{option.label}</span>
+                  {option.visitCount && (
+                    <span className="text-xs text-gray-500">
+                      {option.visitCount} besök
+                    </span>
                   )}
-                  onClick={() => handleOptionClick(option.value)}
-                >
-                  <div className="flex justify-between items-center">
-                    <span>{option.label}</span>
-                    {option.visitCount && (
-                      <span className="text-xs text-gray-500">
-                        {option.visitCount} besök
-                      </span>
-                    )}
-                  </div>
                 </div>
-              ))
-            )}
+              </div>
+            ))}
           </div>
         )}
       </div>
