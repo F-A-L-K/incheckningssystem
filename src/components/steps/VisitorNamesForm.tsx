@@ -1,11 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AutocompleteInput } from "@/components/ui/autocomplete-input";
 import { Visitor, VisitorType } from "@/types/visitors";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useVisitorAutocomplete } from "@/hooks/useVisitorAutocomplete";
 
 interface VisitorNamesFormProps {
   visitorCount: number;
@@ -25,6 +25,7 @@ const VisitorNamesForm = ({
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const { t } = useLanguage();
+  const { suggestions, loading, searchVisitors, clearSuggestions } = useVisitorAutocomplete(company);
 
   // Function to capitalize first letter and letters after spaces, make rest lowercase
   const formatFullName = (name: string): string => {
@@ -63,6 +64,23 @@ const VisitorNamesForm = ({
     if (value) {
       setErrors(prev => ({ ...prev, [`visitor-${index}-fullName`]: false }));
     }
+
+    // Trigger autocomplete search for regular visits only
+    if (visitorType === "regular" && value.length >= 2) {
+      searchVisitors(value);
+    } else {
+      clearSuggestions();
+    }
+  };
+
+  const handleAutocompleteSelect = (index: number, selectedName: string) => {
+    const newVisitors = [...visitors];
+    newVisitors[index] = { ...newVisitors[index], fullName: selectedName };
+    setVisitors(newVisitors);
+    clearSuggestions();
+    
+    // Clear any error for this field
+    setErrors(prev => ({ ...prev, [`visitor-${index}-fullName`]: false }));
   };
 
   const handleNameBlur = (index: number) => {
@@ -74,6 +92,9 @@ const VisitorNamesForm = ({
       newVisitors[index] = { ...newVisitors[index], fullName: formattedValue };
       setVisitors(newVisitors);
     }
+    
+    // Clear suggestions when field loses focus
+    setTimeout(() => clearSuggestions(), 150);
   };
 
   const validateForm = (): boolean => {
@@ -112,12 +133,15 @@ const VisitorNamesForm = ({
           <div key={visitor.id} className="mb-8">
             {index > 0 && <hr className="border-gray-300 mb-8" />}
             <div>
-              <Input
+              <AutocompleteInput
                 id={`visitor-${index}-fullName`}
                 type="text"
                 value={visitor.fullName || ''}
                 onChange={(e) => handleVisitorChange(index, e.target.value)}
                 onBlur={() => handleNameBlur(index)}
+                onSelect={(selectedName) => handleAutocompleteSelect(index, selectedName)}
+                options={suggestions}
+                loading={loading}
                 className={`h-14 text-2xl ${errors[`visitor-${index}-fullName`] ? "border-red-500" : ""}`}
                 placeholder={`${t('visitor')} ${index + 1}`}
               />
