@@ -48,37 +48,34 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
           className="mb-6 text-lg py-4 px-4"
         />
         
-        <ScrollArea className="h-[400px] w-full">
-          <div className="p-2 space-y-3">
-            {filteredHosts.length > 0 ? (
-              filteredHosts.map((host) => (
+        <div className="w-full">
+          {filteredHosts.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {filteredHosts.map((host) => (
                 <div 
                   key={host.id}
                   onClick={() => handleSelect(host)}
                   className={`
-                    flex justify-between items-center p-5 rounded-lg cursor-pointer
+                    relative p-4 rounded-lg cursor-pointer text-center transition-all
                     ${selectedHostId === host.id 
-                      ? 'bg-blue-50 border border-blue-300' 
-                      : 'hover:bg-gray-50 border border-gray-200'
+                      ? 'bg-primary text-primary-foreground shadow-md scale-105' 
+                      : 'bg-card border border-border hover:bg-accent hover:text-accent-foreground hover:shadow-sm'
                     }
                   `}
                 >
-                  <div>
-                    <p className="font-medium text-xl">{host.name}</p>
-                    <p className="text-lg text-gray-500">{host.department}</p>
-                  </div>
+                  <p className="font-medium text-lg leading-tight">{host.name}</p>
                   {selectedHostId === host.id && (
-                    <Check className="h-7 w-7 text-blue-500" />
+                    <Check className="absolute top-2 right-2 h-5 w-5" />
                   )}
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-8 text-gray-500 text-lg">
-                {t('noMatchingPersons')}
-              </div>
-            )}
-          </div>
-        </ScrollArea>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground text-lg">
+              {t('noMatchingPersons')}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
