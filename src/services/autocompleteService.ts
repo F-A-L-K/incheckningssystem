@@ -15,8 +15,34 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use a simple approach with explicit any typing to avoid type inference issues
-    const result = await supabase
+    // Use rpc call to bypass complex type inference
+    const { data, error } = await supabase.rpc('get_frequent_visitors', {
+      p_company: company,
+      p_name_prefix: namePrefix
+    });
+
+    if (error) {
+      console.error('Error fetching frequent visitors via RPC:', error);
+      // Fallback to direct query if RPC fails
+      return await getFallbackFrequentVisitors(company, namePrefix);
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in getFrequentVisitorNames:', error);
+    // Fallback to direct query
+    return await getFallbackFrequentVisitors(company, namePrefix);
+  }
+};
+
+// Fallback function using raw query
+const getFallbackFrequentVisitors = async (
+  company: string, 
+  namePrefix: string
+): Promise<FrequentVisitor[]> => {
+  try {
+    // Use any type to completely bypass type inference
+    const response: any = await supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
@@ -24,17 +50,14 @@ export const getFrequentVisitorNames = async (
       .ilike('name', `${namePrefix}%`)
       .not('name', 'is', null);
 
-    const data = result.data as Array<{ name: string }> | null;
-    const error = result.error;
-
-    if (error || !data) {
-      console.error('Error fetching frequent visitors:', error);
+    if (response.error || !response.data) {
+      console.error('Error in fallback query:', response.error);
       return [];
     }
 
     // Count occurrences of each name
     const nameCounts: Record<string, number> = {};
-    data.forEach((visitor) => {
+    response.data.forEach((visitor: any) => {
       if (visitor.name && typeof visitor.name === 'string') {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
@@ -48,7 +71,7 @@ export const getFrequentVisitorNames = async (
 
     return frequentVisitors;
   } catch (error) {
-    console.error('Error in getFrequentVisitorNames:', error);
+    console.error('Error in fallback frequent visitors:', error);
     return [];
   }
 };
