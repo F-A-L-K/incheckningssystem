@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SchoolInfoFormProps {
@@ -21,7 +20,7 @@ const SchoolInfoForm = ({
 }: SchoolInfoFormProps) => {
   const [school, setSchool] = useState(initialSchool);
   const [teacherName, setTeacherName] = useState(initialTeacherName);
-  const [studentCount, setStudentCount] = useState(initialStudentCount);
+  const [studentCount, setStudentCount] = useState(initialStudentCount.toString());
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const { t } = useLanguage();
 
@@ -39,7 +38,8 @@ const SchoolInfoForm = ({
       valid = false;
     }
 
-    if (studentCount < 1) {
+    const studentCountNum = parseInt(studentCount);
+    if (!studentCount.trim() || isNaN(studentCountNum) || studentCountNum < 1) {
       newErrors.studentCount = true;
       valid = false;
     }
@@ -52,7 +52,7 @@ const SchoolInfoForm = ({
     e.preventDefault();
     
     if (validateForm()) {
-      onSubmit(school, teacherName, studentCount);
+      onSubmit(school, teacherName, parseInt(studentCount));
     }
   };
 
@@ -67,6 +67,15 @@ const SchoolInfoForm = ({
     setTeacherName(value);
     if (value) {
       setErrors(prev => ({ ...prev, teacherName: false }));
+    }
+  };
+
+  const handleStudentCountChange = (value: string) => {
+    // Only allow numbers
+    const numbersOnly = value.replace(/[^0-9]/g, '');
+    setStudentCount(numbersOnly);
+    if (numbersOnly && parseInt(numbersOnly) >= 1) {
+      setErrors(prev => ({ ...prev, studentCount: false }));
     }
   };
 
@@ -129,18 +138,15 @@ const SchoolInfoForm = ({
             >
               {t('numberOfStudents')} {errors.studentCount && <span className="text-red-500">*</span>}
             </Label>
-            <Select value={studentCount.toString()} onValueChange={(value) => setStudentCount(parseInt(value))}>
-              <SelectTrigger className={`h-14 text-2xl ${errors.studentCount ? "border-red-500" : ""}`}>
-                <SelectValue placeholder={t('selectNumber')} />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
-                  <SelectItem key={num} value={num.toString()} className="text-xl">
-                    {num}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Input
+              id="studentCount"
+              type="text"
+              value={studentCount}
+              onChange={(e) => handleStudentCountChange(e.target.value)}
+              className={`h-14 text-2xl ${errors.studentCount ? "border-red-500" : ""}`}
+              placeholder="Ange antal elever"
+              inputMode="numeric"
+            />
             {errors.studentCount && (
               <p className="text-red-500 text-base mt-2">{t('selectValidNumber')}</p>
             )}

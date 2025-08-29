@@ -110,10 +110,14 @@ export const checkOutVisitor = async (visitorId: string, customCheckOutTime?: st
 };
 
 export const convertToVisitorFormat = (dbVisitor: any): Visitor => {
+  const displayName = dbVisitor.is_school_visit && dbVisitor.number_students 
+    ? `${dbVisitor.name} (${dbVisitor.number_students} elever)`
+    : dbVisitor.name;
+
   return {
     id: dbVisitor.id,
-    firstName: dbVisitor.name.split(' ')[0] || '',
-    lastName: dbVisitor.name.split(' ').slice(1).join(' ') || '',
+    firstName: displayName.split(' ')[0] || '',
+    lastName: displayName.split(' ').slice(1).join(' ') || '',
     checkInTime: dbVisitor.check_in_time,
     hostName: dbVisitor.visiting,
     company: dbVisitor.company,
