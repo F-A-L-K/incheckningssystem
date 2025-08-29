@@ -15,16 +15,18 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use explicit any type to avoid TypeScript type instantiation issues
-    const queryResult: any = await supabase
-      .from('CHECKIN_visitors')
-      .select('name')
-      .eq('company', company)
-      .eq('is_school_visit', false)
-      .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null);
-
-    const { data, error } = queryResult;
+    // Use rpc with a simple query to completely avoid type inference issues
+    const { data, error } = await supabase.rpc('exec', {
+      sql: `
+        SELECT name 
+        FROM "CHECKIN_visitors" 
+        WHERE company = $1 
+        AND is_school_visit = false 
+        AND name ILIKE $2 
+        AND name IS NOT NULL
+      `,
+      args: [company, `${namePrefix}%`]
+    });
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
@@ -37,9 +39,10 @@ export const getFrequentVisitorNames = async (
 
     // Count occurrences of each name
     const nameCounts: Record<string, number> = {};
-    data.forEach((visitor: any) => {
-      if (visitor?.name && typeof visitor.name === 'string') {
-        nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
+    data.forEach((row: any) => {
+      const name = row.name;
+      if (name && typeof name === 'string') {
+        nameCounts[name] = (nameCounts[name] || 0) + 1;
       }
     });
 
