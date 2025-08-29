@@ -99,7 +99,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
           </Button>
         </div>
 
-        {!isCheckOut && visitorCount === 1 && (
+        {/* {!isCheckOut && visitorCount === 1 && (
           <div className="absolute bottom-0 right-0">
             <button
               onClick={() => setShowFaceRegistration(true)}
@@ -110,7 +110,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
               {t('registerFace')}
             </button>
           </div>
-        )}
+        )} */}
       </div>
 
       {showFaceRegistration && (

@@ -50,7 +50,7 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
         
         <div className="w-full">
           {filteredHosts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3">
               {filteredHosts.map((host) => (
                 <div 
                   key={host.id}
