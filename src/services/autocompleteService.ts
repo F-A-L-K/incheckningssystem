@@ -6,10 +6,6 @@ export interface FrequentVisitor {
   visitCount: number;
 }
 
-type VisitorNameRow = {
-  name: string;
-};
-
 export const getFrequentVisitorNames = async (
   company: string, 
   namePrefix: string
@@ -19,26 +15,30 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use rpc or raw query to avoid TypeScript type instantiation issues
-    const { data, error } = await supabase.rpc('get_visitor_names', {
-      p_company: company,
-      p_name_prefix: namePrefix
-    });
+    // Use explicit any type to avoid TypeScript type instantiation issues
+    const queryResult: any = await supabase
+      .from('CHECKIN_visitors')
+      .select('name')
+      .eq('company', company)
+      .eq('is_school_visit', false)
+      .ilike('name', `${namePrefix}%`)
+      .not('name', 'is', null);
+
+    const { data, error } = queryResult;
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
-      // Fallback to direct query if RPC doesn't exist
-      return await fallbackQuery(company, namePrefix);
+      return [];
     }
 
-    if (!data) {
+    if (!data || !Array.isArray(data)) {
       return [];
     }
 
     // Count occurrences of each name
     const nameCounts: Record<string, number> = {};
-    data.forEach((visitor: VisitorNameRow) => {
-      if (visitor.name) {
+    data.forEach((visitor: any) => {
+      if (visitor?.name && typeof visitor.name === 'string') {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
     });
@@ -52,45 +52,6 @@ export const getFrequentVisitorNames = async (
     return frequentVisitors;
   } catch (error) {
     console.error('Error in getFrequentVisitorNames:', error);
-    return await fallbackQuery(company, namePrefix);
-  }
-};
-
-// Fallback function using a simpler approach
-async function fallbackQuery(company: string, namePrefix: string): Promise<FrequentVisitor[]> {
-  try {
-    // Use any type to completely bypass TypeScript inference
-    const result: any = await supabase
-      .from('CHECKIN_visitors')
-      .select('name')
-      .eq('company', company)
-      .eq('is_school_visit', false)
-      .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null);
-
-    const { data, error } = result;
-
-    if (error || !data) {
-      return [];
-    }
-
-    // Count occurrences of each name
-    const nameCounts: Record<string, number> = {};
-    data.forEach((visitor: any) => {
-      if (visitor.name) {
-        nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
-      }
-    });
-
-    // Filter names that appear at least 3 times and sort by frequency
-    const frequentVisitors: FrequentVisitor[] = Object.entries(nameCounts)
-      .filter(([_, count]) => count >= 3)
-      .map(([name, count]) => ({ name, visitCount: count }))
-      .sort((a, b) => b.visitCount - a.visitCount);
-
-    return frequentVisitors;
-  } catch (error) {
-    console.error('Error in fallback query:', error);
     return [];
   }
-}
+};
