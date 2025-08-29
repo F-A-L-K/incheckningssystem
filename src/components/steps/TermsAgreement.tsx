@@ -24,12 +24,17 @@ interface TermsAgreementProps {
 
 const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = "Besökare", visitorInfo, isCheckOut = false, visitorCount = 1 }: TermsAgreementProps) => {
   const [showFaceRegistration, setShowFaceRegistration] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
 
-  const handleSubmit = () => {
-    if (!loading) {
-      onAccept();
+  const handleSubmit = async () => {
+    if (loading || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await onAccept();
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -89,10 +94,10 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
         <div className="space-y-3">
           <Button 
             onClick={handleSubmit}
-            disabled={loading}
+            disabled={loading || isSubmitting}
             className="w-full bg-[#3B82F6]"
           >
-            {loading ? t('checkingIn') : t('acceptTermsAndCheckIn')}
+            {(loading || isSubmitting) ? t('checkingIn') : t('acceptTermsAndCheckIn')}
           </Button>
         </div>
 

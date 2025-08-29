@@ -24,7 +24,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut
     }
     const timer = setTimeout(() => {
       onCancel();
-    }, 45000); // 45 seconds
+    }, 30000); // 30 seconds
     setAutoCloseTimer(timer);
   };
   

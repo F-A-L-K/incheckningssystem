@@ -294,7 +294,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
           <CheckOut 
             checkedInVisitors={checkedInVisitors} 
             onCheckOut={handleCheckOut}
-            onCancel={() => setStep("type-selection")}
+            onCancel={onCheckOutComplete || (() => setStep("type-selection"))}
             onVisitorCheckedOut={handleVisitorCheckedOut}
           />
         );
