@@ -109,15 +109,9 @@ const VisitorNamesForm = ({
         <p className="text-xl text-gray-500 mb-6">{t('enterNamesForAllVisitors')} {company}.</p>
         
         {visitors.map((visitor, index) => (
-          <div key={visitor.id} className="p-6 bg-gray-50 rounded-lg mb-6">
-            <h4 className="font-medium mb-5 text-2xl">{t('visitor')} {index + 1}</h4>
+          <div key={visitor.id} className="mb-8">
+            {index > 0 && <hr className="border-gray-300 mb-8" />}
             <div>
-              <Label 
-                htmlFor={`visitor-${index}-fullName`}
-                className={`text-xl font-medium mb-3 block ${errors[`visitor-${index}-fullName`] ? "text-red-500" : ""}`}
-              >
-                {t('enterFullName')} {errors[`visitor-${index}-fullName`] && <span className="text-red-500">*</span>}
-              </Label>
               <Input
                 id={`visitor-${index}-fullName`}
                 type="text"
@@ -125,7 +119,7 @@ const VisitorNamesForm = ({
                 onChange={(e) => handleVisitorChange(index, e.target.value)}
                 onBlur={() => handleNameBlur(index)}
                 className={`h-14 text-2xl ${errors[`visitor-${index}-fullName`] ? "border-red-500" : ""}`}
-                placeholder={t('fullNamePlaceholder')}
+                placeholder={`${t('visitor')} ${index + 1}`}
               />
               {errors[`visitor-${index}-fullName`] && (
                 <p className="text-red-500 text-base mt-2">{t('enterFullNameError')}</p>
