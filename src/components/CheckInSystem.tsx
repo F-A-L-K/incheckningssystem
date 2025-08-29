@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { VisitorType, Visitor, Host } from "@/types/visitors";
 import VisitorTypeSelection from "@/components/steps/VisitorTypeSelection";
 import CompanyInfoForm from "@/components/steps/CompanyInfoForm";
+import SchoolInfoForm from "@/components/steps/SchoolInfoForm";
 import VisitorNamesForm from "@/components/steps/VisitorNamesForm";
 import HostSelection from "@/components/steps/HostSelection";
 import TermsAgreement from "@/components/steps/TermsAgreement";
@@ -51,6 +52,7 @@ const HOSTS: Host[] = [
 type Step = 
   | "type-selection"
   | "company-info"
+  | "school-info"
   | "visitor-names"
   | "host-selection"
   | "terms"
@@ -78,6 +80,9 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [visitorCount, setVisitorCount] = useState<number>(1);
   const [company, setCompany] = useState<string>("");
+  const [school, setSchool] = useState<string>("");
+  const [teacherCount, setTeacherCount] = useState<number>(1);
+  const [studentCount, setStudentCount] = useState<number>(1);
   const [selectedHost, setSelectedHost] = useState<Host | null>(null);
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
   const [checkedInVisitors, setCheckedInVisitors] = useState<any[]>([]);
@@ -110,6 +115,9 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setVisitors([]);
     setVisitorCount(1);
     setCompany("");
+    setSchool("");
+    setTeacherCount(1);
+    setStudentCount(1);
     setSelectedHost(null);
     setTermsAccepted(false);
     setRecognizedVisitorData(null);
@@ -121,7 +129,11 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
 
   const handleTypeSelection = (type: VisitorType) => {
     setVisitorType(type);
-    setStep("company-info");
+    if (type === "school") {
+      setStep("school-info");
+    } else {
+      setStep("company-info");
+    }
   };
 
   const handleFaceRecognized = async (visitorData: any) => {
@@ -159,6 +171,13 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
     setStep("host-selection");
   };
 
+  const handleSchoolInfoSubmit = (schoolName: string, teachers: number, students: number) => {
+    setSchool(schoolName);
+    setTeacherCount(teachers);
+    setStudentCount(students);
+    setStep("host-selection");
+  };
+
   const handleHostSelection = (host: Host) => {
     setSelectedHost(host);
     setStep("terms");
@@ -173,7 +192,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
       for (const visitor of visitors) {
         const visitorData = {
           name: visitor.fullName || `${visitor.firstName} ${visitor.lastName}`,
-          company,
+          company: visitorType === "school" ? school : company,
           visiting: selectedHost?.name || "",
           is_service_personnel: visitorType === "service"
         };
@@ -229,7 +248,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
   };
 
   const handleBackNavigation = () => {
-    if (step === "company-info") {
+    if (step === "company-info" || step === "school-info") {
       // Om det finns igenkänd data, rensa den och gå tillbaka
       if (recognizedVisitorData) {
         setRecognizedVisitorData(null);
@@ -239,9 +258,17 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
       }
       setStep("type-selection");
     } else if (step === "visitor-names") {
-      setStep("company-info");
+      if (visitorType === "school") {
+        setStep("school-info");
+      } else {
+        setStep("company-info");
+      }
     } else if (step === "host-selection") {
-      setStep("visitor-names");
+      if (visitorType === "school") {
+        setStep("school-info");
+      } else {
+        setStep("visitor-names");
+      }
     } else if (step === "terms") {
       setStep("host-selection");
     }
@@ -268,6 +295,17 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
           />
         );
 
+      
+      case "school-info":
+        return (
+          <SchoolInfoForm 
+            onSubmit={handleSchoolInfoSubmit}
+            initialSchool={school}
+            initialTeacherCount={teacherCount}
+            initialStudentCount={studentCount}
+          />
+        );
+
       case "visitor-names":
         return (
           <VisitorNamesForm 
@@ -286,7 +324,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         const primaryVisitorName = visitors.length > 0 ? (visitors[0].fullName || `${visitors[0].firstName} ${visitors[0].lastName}`) : "Besökare";
         const visitorInfo = {
           name: primaryVisitorName,
-          company: company,
+          company: visitorType === "school" ? school : company,
           visiting: selectedHost?.name || "",
           visitorType: visitorType || "regular"
         };
@@ -307,7 +345,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         return (
           <CheckInConfirmation 
             visitors={visitors}
-            company={company}
+            company={visitorType === "school" ? school : company}
             host={selectedHost?.name || ""}
             visitorType={visitorType || "regular"}
             onClose={resetForm}
