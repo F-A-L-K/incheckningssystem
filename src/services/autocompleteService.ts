@@ -15,45 +15,27 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use rpc to bypass complex type inference
-    const { data, error } = await supabase.rpc('get_frequent_visitor_names', {
-      company_param: company,
-      name_prefix: namePrefix
-    });
-
-    if (error) {
-      console.error('Error fetching frequent visitors:', error);
-      // Fallback to direct query if RPC fails
-      return await fallbackQuery(company, namePrefix);
-    }
-
-    return data || [];
-  } catch (error) {
-    console.error('Error in getFrequentVisitorNames:', error);
-    // Fallback to direct query
-    return await fallbackQuery(company, namePrefix);
-  }
-};
-
-// Fallback function with explicit typing to avoid type inference issues
-const fallbackQuery = async (company: string, namePrefix: string): Promise<FrequentVisitor[]> => {
-  try {
-    const { data, error } = await supabase
+    // Use a direct query with explicit typing to avoid complex type inference
+    const query = supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
       .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null) as { data: { name: string }[] | null, error: any };
+      .not('name', 'is', null);
+
+    const response = await query;
+    const { data, error } = response;
 
     if (error || !data) {
+      console.error('Error fetching frequent visitors:', error);
       return [];
     }
 
     // Count occurrences of each name
     const nameCounts: Record<string, number> = {};
-    data.forEach((visitor) => {
-      if (visitor.name) {
+    data.forEach((visitor: any) => {
+      if (visitor.name && typeof visitor.name === 'string') {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
     });
@@ -66,7 +48,7 @@ const fallbackQuery = async (company: string, namePrefix: string): Promise<Frequ
 
     return frequentVisitors;
   } catch (error) {
-    console.error('Error in fallbackQuery:', error);
+    console.error('Error in getFrequentVisitorNames:', error);
     return [];
   }
 };
