@@ -15,8 +15,8 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use a direct query with explicit typing to avoid complex type inference
-    const query = supabase
+    // Use a simple approach with explicit any typing to avoid type inference issues
+    const result = await supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
@@ -24,8 +24,8 @@ export const getFrequentVisitorNames = async (
       .ilike('name', `${namePrefix}%`)
       .not('name', 'is', null);
 
-    const response = await query;
-    const { data, error } = response;
+    const data = result.data as Array<{ name: string }> | null;
+    const error = result.error;
 
     if (error || !data) {
       console.error('Error fetching frequent visitors:', error);
@@ -34,7 +34,7 @@ export const getFrequentVisitorNames = async (
 
     // Count occurrences of each name
     const nameCounts: Record<string, number> = {};
-    data.forEach((visitor: any) => {
+    data.forEach((visitor) => {
       if (visitor.name && typeof visitor.name === 'string') {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
