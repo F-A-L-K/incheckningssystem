@@ -186,7 +186,8 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         title: t('checkOutCompletedToast'),
         description: t('haveANiceDay'),
       });
-      resetForm();
+      // Don't reset form - stay on checkout page and reload visitors
+      loadCheckedInVisitors();
     } catch (error) {
       console.error('Failed to check out visitor:', error);
       toast({
@@ -195,6 +196,11 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
         variant: "destructive",
       });
     }
+  };
+
+  const handleVisitorCheckedOut = () => {
+    // Reload the checked in visitors list
+    loadCheckedInVisitors();
   };
 
   const handleBackNavigation = () => {
@@ -289,6 +295,7 @@ const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: C
             checkedInVisitors={checkedInVisitors} 
             onCheckOut={handleCheckOut}
             onCancel={() => setStep("type-selection")}
+            onVisitorCheckedOut={handleVisitorCheckedOut}
           />
         );
         

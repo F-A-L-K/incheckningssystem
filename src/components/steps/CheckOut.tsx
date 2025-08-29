@@ -8,24 +8,44 @@ interface CheckOutProps {
   checkedInVisitors: any[];
   onCheckOut: (visitorId: string) => void;
   onCancel: () => void;
+  onVisitorCheckedOut?: () => void;
 }
 
-const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) => {
+const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut }: CheckOutProps) => {
   const [selectedVisitor, setSelectedVisitor] = useState<any | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [autoCloseTimer, setAutoCloseTimer] = useState<NodeJS.Timeout | null>(null);
   const { t } = useLanguage();
   
-  // Auto-close after 1 minute
-  useEffect(() => {
+  // Auto-close after 45 seconds without activity
+  const resetAutoCloseTimer = () => {
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+    }
     const timer = setTimeout(() => {
       onCancel();
-    }, 60000); // 60000ms = 1 minute
+    }, 45000); // 45 seconds
+    setAutoCloseTimer(timer);
+  };
+  
+  useEffect(() => {
+    resetAutoCloseTimer();
     
     // Cleanup on unmount
-    return () => clearTimeout(timer);
-  }, [onCancel]);
+    return () => {
+      if (autoCloseTimer) {
+        clearTimeout(autoCloseTimer);
+      }
+    };
+  }, []);
+  
+  // Reset timer on any activity
+  const handleActivity = () => {
+    resetAutoCloseTimer();
+  };
   
   const handleVisitorClick = (visitor: any) => {
+    handleActivity();
     setSelectedVisitor(visitor);
     setConfirmDialogOpen(true);
   };
@@ -34,6 +54,12 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
     if (selectedVisitor) {
       onCheckOut(selectedVisitor.id);
       setConfirmDialogOpen(false);
+      setSelectedVisitor(null);
+      // Reset timer after checkout - stay on checkout page
+      resetAutoCloseTimer();
+      if (onVisitorCheckedOut) {
+        onVisitorCheckedOut();
+      }
     }
   };
   
@@ -64,6 +90,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
               key={visitor.id}
               onClick={() => handleVisitorClick(visitor)}
               className="border border-gray-200 rounded-lg p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+              onMouseEnter={handleActivity}
             >
               <div className="flex justify-between items-center">
                 <div>
@@ -82,7 +109,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
         </div>
       </div>
       
-      <Button variant="outline" onClick={onCancel} className="w-full text-lg py-4">
+      <Button variant="outline" onClick={() => { handleActivity(); onCancel(); }} className="w-full text-lg py-4">
         {t('cancel')}
       </Button>
       
@@ -99,7 +126,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel }: CheckOutProps) =>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmDialogOpen(false)} className="text-lg py-3 px-6">
+            <Button variant="outline" onClick={() => { handleActivity(); setConfirmDialogOpen(false); }} className="text-lg py-3 px-6">
               {t('cancel')}
             </Button>
             <Button onClick={handleConfirmCheckOut} className="text-lg py-3 px-6">

@@ -62,7 +62,7 @@ const CheckInConfirmation = ({
       <div className="bg-blue-50 rounded-lg p-4 text-left">
         <h4 className="font-medium text-gray-700 mb-2">{t('visitorInfo')}</h4>
         <div className="space-y-2 text-sm">
-          <p><span className="font-medium">{t('visitor')}:</span> {visitors.map(v => `${v.firstName} ${v.lastName}`).join(', ')}</p>
+          <p><span className="font-medium">{t('visitor')}:</span> {visitors.map(v => v.fullName || `${v.firstName} ${v.lastName}`).join(', ')}</p>
           <p><span className="font-medium">{t('company')}:</span> {company}</p>
           <p><span className="font-medium">{t('host')}:</span> {host}</p>
           <p><span className="font-medium">{t('visitType')}:</span> {visitorType === "regular" ? t('regularVisitText') : t('serviceVisitText')}</p>
