@@ -15,17 +15,22 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Use a direct approach with explicit casting to avoid type issues
-    const { data, error } = await supabase
+    // Break down the query to avoid complex type inference
+    const query = supabase
       .from('CHECKIN_visitors')
-      .select('name')
+      .select('name');
+    
+    // Apply filters step by step
+    const filteredQuery = query
       .eq('company', company)
       .eq('is_school_visit', false)
       .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null) as { 
-        data: Array<{ name: string }> | null; 
-        error: any 
-      };
+      .not('name', 'is', null);
+
+    // Execute the query with explicit typing
+    const result = await filteredQuery;
+    const data = result.data as Array<{ name: string }> | null;
+    const error = result.error;
 
     if (error || !data) {
       console.error('Error fetching frequent visitors:', error);
