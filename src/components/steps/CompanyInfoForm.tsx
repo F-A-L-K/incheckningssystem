@@ -3,10 +3,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 import { VisitorType } from "@/types/visitors";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -39,8 +35,15 @@ const CompanyInfoForm = ({
 }: CompanyInfoFormProps) => {
   const [company, setCompany] = useState<string>(initialCompany);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
-  const [open, setOpen] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const { t } = useLanguage();
+
+  // Filtrera företag baserat på input (minst 2 tecken)
+  const filteredCompanies = visitorType === "service" && company.length >= 2 
+    ? SERVICE_COMPANIES.filter(serviceCompany => 
+        serviceCompany.toLowerCase().startsWith(company.toLowerCase())
+      )
+    : [];
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, boolean> = {};
@@ -73,70 +76,53 @@ const CompanyInfoForm = ({
         </h3>
         <p className="text-xl text-gray-500 mb-8">{t('pleaseEnterCompanyAndCount')}</p>
 
-        <div className="mb-8">
+        <div className="mb-8 relative">
           <Label htmlFor="company" className={`text-xl font-medium mb-3 block ${errors.company ? "text-red-500" : ""}`}>
             {t('company')} {errors.company && <span className="text-red-500">*</span>}
           </Label>
           
-          {visitorType === "service" ? (
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className={`w-full h-14 text-2xl justify-between font-normal ${errors.company ? "border-red-500" : ""}`}
+          <Input 
+            id="company"
+            type="text" 
+            value={company} 
+            onChange={(e) => {
+              setCompany(e.target.value);
+              setShowSuggestions(e.target.value.length >= 2 && visitorType === "service");
+              if (e.target.value) {
+                setErrors(prev => ({ ...prev, company: false }));
+              }
+            }}
+            onFocus={() => {
+              if (company.length >= 2 && visitorType === "service") {
+                setShowSuggestions(true);
+              }
+            }}
+            onBlur={() => {
+              // Delay för att tillåta klick på suggestions
+              setTimeout(() => setShowSuggestions(false), 200);
+            }}
+            className={`h-14 text-2xl ${errors.company ? "border-red-500" : ""}`}
+            placeholder={t('companyPlaceholder')}
+          />
+          
+          {/* Dropdown suggestions */}
+          {showSuggestions && filteredCompanies.length > 0 && (
+            <div className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+              {filteredCompanies.map((serviceCompany) => (
+                <button
+                  key={serviceCompany}
+                  type="button"
+                  className="w-full text-left px-4 py-3 text-lg hover:bg-gray-100 border-b border-gray-100 last:border-b-0"
+                  onClick={() => {
+                    setCompany(serviceCompany);
+                    setShowSuggestions(false);
+                    setErrors(prev => ({ ...prev, company: false }));
+                  }}
                 >
-                  {company || t('companyPlaceholder')}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0" align="start">
-                <Command>
-                  <CommandInput placeholder="Sök företag..." />
-                  <CommandList>
-                    <CommandEmpty>Inget företag hittades.</CommandEmpty>
-                    <CommandGroup>
-                      {SERVICE_COMPANIES.map((serviceCompany) => (
-                        <CommandItem
-                          key={serviceCompany}
-                          value={serviceCompany}
-                          onSelect={(currentValue) => {
-                            setCompany(currentValue === company ? "" : currentValue);
-                            setOpen(false);
-                            if (currentValue) {
-                              setErrors(prev => ({ ...prev, company: false }));
-                            }
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              company === serviceCompany ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                          {serviceCompany}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          ) : (
-            <Input 
-              id="company"
-              type="text" 
-              value={company} 
-              onChange={(e) => {
-                setCompany(e.target.value);
-                if (e.target.value) {
-                  setErrors(prev => ({ ...prev, company: false }));
-                }
-              }}
-              className={`h-14 text-2xl ${errors.company ? "border-red-500" : ""}`}
-              placeholder={t('companyPlaceholder')}
-            />
+                  {serviceCompany}
+                </button>
+              ))}
+            </div>
           )}
           
           {errors.company && (
