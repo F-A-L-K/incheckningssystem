@@ -15,15 +15,13 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Break down the query to avoid deep type instantiation
-    const query = supabase
+    const { data, error } = await supabase
       .from('CHECKIN_visitors')
-      .select('name');
-    
-    const { data, error } = await query
+      .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
-      .ilike('name', `${namePrefix}%`);
+      .ilike('name', `${namePrefix}%`)
+      .not('name', 'is', null);
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
@@ -34,10 +32,10 @@ export const getFrequentVisitorNames = async (
       return [];
     }
 
-    // Count occurrences of each name and filter out null/empty names
+    // Count occurrences of each name
     const nameCounts: { [key: string]: number } = {};
-    data.forEach((visitor) => {
-      if (visitor.name && visitor.name.trim()) {
+    data.forEach((visitor: { name: string | null }) => {
+      if (visitor.name) {
         nameCounts[visitor.name] = (nameCounts[visitor.name] || 0) + 1;
       }
     });

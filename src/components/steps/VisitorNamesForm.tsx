@@ -24,7 +24,6 @@ const VisitorNamesForm = ({
 }: VisitorNamesFormProps) => {
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
-  const [activeInputIndex, setActiveInputIndex] = useState<number | null>(null);
   const { t } = useLanguage();
   const { suggestions, loading, searchVisitors, clearSuggestions } = useVisitorAutocomplete(company);
 
@@ -61,9 +60,6 @@ const VisitorNamesForm = ({
     newVisitors[index] = { ...newVisitors[index], fullName: value };
     setVisitors(newVisitors);
     
-    // Set this input as active
-    setActiveInputIndex(index);
-    
     // Clear error for this field if value is not empty
     if (value) {
       setErrors(prev => ({ ...prev, [`visitor-${index}-fullName`]: false }));
@@ -82,7 +78,6 @@ const VisitorNamesForm = ({
     newVisitors[index] = { ...newVisitors[index], fullName: selectedName };
     setVisitors(newVisitors);
     clearSuggestions();
-    setActiveInputIndex(null);
     
     // Clear any error for this field
     setErrors(prev => ({ ...prev, [`visitor-${index}-fullName`]: false }));
@@ -98,11 +93,8 @@ const VisitorNamesForm = ({
       setVisitors(newVisitors);
     }
     
-    // Clear active input and suggestions when field loses focus
-    setTimeout(() => {
-      setActiveInputIndex(null);
-      clearSuggestions();
-    }, 150);
+    // Clear suggestions when field loses focus
+    setTimeout(() => clearSuggestions(), 150);
   };
 
   const validateForm = (): boolean => {
@@ -148,8 +140,8 @@ const VisitorNamesForm = ({
                 onChange={(e) => handleVisitorChange(index, e.target.value)}
                 onBlur={() => handleNameBlur(index)}
                 onOptionSelect={(selectedName) => handleAutocompleteSelect(index, selectedName)}
-                options={activeInputIndex === index ? suggestions : []}
-                loading={activeInputIndex === index ? loading : false}
+                options={suggestions}
+                loading={loading}
                 className={`h-14 text-2xl ${errors[`visitor-${index}-fullName`] ? "border-red-500" : ""}`}
                 placeholder={`${t('visitor')} ${index + 1}`}
               />
