@@ -15,14 +15,15 @@ export const getFrequentVisitorNames = async (
   }
 
   try {
-    // Simple query without explicit type casting - let TypeScript infer naturally
-    const { data: rawData, error } = await supabase
+    // Break down the query to avoid complex type inference
+    const query = supabase
       .from('CHECKIN_visitors')
       .select('name')
       .eq('company', company)
       .eq('is_school_visit', false)
-      .ilike('name', `${namePrefix}%`)
-      .not('name', 'is', null);
+      .ilike('name', `${namePrefix}%`);
+    
+    const { data: rawData, error } = await query;
 
     if (error) {
       console.error('Error fetching frequent visitors:', error);
@@ -32,7 +33,7 @@ export const getFrequentVisitorNames = async (
     // Safely handle the data with explicit type checking
     const visitors = rawData || [];
     const validVisitors = visitors.filter((item): item is { name: string } => 
-      item && typeof item === 'object' && 'name' in item && typeof item.name === 'string'
+      item && typeof item === 'object' && 'name' in item && typeof item.name === 'string' && item.name.trim() !== ''
     );
 
     // Count occurrences of each name
