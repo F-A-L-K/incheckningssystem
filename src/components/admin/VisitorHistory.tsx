@@ -243,7 +243,7 @@ const VisitorHistory = () => {
           </div>
         ) : (
           <>
-            <div className="overflow-auto max-h-96">
+            <div className="overflow-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
