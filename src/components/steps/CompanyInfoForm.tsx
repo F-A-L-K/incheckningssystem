@@ -20,10 +20,10 @@ const SERVICE_COMPANIES = [
   "Fanuc",
   "Inneklimat", 
   "Westbo Elteknik",
-  "Ravema",
+  "Ravema AB",
   "Kaeser",
   "Uffes mek AB",
-  "Lindroths maskinservice"
+  
 ];
 
 const CompanyInfoForm = ({ 
