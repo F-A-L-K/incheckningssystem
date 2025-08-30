@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import bcrypt from 'bcryptjs';
 
 interface User {
@@ -40,65 +41,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
 
-      // Query the users table using RPC or raw SQL
-      const response = await fetch(`https://xplqhaywcaaanzgzonpo.supabase.co/rest/v1/rpc/authenticate_user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwbHFoYXl3Y2FhYW56Z3pvbnBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxOTY5MDEsImV4cCI6MjA1MTc3MjkwMX0.7mxLBeRLibTC6Evg4Ki1HGKqTNl48C8ouehMePXjvmc',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwbHFoYXl3Y2FhYW56Z3pvbnBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxOTY5MDEsImV4cCI6MjA1MTc3MjkwMX0.7mxLBeRLibTC6Evg4Ki1HGKqTNl48C8ouehMePXjvmc'
-        },
-        body: JSON.stringify({
-          p_username: username,
-          p_password: password
-        })
+      // Call the authenticate_user function
+      const { data, error } = await supabase.rpc('authenticate_user', {
+        p_username: username,
+        p_password: password
       });
 
-      if (!response.ok) {
-        // Fallback to mock authentication for demo
-        if (username === 'admin' && password === 'admin') {
-          const userData: User = {
-            id: '1',
-            username: 'admin',
-            full_name: 'Admin User',
-            Access_checkin: true,
-            admin: true
-          };
-
-          setUser(userData);
-          localStorage.setItem('admin_user', JSON.stringify(userData));
-          return { success: true };
-        }
-        return { success: false, error: 'Ogiltiga inloggningsuppgifter' };
+      if (error) {
+        console.error('Database error:', error);
+        return { success: false, error: 'Ett fel uppstod vid inloggning. Försök igen.' };
       }
 
-      const result = await response.json();
-      
-      if (!result || !result.success) {
-        return { success: false, error: 'Ogiltiga inloggningsuppgifter' };
+      // Cast data to the expected type
+      const result = data as unknown as { success: boolean; error?: string; message?: string; user?: User };
+
+      if (!result.success) {
+        return { success: false, error: result.message || 'Inloggning misslyckades' };
       }
 
-      const userData: User = result.user;
-      setUser(userData);
-      localStorage.setItem('admin_user', JSON.stringify(userData));
+      // Set the user data
+      if (result.user) {
+        const userData: User = result.user;
+        setUser(userData);
+        localStorage.setItem('admin_user', JSON.stringify(userData));
+      }
 
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
-      // Fallback to mock authentication
-      if (username === 'admin' && password === 'admin') {
-        const userData: User = {
-          id: '1',
-          username: 'admin',
-          full_name: 'Admin User',
-          Access_checkin: true,
-          admin: true
-        };
-
-        setUser(userData);
-        localStorage.setItem('admin_user', JSON.stringify(userData));
-        return { success: true };
-      }
       return { success: false, error: 'Ett fel uppstod vid inloggning. Försök igen.' };
     } finally {
       setIsLoading(false);
