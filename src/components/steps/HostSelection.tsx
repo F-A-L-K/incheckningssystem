@@ -97,7 +97,7 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
                       : 'bg-card border border-border hover:bg-accent hover:text-accent-foreground hover:shadow-sm'
                     }
                   `}>
-                    <p className="font-medium text-lg leading-tight">Annan...</p>
+                    <p className="font-medium text-lg leading-tight">{t('otherHost')}</p>
                     {selectedHostId === -1 && (
                       <Check className="absolute top-2 right-2 h-5 w-5" />
                     )}
@@ -105,11 +105,11 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>Ange namn på besöksvärd</DialogTitle>
+                    <DialogTitle>{t('enterHostName')}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <Input
-                      placeholder="Skriv namn här..."
+                      placeholder={t('enterNamePlaceholder')}
                       value={customHostName}
                       onChange={(e) => setCustomHostName(e.target.value)}
                       className="text-lg py-4 px-4"
@@ -127,13 +127,13 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
                           setCustomHostName("");
                         }}
                       >
-                        Avbryt
+                        {t('cancel')}
                       </Button>
                       <Button
                         onClick={handleCustomHostSubmit}
                         disabled={!customHostName.trim()}
                       >
-                        Bekräfta
+                        {t('confirm')}
                       </Button>
                     </div>
                   </div>

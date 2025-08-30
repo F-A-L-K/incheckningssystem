@@ -95,6 +95,10 @@ const translations = {
     pleaseSelectHost: 'Vänligen välj i listan vem ni besöker genom att klicka på namnet.',
     searchPlaceholder: 'Sök efter namn...',
     noMatchingPersons: 'Inga matchande personer hittades',
+    otherHost: 'Annan...',
+    enterHostName: 'Ange namn på besöksvärd',
+    enterNamePlaceholder: 'Skriv namn här...',
+    confirm: 'Bekräfta',
     // Check In Confirmation
     checkInCompleted: 'Incheckning genomförd!',
     visitorInfo: 'Besöksinformation',
@@ -214,6 +218,10 @@ const translations = {
     pleaseSelectHost: 'Please select from the list who you are visiting by clicking on the name.',
     searchPlaceholder: 'Search by name...',
     noMatchingPersons: 'No matching persons found',
+    otherHost: 'Other...',
+    enterHostName: 'Enter host name',
+    enterNamePlaceholder: 'Enter name here...',
+    confirm: 'Confirm',
     // Check In Confirmation
     checkInCompleted: 'Check-in completed!',
     visitorInfo: 'Visitor Information',
@@ -333,6 +341,10 @@ const translations = {
     pleaseSelectHost: 'Bitte wählen Sie aus der Liste wen Sie besuchen, indem Sie auf den Namen klicken.',
     searchPlaceholder: 'Nach Name oder Abteilung suchen...',
     noMatchingPersons: 'Keine passenden Personen gefunden',
+    otherHost: 'Andere...',
+    enterHostName: 'Gastgeber-Name eingeben',
+    enterNamePlaceholder: 'Name hier eingeben...',
+    confirm: 'Bestätigen',
     // Check In Confirmation
     checkInCompleted: 'Einchecken abgeschlossen!',
     visitorInfo: 'Besucherinformationen',
