@@ -8,24 +8,13 @@ import { Search, Calendar, ChevronUp, ChevronDown } from 'lucide-react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-interface SchoolVisitData {
-  id: string;
-  school_name: string;
-  teacher_name: string;
-  student_count: number;
-  visiting: string | null;
-  check_in_time: string;
-  check_out_time: string | null;
-  checked_out: boolean;
-}
-
-type SortField = 'school_name' | 'teacher_name' | 'student_count' | 'check_in_time' | 'check_out_time';
+type SortField = 'name' | 'company' | 'number_students' | 'check_in_time' | 'check_out_time';
 type SortDirection = 'asc' | 'desc';
 
 const SchoolVisitHistory = () => {
   const { t } = useLanguage();
-  const [searchSchool, setSearchSchool] = useState('');
-  const [searchTeacher, setSearchTeacher] = useState('');
+  const [searchName, setSearchName] = useState('');
+  const [searchCompany, setSearchCompany] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,12 +23,14 @@ const SchoolVisitHistory = () => {
   
   const itemsPerPage = 15;
 
-  const { data: history = [], isLoading } = useQuery({
+  const { data: history = [], isLoading } = useQuery<any[]>({
     queryKey: ['schoolVisitHistory'],
-    queryFn: async () => {
+    queryFn: async (): Promise<any[]> => {
+      // @ts-ignore - Avoiding complex Supabase type inference issue
       const { data, error } = await supabase
-        .from('school_visits')
+        .from('CHECKIN_visitors')
         .select('*')
+        .eq('is_school_visit', true)
         .order('check_in_time', { ascending: false });
 
       if (error) {
@@ -52,9 +43,9 @@ const SchoolVisitHistory = () => {
   });
 
   const filteredAndSortedHistory = useMemo(() => {
-    let filtered = history.filter((visit: SchoolVisitData) => {
-      const schoolMatch = visit.school_name.toLowerCase().includes(searchSchool.toLowerCase());
-      const teacherMatch = visit.teacher_name.toLowerCase().includes(searchTeacher.toLowerCase());
+    let filtered = history.filter((visit: any) => {
+      const nameMatch = visit.name.toLowerCase().includes(searchName.toLowerCase());
+      const companyMatch = visit.company.toLowerCase().includes(searchCompany.toLowerCase());
       
       let dateMatch = true;
       if (dateFrom || dateTo) {
@@ -63,11 +54,11 @@ const SchoolVisitHistory = () => {
         if (dateTo && visitDate > dateTo) dateMatch = false;
       }
       
-      return schoolMatch && teacherMatch && dateMatch;
+      return nameMatch && companyMatch && dateMatch;
     });
 
     // Sort the filtered results
-    filtered.sort((a: SchoolVisitData, b: SchoolVisitData) => {
+    filtered.sort((a: any, b: any) => {
       let aValue: string | number = a[sortField];
       let bValue: string | number = b[sortField];
       
@@ -81,7 +72,7 @@ const SchoolVisitHistory = () => {
       if (sortField === 'check_in_time' || sortField === 'check_out_time') {
         aValue = new Date(aValue as string).getTime();
         bValue = new Date(bValue as string).getTime();
-      } else if (sortField === 'student_count') {
+      } else if (sortField === 'number_students') {
         // Handle numeric sorting
         aValue = Number(aValue);
         bValue = Number(bValue);
@@ -96,7 +87,7 @@ const SchoolVisitHistory = () => {
     });
 
     return filtered;
-  }, [history, searchSchool, searchTeacher, dateFrom, dateTo, sortField, sortDirection]);
+  }, [history, searchName, searchCompany, dateFrom, dateTo, sortField, sortDirection]);
 
   const totalPages = Math.ceil(filteredAndSortedHistory.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -129,8 +120,8 @@ const SchoolVisitHistory = () => {
   };
 
   const clearFilters = () => {
-    setSearchSchool('');
-    setSearchTeacher('');
+    setSearchName('');
+    setSearchCompany('');
     setDateFrom('');
     setDateTo('');
     setCurrentPage(1);
@@ -156,10 +147,10 @@ const SchoolVisitHistory = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
-              placeholder={`${t('searchPlaceholder')} ${t('schoolNameColumn').toLowerCase()}...`}
-              value={searchSchool}
+              placeholder={`${t('searchPlaceholder')} ${t('nameColumn').toLowerCase()}...`}
+              value={searchName}
               onChange={(e) => {
-                setSearchSchool(e.target.value);
+                setSearchName(e.target.value);
                 setCurrentPage(1);
               }}
               className="pl-10"
@@ -169,10 +160,10 @@ const SchoolVisitHistory = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
-              placeholder={`${t('searchPlaceholder')} ${t('teacherNameColumn').toLowerCase()}...`}
-              value={searchTeacher}
+              placeholder={`${t('searchPlaceholder')} ${t('companyColumn').toLowerCase()}...`}
+              value={searchCompany}
               onChange={(e) => {
-                setSearchTeacher(e.target.value);
+                setSearchCompany(e.target.value);
                 setCurrentPage(1);
               }}
               className="pl-10"
@@ -219,7 +210,7 @@ const SchoolVisitHistory = () => {
 
         {filteredAndSortedHistory.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            {searchSchool || searchTeacher || dateFrom || dateTo ? t('noMatchingVisitorsMessage') : t('noSchoolVisitsMessage')}
+            {searchName || searchCompany || dateFrom || dateTo ? t('noMatchingVisitorsMessage') : t('noSchoolVisitsMessage')}
           </div>
         ) : (
           <>
@@ -229,29 +220,29 @@ const SchoolVisitHistory = () => {
                   <TableRow>
                     <TableHead 
                       className="cursor-pointer hover:bg-muted/50 select-none"
-                      onClick={() => handleSort('school_name')}
+                      onClick={() => handleSort('name')}
                     >
                       <div className="flex items-center gap-1">
-                        {t('schoolNameColumn')}
-                        {getSortIcon('school_name')}
+                        {t('nameColumn')}
+                        {getSortIcon('name')}
                       </div>
                     </TableHead>
                     <TableHead 
                       className="cursor-pointer hover:bg-muted/50 select-none"
-                      onClick={() => handleSort('teacher_name')}
+                      onClick={() => handleSort('company')}
                     >
                       <div className="flex items-center gap-1">
-                        {t('teacherNameColumn')}
-                        {getSortIcon('teacher_name')}
+                        {t('companyColumn')}
+                        {getSortIcon('company')}
                       </div>
                     </TableHead>
                     <TableHead 
                       className="cursor-pointer hover:bg-muted/50 select-none"
-                      onClick={() => handleSort('student_count')}
+                      onClick={() => handleSort('number_students')}
                     >
                       <div className="flex items-center gap-1">
                         {t('studentCountColumn')}
-                        {getSortIcon('student_count')}
+                        {getSortIcon('number_students')}
                       </div>
                     </TableHead>
                     <TableHead 
@@ -276,13 +267,13 @@ const SchoolVisitHistory = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paginatedHistory.map((visit: SchoolVisitData) => (
+                  {paginatedHistory.map((visit: any) => (
                     <TableRow key={visit.id}>
-                      <TableCell className="font-medium">{visit.school_name}</TableCell>
-                      <TableCell>{visit.teacher_name}</TableCell>
+                      <TableCell className="font-medium">{visit.name}</TableCell>
+                      <TableCell>{visit.company}</TableCell>
                       <TableCell>
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                          {visit.student_count} {visit.student_count === 1 ? 'elev' : 'elever'}
+                          {visit.number_students} {visit.number_students === 1 ? 'elev' : 'elever'}
                         </span>
                       </TableCell>
                       <TableCell>{formatTime(visit.check_in_time)}</TableCell>
