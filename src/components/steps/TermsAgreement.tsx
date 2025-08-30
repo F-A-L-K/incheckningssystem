@@ -55,6 +55,10 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
         t('termsServiceProducts'),
         t('termsEmergency'),
         "",
+        "",
+        "",
+        "",
+        "",
         t('termsHotWork'),
         t('termsSafety'),
         t('termsWasteSort'),
@@ -83,6 +87,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
                 <li key={index} className="flex items-start">
                   {term && <span className="text-blue-500 mr-2">•</span>}
                   <span className="text-lg">{term}</span>
+                  
                 </li>
               ))}
             </ul>
@@ -93,7 +98,7 @@ const TermsAgreement = ({ visitorType, onAccept, loading = false, visitorName = 
           <Button 
             onClick={handleSubmit}
             disabled={loading || isSubmitting}
-            className="w-full bg-[#3B82F6] h-16 text-lg  "
+            className="w-full bg-[#3B82F6] h-16 text-2xl "
           >
             {(loading || isSubmitting) ? t('checkingIn') : t('acceptTermsAndCheckIn')}
           </Button>

@@ -118,7 +118,7 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut
           <DialogHeader>
             <DialogTitle className="text-xl">{t('confirmCheckOut')}</DialogTitle>
           </DialogHeader>
-          <div className="py-6">
+          <div className="py-2">
             {selectedVisitor && (
               <p className="text-lg">
                 {t('areYouSureCheckOut')} {selectedVisitor.name}?
@@ -126,10 +126,10 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { handleActivity(); setConfirmDialogOpen(false); }} className="text-lg py-3 px-6">
+            {/* <Button variant="outline" onClick={() => { handleActivity(); setConfirmDialogOpen(false); }} className="text-lg py-3 px-6">
               {t('cancel')}
-            </Button>
-            <Button onClick={handleConfirmCheckOut} className="text-lg py-3 px-6">
+            </Button> */}
+            <Button onClick={handleConfirmCheckOut} className="text-2xl py-3 px-6 w-full h-16">
               {t('checkOutButton')}
             </Button>
           </DialogFooter>
