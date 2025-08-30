@@ -9,9 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LogOut } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CurrentVisitors = () => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [selectedVisitor, setSelectedVisitor] = useState<any>(null);
   const [checkOutDateTime, setCheckOutDateTime] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,8 +46,8 @@ const CurrentVisitors = () => {
       await checkOutVisitor(selectedVisitor.id);
       
       toast({
-        title: "Besökare utcheckad",
-        description: `${selectedVisitor.firstName} ${selectedVisitor.lastName} har checkats ut.`,
+        title: t('visitorCheckedOutToast'),
+        description: `${selectedVisitor.firstName} ${selectedVisitor.lastName} ${t('hasBeenCheckedOutMessage')}`,
       });
       
       setIsDialogOpen(false);
@@ -54,8 +56,8 @@ const CurrentVisitors = () => {
     } catch (error) {
       console.error('Error checking out visitor:', error);
       toast({
-        title: "Fel",
-        description: "Kunde inte checka ut besökaren. Försök igen.",
+        title: t('error'),
+        description: t('failedToCheckOutVisitorError'),
         variant: "destructive",
       });
     }
@@ -74,7 +76,7 @@ const CurrentVisitors = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="text-lg">Laddar...</div>
+        <div className="text-lg">{t('loading')}</div>
       </div>
     );
   }
@@ -83,23 +85,23 @@ const CurrentVisitors = () => {
     <div className="bg-card rounded-lg shadow-sm border">
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Aktiva besökare ({visitors.length})</h2>
+          <h2 className="text-xl font-semibold">{t('activeVisitors')} ({visitors.length})</h2>
         </div>
 
         {visitors.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            Inga besökare är för närvarande incheckade.
+            {t('noActiveVisitorsMessage')}
           </div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Namn</TableHead>
-                <TableHead>Företag</TableHead>
-                <TableHead>Besöker</TableHead>
-                <TableHead>Incheckningstid</TableHead>
-                <TableHead>Typ</TableHead>
-                <TableHead>Åtgärder</TableHead>
+                <TableHead>{t('nameColumn')}</TableHead>
+                <TableHead>{t('companyColumn')}</TableHead>
+                <TableHead>{t('visitingColumn')}</TableHead>
+                <TableHead>{t('checkInTimeColumn')}</TableHead>
+                <TableHead>{t('typeColumn')}</TableHead>
+                <TableHead>{t('actionsColumn')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -119,7 +121,7 @@ const CurrentVisitors = () => {
                         ? 'bg-blue-100 text-blue-800' 
                         : 'bg-green-100 text-green-800'
                     }`}>
-                      {visitor.type === 'service' ? 'Service' : 'Vanligt'}
+                      {visitor.type === 'service' ? t('serviceType') : t('regularType')}
                     </span>
                   </TableCell>
                   <TableCell>
@@ -132,21 +134,21 @@ const CurrentVisitors = () => {
                           className="flex items-center gap-2"
                         >
                           <LogOut className="w-4 h-4" />
-                          Checka ut
+                          {t('checkOutAction')}
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>Checka ut besökare</DialogTitle>
+                          <DialogTitle>{t('checkOutVisitorDialog')}</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
                           <div>
                             <p className="text-sm text-muted-foreground mb-4">
-                              Checkar ut: <strong>{selectedVisitor?.firstName} {selectedVisitor?.lastName}</strong>
+                              {t('checkingOutLabel')} <strong>{selectedVisitor?.firstName} {selectedVisitor?.lastName}</strong>
                             </p>
                           </div>
                           <div>
-                            <Label htmlFor="checkout-datetime">Utcheckningsdatum och tid</Label>
+                            <Label htmlFor="checkout-datetime">{t('checkOutDateTimeLabel')}</Label>
                             <Input
                               id="checkout-datetime"
                               type="datetime-local"
@@ -157,10 +159,10 @@ const CurrentVisitors = () => {
                           </div>
                           <div className="flex justify-end gap-2 pt-4">
                             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                              Avbryt
+                              {t('cancel')}
                             </Button>
                             <Button onClick={handleConfirmCheckOut}>
-                              Bekräfta utcheckning
+                              {t('confirmCheckOutAction')}
                             </Button>
                           </div>
                         </div>

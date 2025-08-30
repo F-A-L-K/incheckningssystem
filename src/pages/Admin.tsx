@@ -3,12 +3,26 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import CurrentVisitors from '@/components/admin/CurrentVisitors';
 import VisitorHistory from '@/components/admin/VisitorHistory';
+import SchoolVisitHistory from '@/components/admin/SchoolVisitHistory';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminTopBar from '@/components/admin/AdminTopBar';
 
 const Admin = () => {
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'current';
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'current':
+        return <CurrentVisitors />;
+      case 'history':
+        return <VisitorHistory />;
+      case 'schools':
+        return <SchoolVisitHistory />;
+      default:
+        return <CurrentVisitors />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -18,11 +32,7 @@ const Admin = () => {
         <AdminTopBar />
         
         <div className="flex-1 p-6">
-          {activeTab === 'current' ? (
-            <CurrentVisitors />
-          ) : (
-            <VisitorHistory />
-          )}
+          {renderContent()}
         </div>
       </div>
     </div>
