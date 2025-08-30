@@ -76,7 +76,7 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
                     relative p-4 rounded-lg cursor-pointer text-center transition-all
                     ${selectedHostId === host.id 
                       ? 'bg-primary text-primary-foreground shadow-md scale-105' 
-                      : 'bg-card border border-border hover:hover:bg-accent hover:hover:text-accent-foreground hover:hover:shadow-sm'
+                      : 'bg-card border border-border'
                     }
                   `}
                 >
@@ -94,7 +94,7 @@ const HostSelection = ({ hosts, onSelect }: HostSelectionProps) => {
                     relative p-4 rounded-lg cursor-pointer text-center transition-all
                     ${selectedHostId === -1 
                       ? 'bg-primary text-primary-foreground shadow-md scale-105' 
-                      : 'bg-card border border-border hover:hover:bg-accent hover:hover:text-accent-foreground hover:hover:shadow-sm'
+                      : 'bg-card border border-border'
                     }
                   `}>
                     <p className="font-medium text-lg leading-tight">{t('otherHost')}</p>
