@@ -95,6 +95,9 @@ const CheckOut = ({ checkedInVisitors, onCheckOut, onCancel, onVisitorCheckedOut
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium text-xl">{formatPrivacyName(visitor.name)}</p>
+                  {visitor.is_school_visit && visitor.number_students && (
+                    <p className="text-lg text-blue-600 font-medium">{visitor.number_students} elever</p>
+                  )}
                   <p className="text-lg text-gray-500">{t('visiting')} {visitor.visiting}</p>
                 </div>
                 <div className="text-lg text-gray-400">
