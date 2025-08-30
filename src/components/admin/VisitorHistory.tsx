@@ -332,17 +332,99 @@ const VisitorHistory = () => {
                       </PaginationPrevious>
                     </PaginationItem>
                     
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          onClick={() => setCurrentPage(page)}
-                          isActive={page === currentPage}
-                          className="cursor-pointer"
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
+                    {(() => {
+                      const pages = [];
+                      const showEllipsis = totalPages > 7;
+                      
+                      if (!showEllipsis) {
+                        // Show all pages if 7 or fewer
+                        for (let i = 1; i <= totalPages; i++) {
+                          pages.push(
+                            <PaginationItem key={i}>
+                              <PaginationLink
+                                onClick={() => setCurrentPage(i)}
+                                isActive={i === currentPage}
+                                className="cursor-pointer"
+                              >
+                                {i}
+                              </PaginationLink>
+                            </PaginationItem>
+                          );
+                        }
+                      } else {
+                        // Smart pagination with ellipsis
+                        const showStartEllipsis = currentPage > 4;
+                        const showEndEllipsis = currentPage < totalPages - 3;
+                        
+                        // Always show first page
+                        pages.push(
+                          <PaginationItem key={1}>
+                            <PaginationLink
+                              onClick={() => setCurrentPage(1)}
+                              isActive={1 === currentPage}
+                              className="cursor-pointer"
+                            >
+                              1
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
+                        
+                        // Show start ellipsis if needed
+                        if (showStartEllipsis) {
+                          pages.push(
+                            <PaginationItem key="start-ellipsis">
+                              <span className="flex h-9 w-9 items-center justify-center">...</span>
+                            </PaginationItem>
+                          );
+                        }
+                        
+                        // Show pages around current page
+                        const start = Math.max(2, currentPage - 1);
+                        const end = Math.min(totalPages - 1, currentPage + 1);
+                        
+                        for (let i = start; i <= end; i++) {
+                          if (i !== 1 && i !== totalPages) {
+                            pages.push(
+                              <PaginationItem key={i}>
+                                <PaginationLink
+                                  onClick={() => setCurrentPage(i)}
+                                  isActive={i === currentPage}
+                                  className="cursor-pointer"
+                                >
+                                  {i}
+                                </PaginationLink>
+                              </PaginationItem>
+                            );
+                          }
+                        }
+                        
+                        // Show end ellipsis if needed
+                        if (showEndEllipsis) {
+                          pages.push(
+                            <PaginationItem key="end-ellipsis">
+                              <span className="flex h-9 w-9 items-center justify-center">...</span>
+                            </PaginationItem>
+                          );
+                        }
+                        
+                        // Always show last page if it's different from first
+                        if (totalPages > 1) {
+                          pages.push(
+                            <PaginationItem key={totalPages}>
+                              <PaginationLink
+                                onClick={() => setCurrentPage(totalPages)}
+                                isActive={totalPages === currentPage}
+                                className="cursor-pointer"
+                              >
+                                {totalPages}
+                              </PaginationLink>
+                            </PaginationItem>
+                          );
+                        }
+                      }
+                      
+                      return pages;
+                    })()}
                     
                     <PaginationItem>
                       <PaginationNext 
