@@ -37,7 +37,7 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
             whileTap={{ scale: 0.98 }}
           >
             <Card 
-              className="cursor-pointer hover:border-blue-400 transition-all h-64 relative overflow-hidden"
+              className="cursor-pointer @media (hover: hover) { hover:border-blue-400 } transition-all h-64 relative overflow-hidden"
               onClick={() => onSelectType("regular")}
             >
               <CardContent className="p-8 h-full flex flex-col">
@@ -69,7 +69,7 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
             whileTap={{ scale: 0.98 }}
           >
             <Card 
-              className="cursor-pointer hover:border-blue-400 transition-all h-64 relative overflow-hidden"
+              className="cursor-pointer transition-all h-64 relative overflow-hidden"
               onClick={() => onSelectType("service")}
             >
               <CardContent className="p-8 h-full flex flex-col">
@@ -101,7 +101,7 @@ const VisitorTypeSelection = ({ onSelectType, onFaceRecognized }: VisitorTypeSel
             whileTap={{ scale: 0.98 }}
           >
             <Card 
-              className="cursor-pointer hover:border-blue-400 transition-all h-64 relative overflow-hidden"
+              className="cursor-pointer transition-all h-64 relative overflow-hidden"
               onClick={() => onSelectType("school")}
             >
               <CardContent className="p-8 h-full flex flex-col">
