@@ -1,11 +1,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { AutocompleteInput } from "@/components/ui/autocomplete-input";
 import { Label } from "@/components/ui/label";
-
 import { VisitorType } from "@/types/visitors";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useVisitorAutocomplete } from "@/hooks/useVisitorAutocomplete";
 
 interface CompanyInfoFormProps {
   visitorCount: number;
@@ -35,15 +35,22 @@ const CompanyInfoForm = ({
 }: CompanyInfoFormProps) => {
   const [company, setCompany] = useState<string>(initialCompany);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const { t } = useLanguage();
+  
+  // Use autocomplete for both regular and service visits
+  const { suggestions, loading, searchVisitors, clearSuggestions } = useVisitorAutocomplete(company);
 
-  // Filtrera företag baserat på input (minst 2 tecken)
-  const filteredCompanies = visitorType === "service" && company.length >= 2 
-    ? SERVICE_COMPANIES.filter(serviceCompany => 
-        serviceCompany.toLowerCase().startsWith(company.toLowerCase())
-      )
+  // Kombinera databas-förslag med hårdkodade service-företag
+  const serviceCompanySuggestions = visitorType === "service" && company.length >= 2 
+    ? SERVICE_COMPANIES
+        .filter(serviceCompany => 
+          serviceCompany.toLowerCase().startsWith(company.toLowerCase())
+        )
+        .map(name => ({ value: name, label: name }))
     : [];
+  
+  // Kombinera alla förslag
+  const allSuggestions = [...suggestions, ...serviceCompanySuggestions];
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, boolean> = {};
@@ -76,54 +83,33 @@ const CompanyInfoForm = ({
         </h3>
         <p className="text-xl text-gray-500 mb-8">{t('pleaseEnterCompanyAndCount')}</p>
 
-        <div className="mb-8 relative">
+        <div className="mb-8">
           <Label htmlFor="company" className={`text-xl font-medium mb-3 block ${errors.company ? "text-red-500" : ""}`}>
             {t('company')} {errors.company && <span className="text-red-500">*</span>}
           </Label>
           
-          <Input 
+          <AutocompleteInput
             id="company"
-            type="text" 
-            value={company} 
+            value={company}
             onChange={(e) => {
               setCompany(e.target.value);
-              setShowSuggestions(e.target.value.length >= 2 && visitorType === "service");
+              searchVisitors(e.target.value);
               if (e.target.value) {
                 setErrors(prev => ({ ...prev, company: false }));
+              } else {
+                clearSuggestions();
               }
             }}
-            onFocus={() => {
-              if (company.length >= 2 && visitorType === "service") {
-                setShowSuggestions(true);
-              }
+            onOptionSelect={(value) => {
+              setCompany(value);
+              clearSuggestions();
+              setErrors(prev => ({ ...prev, company: false }));
             }}
-            onBlur={() => {
-              // Delay för att tillåta klick på suggestions
-              setTimeout(() => setShowSuggestions(false), 200);
-            }}
-            className={`h-14 text-2xl ${errors.company ? "border-red-500" : ""}`}
+            options={allSuggestions}
             placeholder={t('companyPlaceholder')}
+            className={`h-14 text-2xl ${errors.company ? "border-red-500" : ""}`}
+            loading={loading}
           />
-          
-          {/* Dropdown suggestions */}
-          {showSuggestions && filteredCompanies.length > 0 && (
-            <div className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
-              {filteredCompanies.map((serviceCompany) => (
-                <button
-                  key={serviceCompany}
-                  type="button"
-                  className="w-full text-left px-4 py-3 text-lg hover:bg-gray-100 border-b border-gray-100 last:border-b-0"
-                  onClick={() => {
-                    setCompany(serviceCompany);
-                    setShowSuggestions(false);
-                    setErrors(prev => ({ ...prev, company: false }));
-                  }}
-                >
-                  {serviceCompany}
-                </button>
-              ))}
-            </div>
-          )}
           
           {errors.company && (
             <p className="text-red-500 text-base mt-2">{t('enterCompanyName')}</p>

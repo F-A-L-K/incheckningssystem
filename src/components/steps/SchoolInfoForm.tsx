@@ -1,6 +1,7 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { AutocompleteInput } from "@/components/ui/autocomplete-input";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -23,6 +24,23 @@ const SchoolInfoForm = ({
   const [studentCount, setStudentCount] = useState(initialStudentCount.toString());
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const { t } = useLanguage();
+
+  // Hårdkodade skolor för autocomplete
+  const SCHOOLS = [
+    "Gnosjöandans kunskapscentrum",
+    "GKC", 
+    "FiGy",
+    "Finnvedens gymnasium"
+  ];
+
+  const getSchoolSuggestions = (input: string) => {
+    if (input.length < 1) return [];
+    return SCHOOLS
+      .filter(schoolName => 
+        schoolName.toLowerCase().startsWith(input.toLowerCase())
+      )
+      .map(name => ({ value: name, label: name }));
+  };
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, boolean> = {};
@@ -96,13 +114,14 @@ const SchoolInfoForm = ({
             >
               {t('school')} {errors.school && <span className="text-red-500">*</span>}
             </Label>
-            <Input
+            <AutocompleteInput
               id="school"
-              type="text"
               value={school}
               onChange={(e) => handleSchoolChange(e.target.value)}
-              className={`h-14 text-2xl ${errors.school ? "border-red-500" : ""}`}
+              onOptionSelect={(value) => handleSchoolChange(value)}
+              options={getSchoolSuggestions(school)}
               placeholder={t('schoolPlaceholder')}
+              className={`h-14 text-2xl ${errors.school ? "border-red-500" : ""}`}
             />
             {errors.school && (
               <p className="text-red-500 text-base mt-2">{t('enterSchoolName')}</p>
