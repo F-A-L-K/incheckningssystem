@@ -28,9 +28,13 @@ const SchoolInfoForm = ({
   // Hårdkodade skolor för autocomplete
   const SCHOOLS = [
     "Gnosjöandans kunskapscentrum",
-    "GKC", 
-    "FiGy",
-    "Finnvedens gymnasium"
+    "Åvikenskolan", 
+    "Bäckaskolan F-6",
+    "Bäckaskolan 7-9",
+    "Hillerstorpsskolan",
+    "Campus Värnamo",
+    "Finnvedens gymnasium",
+    "Jönköping University",
   ];
 
   const getSchoolSuggestions = (input: string) => {
