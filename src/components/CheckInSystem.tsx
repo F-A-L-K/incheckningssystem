@@ -13,6 +13,7 @@ import CheckOut from "@/components/steps/CheckOut";
 import { Button } from "@/components/ui/button";
 import { saveVisitor, getCheckedInVisitors, checkOutVisitor, convertToVisitorFormat } from "@/services/visitorService";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useInactivityTimer } from "@/hooks/useInactivityTimer";
 
 // Department mapping function
 const getDepartmentTranslationKey = (department: string): string => {
@@ -67,6 +68,12 @@ interface CheckInSystemProps {
 const CheckInSystem = ({ initialStep = "type-selection", onCheckOutComplete }: CheckInSystemProps) => {
   const { toast } = useToast();
   const { t } = useLanguage();
+  
+  // Add inactivity timer for check-in steps (not for check-out or confirmation)
+  const shouldUseInactivityTimer = initialStep !== "check-out" && initialStep !== "confirmation";
+  if (shouldUseInactivityTimer) {
+    useInactivityTimer(15 * 60 * 1000); // 15 minutes
+  }
   
   // Create translated hosts based on current language
   const getTranslatedHosts = (): Host[] => {
