@@ -6,7 +6,6 @@ import VisitorHistory from '@/components/admin/VisitorHistory';
 import SchoolVisitHistory from '@/components/admin/SchoolVisitHistory';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminTopBar from '@/components/admin/AdminTopBar';
-import ProtectedRoute from '@/components/ProtectedRoute';
 
 const Admin = () => {
   const [searchParams] = useSearchParams();
@@ -26,19 +25,17 @@ const Admin = () => {
   };
 
   return (
-    <ProtectedRoute requireAdmin={true}>
-      <div className="min-h-screen bg-gray-50 flex">
-        <AdminSidebar />
+    <div className="min-h-screen bg-gray-50 flex">
+      <AdminSidebar />
+      
+      <div className="flex-1 flex flex-col">
+        <AdminTopBar />
         
-        <div className="flex-1 flex flex-col">
-          <AdminTopBar />
-          
-          <div className="flex-1 p-6">
-            {renderContent()}
-          </div>
+        <div className="flex-1 p-6">
+          {renderContent()}
         </div>
       </div>
-    </ProtectedRoute>
+    </div>
   );
 };
 
