@@ -19,7 +19,7 @@ interface User {
   id: string;
   username: string;
   full_name: string | null;
-  Access_informationboard: boolean;
+  Access_checkin: boolean;
 }
 
 interface AuthContextType {
@@ -80,7 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .select('*')
         .eq('username', username)
         .eq('password_hash', hashedPassword)
-        .eq('Access_informationboard', true)
+        .eq('Access_checkin', true)
         .maybeSingle() as { data: UserRow | null; error: any };
 
       if (error || !data) {
@@ -93,7 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: data.id,
         username: data.username,
         full_name: data.full_name,
-        Access_informationboard: data.Access_informationboard
+        Access_checkin: data.Access_checkin
       };
 
       setUser(userData);
