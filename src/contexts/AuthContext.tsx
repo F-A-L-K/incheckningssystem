@@ -3,6 +3,18 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import CryptoJS from 'crypto-js';
 
+// Temporary type definition for users table until types regenerate
+interface UserRow {
+  id: string;
+  username: string;
+  password_hash: string;
+  full_name: string | null;
+  admin: boolean;
+  Access_informationboard: boolean;
+  Access_checkin: boolean | null;
+  created_at: string;
+}
+
 interface User {
   id: string;
   username: string;
@@ -69,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('username', username)
         .eq('password_hash', hashedPassword)
         .eq('Access_informationboard', true)
-        .single();
+        .single() as { data: UserRow | null; error: any };
 
       if (error || !data) {
         // Generic error logging without exposing details

@@ -7,6 +7,18 @@ import CryptoJS from 'crypto-js';
 import AdminLoginForm from '@/components/auth/AdminLoginForm';
 import CreateUserForm from '@/components/auth/CreateUserForm';
 
+// Temporary type definition for users table until types regenerate
+interface UserRow {
+  id: string;
+  username: string;
+  password_hash: string;
+  full_name: string | null;
+  admin: boolean;
+  Access_informationboard: boolean;
+  Access_checkin: boolean | null;
+  created_at: string;
+}
+
 type SignupStep = 'admin-login' | 'create-user';
 
 const Signup = () => {
@@ -51,7 +63,7 @@ const Signup = () => {
         .eq('username', adminUsername)
         .eq('password_hash', hashedPassword)
         .eq('admin', true)
-        .single();
+        .single() as { data: UserRow | null; error: any };
 
       if (error || !data) {
         toast({
@@ -110,7 +122,7 @@ const Signup = () => {
         .from('users')
         .select('username')
         .eq('username', username)
-        .single();
+        .single() as { data: { username: string } | null; error: any };
 
       if (existingUser) {
         toast({
@@ -136,7 +148,7 @@ const Signup = () => {
           password_hash: hashedPassword,
           admin: isAdmin,
           Access_informationboard: true
-        });
+        } as any);
 
       if (error) {
         throw error;
