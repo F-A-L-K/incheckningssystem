@@ -63,7 +63,7 @@ const Signup = () => {
         .eq('username', adminUsername)
         .eq('password_hash', hashedPassword)
         .eq('admin', true)
-        .single() as { data: UserRow | null; error: any };
+        .maybeSingle() as { data: UserRow | null; error: any };
 
       if (error || !data) {
         toast({
@@ -122,7 +122,7 @@ const Signup = () => {
         .from('users')
         .select('username')
         .eq('username', username)
-        .single() as { data: { username: string } | null; error: any };
+        .maybeSingle() as { data: { username: string } | null; error: any };
 
       if (existingUser) {
         toast({

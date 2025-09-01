@@ -81,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('username', username)
         .eq('password_hash', hashedPassword)
         .eq('Access_informationboard', true)
-        .single() as { data: UserRow | null; error: any };
+        .maybeSingle() as { data: UserRow | null; error: any };
 
       if (error || !data) {
         // Generic error logging without exposing details
