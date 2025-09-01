@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Users, History, Home, GraduationCap } from 'lucide-react';
+import { Users, History, Home, GraduationCap, BarChart3 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminSidebar = () => {
@@ -50,6 +50,18 @@ const AdminSidebar = () => {
           >
             <GraduationCap className="w-5 h-5" />
             <span>{t('schoolVisitHistory')}</span>
+          </NavLink>
+          
+          <NavLink
+            to="/admin?tab=statistics"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                window.location.search === '?tab=statistics'
+                  ? 'bg-slate-700 text-white'
+                  : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+              }`}
+          >
+            <BarChart3 className="w-5 h-5" />
+            <span>Statistik</span>
           </NavLink>
         </nav>
       </div>
