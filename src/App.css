@@ -3,6 +3,9 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  /* transform: scale(1);
+  transform-origin: top center; */
+  zoom: 0.75;
 }
 
 .logo {

@@ -110,3 +110,13 @@
 .transition-height {
   transition: max-height 0.3s ease-in-out;
 }
+
+
+/* 75% visual scale for everything */
+.app-scale-75 {
+  transform: scale(0.75);
+  transform-origin: top left;
+  /* expand logical size so the scaled result fills the screen */
+  width: calc(100% / 0.75);   /* ≈ 133.333% */
+  height: calc(100% / 0.75);
+}

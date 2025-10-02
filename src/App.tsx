@@ -34,7 +34,9 @@ const App = () => (
     <TooltipProvider>
       <AuthProvider>
         <LanguageProvider>
-          <AppContent />
+          <div className="app-scale-75">
+            <AppContent />
+          </div>
         </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>
