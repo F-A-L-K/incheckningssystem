@@ -18,13 +18,13 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",           // auto-registrera SW och kolla uppdateringar
       includeAssets: ["icons/*"],            // allt i public/icons
       manifest: {
-        name: "Falks – Infohub",
-        short_name: "Infohub",
+        name: "Incheckningssystem",
+        short_name: "Incheckningssystem",
         description: "Intern app",
         start_url: "/",                      // börja på rot
         scope: "/",                          // SW-scope = rot
         display: "standalone",
-        theme_color: "#0b5fff",
+        theme_color: "#ffffff",
         background_color: "#ffffff",
         icons: [
           { src: "icons/icon-192.png", sizes: "192x192", type: "image/png" },
